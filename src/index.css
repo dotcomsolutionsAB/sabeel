@@ -1,0 +1,117 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===== Page + Shell ===== */
+.sabeel-page {
+  background: #f6ded6;
+}
+
+.sabeel-shell {
+  border-radius: 26px;
+  border: 3px solid rgba(255, 255, 255, 0.85);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.40), rgba(255, 255, 255, 0.18));
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.10);
+}
+
+/* ===== Topbar (the long strip) ===== */
+.sabeel-topbar {
+  position: relative;
+  min-height: 64px;
+  border-radius: 18px;
+  padding: 14px 18px;
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.22));
+  box-shadow: 0 12px 22px rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  overflow: visible;
+}
+
+/* ===== Center nav placement ===== */
+.sabeel-topnav {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 0px;
+  /* key: lift it like your original */
+  z-index: 50;
+  display: flex;
+  align-items: center;
+}
+
+/* ===== This makes the “CUT-IN / NOTCH” shape ===== */
+.sabeel-notch {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 64px;
+  height: 64px;
+  border-radius: 999px;
+
+  /* same as page background = cuts the strip */
+  background: #f6ded6;
+
+  /* redraw border like screenshot */
+  border: 2px solid rgba(255, 255, 255, 0.88);
+  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.06);
+  z-index: 1;
+}
+
+.sabeel-notch.left {
+  left: -34px;
+}
+
+.sabeel-notch.right {
+  right: -34px;
+}
+
+/* ===== Center pill ===== */
+.sabeel-nav-pill {
+  position: relative;
+  border-radius: 999px;
+  padding: 12px 30px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.35));
+  border: 2px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 14px 22px rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(10px);
+  z-index: 2;
+}
+
+/* icons */
+.sabeel-nav-icon {
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #8c3e1b;
+}
+
+/* ===== Dashboard Cards (kept) ===== */
+.sabeel-stat {
+  background: radial-gradient(circle at 25% 15%, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0.12)),
+    linear-gradient(180deg, #6b3b2b, #2c1812);
+  box-shadow: 0 16px 26px rgba(0, 0, 0, 0.18);
+}
+
+.sabeel-panel {
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  box-shadow: 0 16px 28px rgba(0, 0, 0, 0.10);
+  backdrop-filter: blur(10px);
+}
+
+.sabeel-panel-header {
+  background: linear-gradient(90deg, #8c3e1b, #f3b79f);
+}
+
+.sabeel-table th {
+  background: #f4f4f4;
+  font-weight: 700;
+}
