@@ -4,6 +4,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import ComingSoon from "./pages/ComingSoon";
+import Family from "./pages/Family";
 
 export default function App() {
   return (
@@ -38,6 +39,15 @@ export default function App() {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/family"
+        element={
+          <ProtectedRoute>
+            <Family />
+          </ProtectedRoute>
+        }
+      />
+
 
       <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>
