@@ -1,26 +1,46 @@
-export default function DataTable({ columns, rows, height = "h-72" }) {
+export default function DataTable({
+    title,
+    headVariant = "blue", // "blue" | "navy"
+    rows = [],
+    onExport = () => alert("Excel Export (demo)"),
+}) {
     return (
-        <div className={`border rounded-xl overflow-hidden bg-white ${height}`}>
-            <div className="h-full overflow-auto">
-                <table className="w-full text-sm sabeel-table">
-                    <thead className="sticky top-0 z-10">
-                        <tr>
-                            {columns.map((c) => (
-                                <th key={c} className="text-left px-3 py-2 border-b">{c}</th>
-                            ))}
+        <div className="table-card">
+            <div className={`table-head ${headVariant}`}>{title}</div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th style={{ width: "30%" }}>Year</th>
+                        <th>Due</th>
+                        <th style={{ width: "22%", textAlign: "center" }}>Excel Export</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {rows.map((r, idx) => (
+                        <tr key={idx}>
+                            <td>{r.year}</td>
+                            <td>{r.due}</td>
+                            <td className="export">
+                                <div className="dl" title="Export" onClick={() => onExport(r)}>
+                                    <DownloadIcon />
+                                </div>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        {rows.map((r, idx) => (
-                            <tr key={idx} className="odd:bg-white even:bg-gray-50">
-                                {r.map((cell, i) => (
-                                    <td key={i} className="px-3 py-2 border-b">{cell}</td>
-                                ))}
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
+                    ))}
+                </tbody>
+            </table>
         </div>
+    );
+}
+
+function DownloadIcon() {
+    return (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 3v12"></path>
+            <path d="M7 10l5 5 5-5"></path>
+            <path d="M5 21h14"></path>
+        </svg>
     );
 }

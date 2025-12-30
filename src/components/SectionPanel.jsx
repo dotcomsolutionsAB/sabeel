@@ -1,10 +1,19 @@
-export default function SectionPanel({ title, children }) {
+import StatCard from "./StatCard";
+
+export default function SectionPanel({ tone = "mint", bigCards = [], smallCards = [] }) {
     return (
-        <div className="sabeel-panel rounded-2xl overflow-hidden">
-            <div className="sabeel-panel-header px-4 py-3 text-white font-semibold">
-                {title}
+        <section className={`panel ${tone}`}>
+            <div className="cards-grid">
+                {bigCards.map((c, idx) => (
+                    <StatCard key={idx} variant="big" number={c.number} label={c.label} />
+                ))}
             </div>
-            <div className="p-4">{children}</div>
-        </div>
+
+            <div className="small-row">
+                {smallCards.map((c, idx) => (
+                    <StatCard key={idx} variant="small" number={c.number} label={c.label} />
+                ))}
+            </div>
+        </section>
     );
 }

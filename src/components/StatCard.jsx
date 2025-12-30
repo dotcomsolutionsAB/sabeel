@@ -1,8 +1,17 @@
-export default function StatCard({ value, label }) {
+export default function StatCard({ variant = "big", number, label }) {
+    if (variant === "small") {
+        return (
+            <div className="small-card">
+                <div className="snum">{number}</div>
+                <div className="slbl" dangerouslySetInnerHTML={{ __html: label }} />
+            </div>
+        );
+    }
+
     return (
-        <div className="sabeel-stat rounded-2xl px-7 py-6 text-white shadow-soft">
-            <div className="text-3xl font-extrabold tracking-wide text-center">{value}</div>
-            <div className="text-center mt-2 text-sm font-semibold opacity-95">{label}</div>
+        <div className="big-card">
+            <div className="num">{number}</div>
+            <div className="lbl">{label}</div>
         </div>
     );
 }
