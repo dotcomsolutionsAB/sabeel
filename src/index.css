@@ -407,3 +407,31 @@ tbody tr:hover {
 
   /* 4 → 2 per row on very small screens */
 }
+
+
+/* clickable cards */
+.big-card,
+.small-card {
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+}
+
+.big-card:hover,
+.small-card:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.02);
+  box-shadow: 0 12px 22px rgba(0, 0, 0, 0.14);
+}
+
+.big-card:active,
+.small-card:active {
+  transform: translateY(0px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+}
+
+/* optional: focus visible for keyboard */
+.big-card:focus-visible,
+.small-card:focus-visible {
+  outline: 3px solid rgba(44, 134, 200, 0.35);
+  outline-offset: 2px;
+}
