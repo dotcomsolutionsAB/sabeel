@@ -5,6 +5,9 @@ import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import ComingSoon from "./pages/ComingSoon";
 import Family from "./pages/Family";
+import Establishments from "./pages/Establishments";
+import Receipts from "./pages/Receipts";
+import Users from "./pages/Users";
 
 export default function App() {
   return (
@@ -44,6 +47,41 @@ export default function App() {
         element={
           <ProtectedRoute>
             <Family />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/family"
+        element={
+          <ProtectedRoute>
+            <Family />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/establishments"
+        element={
+          <ProtectedRoute>
+            <Establishments />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/receipts"
+        element={
+          <ProtectedRoute>
+            <Receipts />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/users"
+        element={
+          <ProtectedRoute>
+            <Users />
           </ProtectedRoute>
         }
       />

@@ -435,3 +435,38 @@ tbody tr:hover {
   outline: 3px solid rgba(44, 134, 200, 0.35);
   outline-offset: 2px;
 }
+
+
+/* Hide scrollbar by default, show on hover (only if overflow exists) */
+.scroll-hover {
+  scrollbar-width: none;
+  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE/Edge */
+}
+
+.scroll-hover::-webkit-scrollbar {
+  width: 0px;
+  height: 0px;
+}
+
+.scroll-hover:hover {
+  scrollbar-width: thin;
+  /* Firefox */
+}
+
+.scroll-hover:hover::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.scroll-hover:hover::-webkit-scrollbar-thumb {
+  background: rgba(15, 23, 42, 0.25);
+  /* slate-900-ish */
+  border-radius: 999px;
+}
+
+.scroll-hover:hover::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.06);
+  border-radius: 999px;
+}

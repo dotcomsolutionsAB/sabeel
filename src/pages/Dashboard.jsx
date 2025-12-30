@@ -45,16 +45,53 @@ export default function Dashboard() {
 
     const onExport = (row) => alert(`Excel Export (demo) for ${row.year}`);
 
+    const dueColumns = [
+        { key: "year", header: "Year", width: 120 },
+        { key: "due", header: "Due" },
+        {
+            key: "export",
+            header: "Excel Export",
+            width: 120,
+            render: (r) => (
+                <div className="export">
+                    <div className="dl" title="Export" onClick={() => onExport(r)}>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M12 3v12" />
+                            <path d="M7 10l5 5 5-5" />
+                            <path d="M5 21h14" />
+                        </svg>
+                    </div>
+                </div>
+            ),
+            tdClassName: "text-center",
+            thClassName: "text-center",
+        },
+    ];
+
     return (
-        <DashboardLayout>
+        <DashboardLayout title="Dashboard">
             <div className="stats-wrap">
                 <SectionPanel tone="mint" bigCards={personal.bigCards} smallCards={personal.smallCards} />
                 <SectionPanel tone="tan" bigCards={establishment.bigCards} smallCards={establishment.smallCards} />
             </div>
 
             <div className="tables">
-                <DataTable title="Personal Sabeel Due (Year Wise)" headVariant="blue" rows={rows} onExport={onExport} />
-                <DataTable title="Establishment Sabeel Due (Year Wise)" headVariant="navy" rows={rows} onExport={onExport} />
+                <DataTable
+                    title="Personal Sabeel Due (Year Wise)"
+                    headerVariant="blue"
+                    columns={dueColumns}
+                    data={rows}
+                    stickyHeader={false}
+                />
+
+                <DataTable
+                    title="Establishment Sabeel Due (Year Wise)"
+                    headerVariant="navy"
+                    columns={dueColumns}
+                    data={rows}
+                    stickyHeader={false}
+                />
+
             </div>
         </DashboardLayout>
     );

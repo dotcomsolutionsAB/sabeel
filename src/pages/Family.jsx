@@ -542,7 +542,7 @@ function FamilyClean() {
     );
 
     return (
-        <DashboardLayout>
+        <DashboardLayout title="Family">
             <div className="px-3 pb-4">
                 <div className="rounded-2xl bg-white/70 border border-sky-100 shadow-sm overflow-hidden">
                     {/* Header bar */}
@@ -603,12 +603,16 @@ function FamilyClean() {
                         </div>
 
                         {/* Right: Details */}
-                        <div className="rounded-2xl bg-white border border-slate-100 shadow-sm overflow-hidden" style={{ height: "520px" }}>
-                            {/* Profile */}
-                            <div className="p-4">
+                        <div className="rounded-2xl bg-white border border-slate-100 shadow-sm overflow-hidden flex flex-col min-h-0"
+                            style={{ height: "520px" }}>
+                            {/* ✅ Profile (fixed) */}
+                            <div className="p-4 shrink-0">
                                 <div className="flex items-start gap-3">
                                     <div className="w-16 h-16 rounded-xl overflow-hidden border border-slate-200 bg-slate-50">
-                                        <img src={selected?.avatarUrl} alt="" className="w-full h-full object-cover"
+                                        <img
+                                            src={selected?.avatarUrl}
+                                            alt=""
+                                            className="w-full h-full object-cover"
                                         />
                                     </div>
 
@@ -640,42 +644,45 @@ function FamilyClean() {
                             </div>
 
                             <Divider />
-                            {/* Sabeel Details (Reusable DataTable) */}
-                            <div className="p-4">
-                                <div className="font-semibold text-slate-800 mb-2">Sabeel Details</div>
 
-                                <div className="rounded-xl border border-slate-200 overflow-hidden">
-                                    <DataTable
-                                        columns={sabeelColumns}
-                                        data={selected?.sabeelYearWise || []}
-                                        rowKey={(row) => row.year}
-                                        stickyHeader={false}
-                                        tableClassName="border-0 shadow-none rounded-none"
-                                    />
-                                </div>
-                            </div>
-                            <Divider />
-                            {/* Establishment Details (Reusable DataTable) */}
-                            <div className="p-4">
-                                <div className="font-semibold text-slate-800 mb-2">Establishment Details</div>
+                            {/* ✅ ONLY THIS PART SCROLLS */}
+                            <div className="flex-1 overflow-auto min-h-0 p-4 space-y-6 scroll-hover">
+                                {/* Sabeel Details */}
+                                <div>
+                                    <div className="font-semibold text-slate-800 mb-2">Sabeel Details</div>
 
-                                <div className="rounded-xl border border-slate-200 overflow-hidden">
-                                    {(selected?.establishments || []).length === 0 ? (
-                                        <div className="px-3 py-3 text-xs text-slate-500 bg-white">
-                                            No establishments
-                                        </div>
-                                    ) : (
+                                    <div className="rounded-xl border border-slate-200 overflow-hidden">
                                         <DataTable
-                                            columns={establishmentColumns}
-                                            data={selected?.establishments || []}
-                                            rowKey="id"
+                                            columns={sabeelColumns}
+                                            data={selected?.sabeelYearWise || []}
+                                            rowKey={(row) => row.year}
                                             stickyHeader={false}
                                             tableClassName="border-0 shadow-none rounded-none"
                                         />
-                                    )}
+                                    </div>
+                                </div>
+
+                                {/* Establishment Details */}
+                                <div>
+                                    <div className="font-semibold text-slate-800 mb-2">Establishment Details</div>
+
+                                    <div className="rounded-xl border border-slate-200 overflow-hidden">
+                                        {(selected?.establishments || []).length === 0 ? (
+                                            <div className="px-3 py-3 text-xs text-slate-500 bg-white">
+                                                No establishments
+                                            </div>
+                                        ) : (
+                                            <DataTable
+                                                columns={establishmentColumns}
+                                                data={selected?.establishments || []}
+                                                rowKey="id"
+                                                stickyHeader={false}
+                                                tableClassName="border-0 shadow-none rounded-none"
+                                            />
+                                        )}
+                                    </div>
                                 </div>
                             </div>
-
                         </div>
                     </div>
                     {/* end grid */}

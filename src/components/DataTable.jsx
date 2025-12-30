@@ -1,11 +1,7 @@
 export default function DataTable({
     title,
-    headVariant = "blue",
-    rows = [],
-    onExport,
-
-    columns,
-    data,
+    columns = [],
+    data = [],
     rowKey = "id",
     onRowClick,
     selectedRowKey,
@@ -14,42 +10,56 @@ export default function DataTable({
     stickyHeader = true,
 
     // ✅ NEW
-    height,          // example: "520px" or "100%"
-    footer,          // pagination goes here
+    headerVariant, // "blue" | "navy" | undefined
+
+    height,
+    footer,
 }) {
-    // ---------- GENERIC MODE ----------
-    if (Array.isArray(columns) && Array.isArray(data)) {
-        return (
-            <div
-                className={`rounded-2xl bg-white border border-slate-100 shadow-sm overflow-hidden flex flex-col min-h-0 ${tableClassName}`}
-                style={height ? { height } : undefined}
-            >
-                {(title || headerRight) && (
-                    <div className="flex items-center justify-between px-4 py-3 bg-slate-50 border-b border-slate-100 shrink-0">
-                        <div className="font-semibold text-slate-800 text-sm">{title}</div>
-                        <div>{headerRight}</div>
-                    </div>
-                )}
+    const headerClass =
+        headerVariant === "blue"
+            ? "bg-gradient-to-r from-[#6aaedd] to-[#4f90c7] text-white"
+            : headerVariant === "navy"
+                ? "bg-gradient-to-r from-[#1f5f9a] to-[#13446f] text-white"
+                : "bg-slate-50 text-slate-800";
 
-                {/* ✅ ONLY THIS PART SCROLLS */}
-                <div className="flex-1 overflow-auto min-h-0">
-                    <table className="w-full text-sm">
-                        <thead className={stickyHeader ? "sticky top-0 z-10 bg-slate-50" : "bg-slate-50"}>
-                            <tr className="text-slate-600">
-                                {columns.map((col) => (
-                                    <th
-                                        key={col.key}
-                                        className={`px-3 py-3 text-left font-semibold ${col.thClassName || ""}`}
-                                        style={col.width ? { width: col.width } : undefined}
-                                    >
-                                        {col.header}
-                                    </th>
-                                ))}
+    return (
+        <div
+            className={`rounded-2xl bg-white border border-slate-100 shadow-sm overflow-hidden flex flex-col min-h-0 ${tableClassName}`}
+            style={height ? { height } : undefined}
+        >
+            {(title || headerRight) && (
+                <div className={`flex items-center justify-between px-4 py-3 border-b border-slate-100 shrink-0 ${headerClass}`}>
+                    <div className="font-semibold text-sm">{title}</div>
+                    <div>{headerRight}</div>
+                </div>
+            )}
+
+            {/* body */}
+            <div className="flex-1 overflow-auto min-h-0 scroll-hover">
+                <table className="w-full text-sm">
+                    <thead className={stickyHeader ? "sticky top-0 z-10 bg-slate-50" : "bg-slate-50"}>
+                        <tr className="text-slate-600">
+                            {columns.map((col) => (
+                                <th
+                                    key={col.key}
+                                    className={`px-3 py-3 text-left font-semibold ${col.thClassName || ""}`}
+                                    style={col.width ? { width: col.width } : undefined}
+                                >
+                                    {col.header}
+                                </th>
+                            ))}
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {data.length === 0 ? (
+                            <tr>
+                                <td className="px-3 py-6 text-center text-sm text-slate-500" colSpan={columns.length || 1}>
+                                    No data found
+                                </td>
                             </tr>
-                        </thead>
-
-                        <tbody>
-                            {data.map((row) => {
+                        ) : (
+                            data.map((row) => {
                                 const key = typeof rowKey === "function" ? rowKey(row) : row[rowKey];
                                 const active = selectedRowKey === key;
 
@@ -67,47 +77,13 @@ export default function DataTable({
                                         ))}
                                     </tr>
                                 );
-                            })}
-                        </tbody>
-                    </table>
-                </div>
-
-                {/* ✅ FOOTER PINNED ALWAYS */}
-                {footer ? <div className="shrink-0 bg-white">{footer}</div> : null}
+                            })
+                        )}
+                    </tbody>
+                </table>
             </div>
-        );
-    }
 
-    // ---------- OLD MODE (your existing dashboard table) ----------
-    return (
-        <div className="table-card">
-            <div className={`table-head ${headVariant}`}>{title}</div>
-            <table>
-                <thead>
-                    <tr>
-                        <th style={{ width: "30%" }}>Year</th>
-                        <th>Due</th>
-                        <th style={{ width: "22%", textAlign: "center" }}>Excel Export</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {rows.map((r, idx) => (
-                        <tr key={idx}>
-                            <td>{r.year}</td>
-                            <td>{r.due}</td>
-                            <td className="export">
-                                <div className="dl" title="Export" onClick={() => onExport?.(r)}>
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                        <path d="M12 3v12" />
-                                        <path d="M7 10l5 5 5-5" />
-                                        <path d="M5 21h14" />
-                                    </svg>
-                                </div>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+            {footer ? <div className="shrink-0 bg-white">{footer}</div> : null}
         </div>
     );
 }
