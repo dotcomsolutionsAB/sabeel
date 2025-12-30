@@ -39,9 +39,8 @@ export default function DataTable({
                 <table className="w-full text-sm">
                     <thead className={stickyHeader ? "sticky top-0 z-10 bg-slate-50" : "bg-slate-50"}>
                         <tr className="text-slate-600">
-                            {columns.map((col) => (
-                                <th
-                                    key={col.key}
+                            {columns.map((col, i) => (
+                                <th key={`${col.key ?? "col"}-${i}`}
                                     className={`px-3 py-3 text-left font-semibold ${col.thClassName || ""}`}
                                     style={col.width ? { width: col.width } : undefined}
                                 >
@@ -59,25 +58,30 @@ export default function DataTable({
                                 </td>
                             </tr>
                         ) : (
-                            data.map((row) => {
-                                const key = typeof rowKey === "function" ? rowKey(row) : row[rowKey];
-                                const active = selectedRowKey === key;
+                            data.map((row, rIndex) => {
+                                const rawKey = typeof rowKey === "function" ? rowKey(row) : row?.[rowKey];
+                                const key = rawKey ?? `row-${rIndex}`;
+                                const active = selectedRowKey === rawKey;
 
                                 return (
                                     <tr
                                         key={key}
                                         onClick={() => onRowClick?.(row)}
-                                        className={`border-t border-slate-100 ${active ? "bg-sky-50" : "bg-white"} ${onRowClick ? "cursor-pointer hover:bg-slate-50" : ""
-                                            }`}
+                                        className={`border-t border-slate-100 ${active ? "bg-sky-50" : "bg-white"
+                                            } ${onRowClick ? "cursor-pointer hover:bg-slate-50" : ""}`}
                                     >
-                                        {columns.map((col) => (
-                                            <td key={col.key} className={`px-3 py-3 align-top ${col.tdClassName || ""}`}>
-                                                {col.render ? col.render(row) : row[col.key]}
+                                        {columns.map((col, i) => (
+                                            <td
+                                                key={`${col.key ?? "col"}-${i}`}
+                                                className={`px-3 py-3 align-top ${col.tdClassName || ""}`}
+                                            >
+                                                {col.render ? col.render(row) : row?.[col.key]}
                                             </td>
                                         ))}
                                     </tr>
                                 );
                             })
+
                         )}
                     </tbody>
                 </table>

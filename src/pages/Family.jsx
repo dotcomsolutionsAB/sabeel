@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import DashboardLayout from "../layout/DashboardLayout";
 
 import DataTable from "../components/DataTable";
@@ -7,272 +7,6 @@ import Pagination from "../components/Pagination";
 import { UsersIcon, EyeIcon, PrintIcon } from "../components/icons";
 
 export default function Family() {
-    // ---------------------------
-    // Mock data (replace with API later)
-    // ---------------------------
-    const data = useMemo(
-        () => [
-            {
-                id: 1,
-                name: "Juzar Fakhruddin Anjarwala",
-                its: "23058631",
-                hof_its: "23058631",
-                sector: "MOHAMMEDI",
-                mobile: "+91 78457889564",
-                sabeel: 4236,
-                sabeel_due: 1256,
-                sabeel_overdue: 1000,
-                establishments: [
-                    { id: 1, name: "ALFA ENTERPRISES", due: 600 },
-                    { id: 2, name: "ARBEN TOOLS CO.", due: 1000 },
-                ],
-                avatarUrl: "https://i.pravatar.cc/160?img=12",
-                sabeelYearWise: [
-                    { year: "2025-26", sabeel: 4236, due: 1256 },
-                    { year: "2024-25", sabeel: 4236, due: 1256 },
-                    { year: "2023-24", sabeel: 4236, due: 1256 },
-                ],
-            },
-            {
-                id: 2,
-                name: "Juzar Fakhruddin Anjarwala",
-                its: "23058632",
-                hof_its: "23058631",
-                sector: "MOHAMMEDI",
-                mobile: "+91 78457889564",
-                sabeel: 4236,
-                sabeel_due: 1212,
-                sabeel_overdue: 1000,
-                establishments: [{ id: 3, name: "ZED INDUSTRIES", due: 800 }],
-                avatarUrl: "https://i.pravatar.cc/160?img=14",
-                sabeelYearWise: [
-                    { year: "2025-26", sabeel: 4236, due: 1212 },
-                    { year: "2024-25", sabeel: 4236, due: 1212 },
-                ],
-            },
-            {
-                id: 3,
-                name: "Juzar Fakhruddin Anjarwala",
-                its: "23058633",
-                hof_its: "23058631",
-                sector: "SAIFI",
-                mobile: "+91 78457889564",
-                sabeel: 4236,
-                sabeel_due: 1220,
-                sabeel_overdue: 1000,
-                establishments: [],
-                avatarUrl: "https://i.pravatar.cc/160?img=18",
-                sabeelYearWise: [{ year: "2025-26", sabeel: 4236, due: 1220 }],
-            },
-        ],
-        []
-    );
-
-    // ---------------------------
-    // Filters & page state
-    // ---------------------------
-    const sectorOptions = useMemo(() => {
-        const set = new Set(data.map((d) => d.sector));
-        return ["All", ...Array.from(set)];
-    }, [data]);
-
-    const [search, setSearch] = useState("");
-    const [sector, setSector] = useState("All");
-    const [sort, setSort] = useState("az");
-
-    // pagination demo (UI only)
-    const [page, setPage] = useState(2);
-    const totalPages = 10;
-
-    const [selectedId, setnSetSelectedId] = useState(data?.[0]?.id ?? null);
-
-    // ---------------------------
-    // Filtered dataset
-    // ---------------------------
-    const filtered = useMemo(() => {
-        const q = search.trim().toLowerCase();
-
-        let rows = data.filter((r) => {
-            const matchSearch =
-                !q ||
-                r.name.toLowerCase().includes(q) ||
-                r.its.toLowerCase().includes(q) ||
-                r.mobile.toLowerCase().includes(q);
-
-            const matchSector = sector === "All" ? true : r.sector === sector;
-
-            return matchSearch && matchSector;
-        });
-
-        rows.sort((a, b) => {
-            if (sort === "az") return a.name.localeCompare(b.name);
-            if (sort === "za") return b.name.localeCompare(a.name);
-            return 0;
-        });
-
-        return rows;
-    }, [data, search, sector, sort]);
-
-    // keep selected on filtered
-    const selected = useMemo(() => {
-        const found = filtered.find((x) => x.id === selectedId);
-        return found || filtered[0] || null;
-    }, [filtered, selectedId]);
-
-    // ---------------------------
-    // Table columns (reusable DataTable generic mode)
-    // ---------------------------
-    const columns = useMemo(
-        () => [
-            {
-                key: "check",
-                header: <input type="checkbox" />,
-                width: 40,
-                render: () => (
-                    <input
-                        type="checkbox"
-                        onClick={(e) => e.stopPropagation()}
-                    />
-                ),
-            },
-            {
-                key: "name",
-                header: "Name",
-                render: (r) => (
-                    <div className="flex items-start gap-3">
-                        <img
-                            src={r.avatarUrl}
-                            alt=""
-                            className="w-10 h-10 rounded-lg object-cover border border-slate-200"
-                        />
-                        <div>
-                            <div className="font-semibold text-slate-800">{r.name}</div>
-                            <div className="text-xs text-slate-600">
-                                ITS: {r.its}
-                                <br />
-                                HOF: {r.hof_its}
-                                <br />
-                                Sector: {r.sector}
-                                <br />
-                                Mobile: {r.mobile}
-                            </div>
-                        </div>
-                    </div>
-                ),
-            },
-            {
-                key: "sabeel",
-                header: "Sabeel",
-                render: (r) => (
-                    <div className="text-xs text-slate-700">
-                        <div>
-                            <span className="font-semibold">Sabeel:</span>{" "}
-                            <span className="text-sky-700 font-semibold">{r.sabeel}</span>
-                        </div>
-                        <div>
-                            Due:{" "}
-                            <span className="text-slate-900 font-semibold">
-                                ₹ {r.sabeel_due}
-                            </span>
-                        </div>
-                        <div>
-                            Overdue:{" "}
-                            <span className="text-rose-600 font-semibold">
-                                ₹ {r.sabeel_overdue}
-                            </span>
-                        </div>
-                    </div>
-                ),
-            },
-            {
-                key: "est",
-                header: "Establishment",
-                render: (r) => (
-                    <div className="text-xs text-slate-700">
-                        <div>
-                            <span className="font-semibold">Establishment:</span>{" "}
-                            <span className="text-sky-700 font-semibold">
-                                {r.establishments?.length || 0}
-                            </span>
-                        </div>
-                        <div>Due: ₹ {sumDue(r.establishments)}</div>
-                        <div>Overdue: ₹ 00</div>
-                    </div>
-                ),
-            },
-            {
-                key: "action",
-                header: "Action",
-                render: (r) => (
-                    <button
-                        className="inline-flex items-center gap-2 rounded-full bg-sky-700 hover:bg-sky-800 text-white px-3 py-1.5 text-xs font-semibold"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            setSelectedId(r.id);
-                        }}
-                    >
-                        <EyeIcon className="w-4 h-4" />
-                        Quick View
-                    </button>
-                ),
-            },
-        ],
-        []
-    );
-
-    const setSelectedId = (id) => {
-        // ensure selectedId always exists in filtered list
-        const exists = data.some((x) => x.id === id);
-        if (exists) {
-            RnSetSelectedIdSafe(id);
-        }
-    };
-
-    function RnSetSelectedIdSafe(id) {
-        id;
-        // actual set:
-        return;
-    }
-
-    const RnSetSelectedId = (id) => {
-        // if selected item is filtered out, set to first visible
-        setSelectedIdState(id);
-    };
-
-    // actual setter alias
-    const setSelectedIdState = (id) => {
-        id;
-        // actual
-    };
-
-    // We'll directly use:  setSelectedIdReal(row.id)
-    const setSelectedIdReal = (id) => {
-        id;
-        // set state:
-    };
-
-    const setSelected = (id) => {
-        // if filtered has no rows, ignore
-        if (!id) return;
-        // set it
-        const _ = id;
-    };
-
-    // ❗To avoid any confusion, we will not use wrappers.
-    // We'll just use the real setter directly: RsetSelectedId(...)
-    const RsetSelectedId = (id) => {
-        id;
-    };
-
-    // However, above is getting messy. Let's fix it properly NOW:
-    const selectRow = (id) => {
-
-    };
-
-    return <FamilyClean />;
-}
-
-function FamilyClean() {
     const data = useMemo(
         () => [
             {
@@ -413,7 +147,7 @@ function FamilyClean() {
     const [sort, setSort] = useState("az");
 
     const [page, setPage] = useState(2);
-    const totalPages = 10;
+    const pageSize = 10;
 
     const [selectedId, setSelectedId] = useState(data?.[0]?.id ?? null);
 
@@ -440,6 +174,14 @@ function FamilyClean() {
 
         return rows;
     }, [data, search, sector, sort]);
+
+    useEffect(() => {
+        setPage(1);
+    }, [search, sector, sort]);
+
+
+    const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
+    const pagedData = filtered.slice((page - 1) * pageSize, page * pageSize);
 
     const selected = useMemo(() => {
         const found = filtered.find((x) => x.id === selectedId);
@@ -592,7 +334,7 @@ function FamilyClean() {
                         <div className="rounded-2xl bg-white border border-slate-100 shadow-sm overflow-hidden">
                             <DataTable
                                 columns={columns}
-                                data={filtered}
+                                data={pagedData}
                                 rowKey="id"
                                 onRowClick={(row) => setSelectedId(row.id)}
                                 selectedRowKey={selected?.id}
