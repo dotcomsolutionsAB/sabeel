@@ -29,8 +29,8 @@ export default function Pagination({
                     onClick={() => go(P - 1)}
                     disabled={!canPrev}
                     className={`rounded-full border px-3 py-1.5 text-xs ${canPrev
-                            ? "border-slate-200 hover:bg-slate-50"
-                            : "border-slate-100 text-slate-400 cursor-not-allowed"
+                        ? "border-slate-200 hover:bg-slate-50"
+                        : "border-slate-100 text-slate-400 cursor-not-allowed"
                         }`}
                 >
                     Previous
@@ -47,8 +47,8 @@ export default function Pagination({
                             type="button"
                             onClick={() => go(x)}
                             className={`inline-flex items-center justify-center w-7 h-7 rounded-full text-xs ${x === P
-                                    ? "bg-sky-800 text-white"
-                                    : "border border-slate-200 text-slate-700 hover:bg-slate-50"
+                                ? "bg-sky-800 text-white"
+                                : "border border-slate-200 text-slate-700 hover:bg-slate-50"
                                 }`}
                         >
                             {x}
@@ -61,8 +61,8 @@ export default function Pagination({
                     onClick={() => go(P + 1)}
                     disabled={!canNext}
                     className={`rounded-full px-4 py-1.5 text-xs ${canNext
-                            ? "bg-sky-800 text-white hover:bg-sky-900"
-                            : "bg-slate-100 text-slate-400 cursor-not-allowed"
+                        ? "bg-sky-800 text-white hover:bg-sky-900"
+                        : "bg-slate-100 text-slate-400 cursor-not-allowed"
                         }`}
                 >
                     Next
