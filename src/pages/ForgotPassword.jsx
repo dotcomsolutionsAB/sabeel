@@ -1,28 +1,64 @@
 import { Link } from "react-router-dom";
+import bg from "../assets/Background.png";
+import logo from "../assets/logo.png";
+
+import PageShell from "../components/PageShell";
+import GlassCard from "../components/GlassCard";
 
 export default function ForgotPassword() {
     const onSubmit = (e) => {
         e.preventDefault();
-        alert("Password reset link sent (demo). Replace with API call.");
+        // TODO: call API
+        alert("Request sent (demo)");
     };
 
     return (
-        <div className="min-h-screen sabeel-page flex items-center justify-center p-6">
-            <div className="w-full max-w-md rounded-2xl sabeel-panel p-6">
-                <h1 className="text-xl font-bold text-[#8c3e1b]">Forgot Password</h1>
-                <p className="text-sm text-gray-600 mt-1">Enter email to reset</p>
+        <PageShell
+            bg={bg}
+            logoSrc={logo}
+            title="Anjuman-E-Mohammedi - Kolkata"
+        >
+            <GlassCard
+                className="max-w-[380px] border border-white/30 bg-white/20 shadow-2xl"
+                blur={20}
+            >
+                <h1 className="text-center text-2xl font-bold text-black">
+                    Forgotten Password ?
+                </h1>
+                <p className="text-center text-xs text-black/80 mt-1">
+                    Enter your email to reset your password
+                </p>
 
-                <form className="mt-5 space-y-3" onSubmit={onSubmit}>
-                    <input className="w-full rounded-xl border p-3" placeholder="Email" />
-                    <button className="w-full rounded-xl p-3 bg-[#8c3e1b] text-white font-semibold">
-                        Send Reset Link
+                <form onSubmit={onSubmit} className="mt-6 space-y-6">
+                    {/* Email */}
+                    <div>
+                        <label className="block text-sm font-bold text-black mb-2">
+                            Email
+                        </label>
+                        <input
+                            type="email"
+                            placeholder="Enter year email"
+                            className="w-full bg-transparent text-white text-sm placeholder:text-white/90 outline-none pb-2 border-b border-white/80 focus:border-white"
+                        />
+                    </div>
+
+                    {/* Back to Sign In (Back to black, Sign In authBtn color) */}
+                    <div className="text-center -mt-2">
+                        <Link to="/login" className="text-[11px] font-semibold">
+                            <span className="text-black">Back to </span>
+                            <span className="text-[var(--authBtn)]">Sign In</span>
+                        </Link>
+                    </div>
+
+                    {/* Button */}
+                    <button
+                        type="submit"
+                        className="w-full bg-[var(--authBtn)] text-white text-sm font-bold rounded-xl py-3 shadow-lg hover:brightness-110 active:scale-[0.99] transition"
+                    >
+                        Request
                     </button>
-
-                    <Link to="/login" className="block text-sm text-[#8c3e1b] hover:underline">
-                        Back to login
-                    </Link>
                 </form>
-            </div>
-        </div>
+            </GlassCard>
+        </PageShell>
     );
 }
