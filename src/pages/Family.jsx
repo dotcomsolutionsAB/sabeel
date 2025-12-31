@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState } from "react";
 import DashboardLayout from "../layout/DashboardLayout";
 
 import DataTable from "../components/DataTable";
@@ -160,7 +160,7 @@ export default function Family() {
         setPage(1);
     };
 
-    const [page, setPage] = useState(2);
+    const [page, setPage] = useState(1);
     const pageSize = 10;
 
     const [selectedId, setSelectedId] = useState(data?.[0]?.id ?? null);
@@ -189,13 +189,9 @@ export default function Family() {
         return rows;
     }, [data, search, sector, sort]);
 
-    useEffect(() => {
-        setPage(1);
-    }, [search, sector, sort]);
-
-
     const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
-    const pagedData = filtered.slice((page - 1) * pageSize, page * pageSize);
+    const safePage = Math.min(page, totalPages);
+    const pagedData = filtered.slice((safePage - 1) * pageSize, safePage * pageSize);
 
     const selected = useMemo(() => {
         const found = filtered.find((x) => x.id === selectedId);
@@ -349,7 +345,7 @@ export default function Family() {
                                 selectedRowKey={selected?.id}
                                 stickyHeader={true}
                                 height="520px"   // ✅ adjust once (try 560px if needed)
-                                footer={<Pagination page={page} totalPages={totalPages} onChange={setPage} />}
+                                footer={<Pagination page={safePage} totalPages={totalPages} onChange={setPage} />}
                             />
                         </div>
 
