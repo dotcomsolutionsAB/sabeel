@@ -1,79 +1,35 @@
-import { useRoutes, Navigate, Outlet } from "react-router-dom";
+import { useRoutes, Navigate } from "react-router-dom";
 
 import Login from "./pages/Login";
 import ForgotPassword from "./pages/ForgotPassword";
+
 import Dashboard from "./pages/Dashboard";
-import ProtectedRoute from "./utils/ProtectedRoute";
-import ComingSoon from "./pages/ComingSoon";
 import Family from "./pages/Family";
 import Establishments from "./pages/Establishments";
 import Receipts from "./pages/Receipts";
 import Users from "./pages/Users";
-
-/** Optional: for public pages */
-function PublicLayout() {
-    return <Outlet />;
-}
-
-/** Wrap all protected pages once */
-function ProtectedLayout() {
-    return (
-        <ProtectedRoute>
-            <Outlet />
-        </ProtectedRoute>
-    );
-}
+import ComingSoon from "./pages/ComingSoon";
 
 export default function Router() {
-    const element = useRoutes([
-        // redirect root
-        { path: "/", element: <Navigate to="/dashboard" replace /> },
+    return useRoutes([
+        // ✅ default open login
+        { path: "/", element: <Navigate to="/login" replace /> },
 
-        // public routes
-        {
-            element: <PublicLayout />,
-            children: [
-                { path: "login", element: <Login /> },
-                { path: "forgot-password", element: <ForgotPassword /> },
-            ],
-        },
+        // public
+        { path: "/login", element: <Login /> },
+        { path: "/forgot-password", element: <ForgotPassword /> },
 
-        // protected routes (everything inside is protected)
-        {
-            element: <ProtectedLayout />,
-            children: [
-                { path: "dashboard", element: <Dashboard /> },
+        // protected (they use DashboardLayout inside pages)
+        { path: "/dashboard", element: <Dashboard /> },
+        { path: "/family", element: <Family /> },
+        { path: "/establishments", element: <Establishments /> },
+        { path: "/receipts", element: <Receipts /> },
+        { path: "/users", element: <Users /> },
 
-                { path: "family", element: <Family /> }, // ✅ removed duplicate
-                { path: "establishments", element: <Establishments /> },
-                { path: "receipts", element: <Receipts /> },
-                { path: "users", element: <Users /> },
+        // if you want profile later
+        { path: "/profile", element: <ComingSoon /> },
 
-                // /personal/*
-                {
-                    path: "personal",
-                    element: <Outlet />,
-                    children: [
-                        { index: true, element: <ComingSoon /> },
-                        { path: "*", element: <ComingSoon /> },
-                    ],
-                },
-
-                // /establishment/*
-                {
-                    path: "establishment",
-                    element: <Outlet />,
-                    children: [
-                        { index: true, element: <ComingSoon /> },
-                        { path: "*", element: <ComingSoon /> },
-                    ],
-                },
-
-                // fallback inside protected area
-                { path: "*", element: <Navigate to="/dashboard" replace /> },
-            ],
-        },
+        // fallback
+        { path: "*", element: <Navigate to="/login" replace /> },
     ]);
-
-    return element;
 }

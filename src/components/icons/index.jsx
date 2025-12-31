@@ -2,7 +2,8 @@ import PropTypes from "prop-types";
 // Outline icons (recommended for nav UI)
 import {
     CalendarDaysIcon, Squares2X2Icon, UserGroupIcon, BuildingOffice2Icon, DocumentTextIcon, UsersIcon as HeroUsersIcon,
-    MagnifyingGlassIcon, ChevronDownIcon as HeroChevronDownIcon, EyeIcon as HeroEyeIcon, PrinterIcon,
+    MagnifyingGlassIcon, ChevronDownIcon as HeroChevronDownIcon, EyeIcon as HeroEyeIcon, PrinterIcon, UserCircleIcon,
+    ArrowRightOnRectangleIcon
 } from "@heroicons/react/24/outline";
 
 function withDefaults(Icon, defaultClassName = "") {
@@ -32,3 +33,6 @@ export const SearchIcon = withDefaults(MagnifyingGlassIcon, "w-4 h-4");
 export const ChevronDownIcon = withDefaults(HeroChevronDownIcon, "w-4 h-4");
 export const EyeIcon = withDefaults(HeroEyeIcon, "w-4 h-4");
 export const PrintIcon = withDefaults(PrinterIcon, "w-4 h-4");
+
+export const ProfileIcon = withDefaults(UserCircleIcon, "w-4 h-4");
+export const LogoutIcon = withDefaults(ArrowRightOnRectangleIcon, "w-4 h-4");
