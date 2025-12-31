@@ -1,10 +1,9 @@
+import PropTypes from "prop-types";
+
 export default function GlassCard({ children, className = "", blur = 20 }) {
     return (
         <div
-            className={[
-                "relative w-full rounded-[26px] px-7 py-7 overflow-hidden",
-                className,
-            ].join(" ")}
+            className={["relative w-full rounded-[26px] px-7 py-7 overflow-hidden", className].join(" ")}
             style={{
                 backdropFilter: `blur(${blur}px)`,
                 WebkitBackdropFilter: `blur(${blur}px)`, // ✅ Safari support
@@ -18,3 +17,14 @@ export default function GlassCard({ children, className = "", blur = 20 }) {
         </div>
     );
 }
+
+GlassCard.propTypes = {
+    children: PropTypes.node,
+    className: PropTypes.string,
+    blur: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+};
+
+GlassCard.defaultProps = {
+    className: "",
+    blur: 20,
+};

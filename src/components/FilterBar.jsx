@@ -1,11 +1,7 @@
+import PropTypes from "prop-types";
 import { SearchIcon, ChevronDownIcon } from "./icons";
 
-export default function FilterBar({
-    search,
-    onSearchChange,
-    selects = [], // [{ value, onChange, options:[{label,value}], placeholder, width }]
-    rightSlot,
-}) {
+export default function FilterBar({ search, onSearchChange, selects = [], rightSlot, }) {
     return (
         <div className="px-4 py-3 bg-white">
             <div className="flex flex-col lg:flex-row lg:items-center gap-3">
@@ -51,3 +47,27 @@ export default function FilterBar({
         </div>
     );
 }
+
+FilterBar.propTypes = {
+    search: PropTypes.string,
+    onSearchChange: PropTypes.func,
+    selects: PropTypes.arrayOf(
+        PropTypes.shape({
+            value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+            onChange: PropTypes.func,
+            width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+            placeholder: PropTypes.string,
+            options: PropTypes.arrayOf(
+                PropTypes.shape({
+                    label: PropTypes.node,
+                    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+                })
+            ),
+        })
+    ),
+    rightSlot: PropTypes.node,
+};
+
+FilterBar.defaultProps = {
+    selects: [],
+};

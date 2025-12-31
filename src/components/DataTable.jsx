@@ -1,19 +1,8 @@
+import PropTypes from "prop-types";
+
 export default function DataTable({
-    title,
-    columns = [],
-    data = [],
-    rowKey = "id",
-    onRowClick,
-    selectedRowKey,
-    tableClassName = "",
-    headerRight,
-    stickyHeader = true,
-
-    // ✅ NEW
-    headerVariant, // "blue" | "navy" | undefined
-
-    height,
-    footer,
+    title, columns = [], data = [], rowKey = "id", onRowClick, selectedRowKey, tableClassName = "", headerRight,
+    stickyHeader = true, headerVariant, height, footer,
 }) {
     const headerClass =
         headerVariant === "blue"
@@ -28,7 +17,9 @@ export default function DataTable({
             style={height ? { height } : undefined}
         >
             {(title || headerRight) && (
-                <div className={`flex items-center justify-between px-4 py-3 border-b border-slate-100 shrink-0 ${headerClass}`}>
+                <div
+                    className={`flex items-center justify-between px-4 py-3 border-b border-slate-100 shrink-0 ${headerClass}`}
+                >
                     <div className="font-semibold text-sm">{title}</div>
                     <div>{headerRight}</div>
                 </div>
@@ -40,7 +31,8 @@ export default function DataTable({
                     <thead className={stickyHeader ? "sticky top-0 z-10 bg-slate-50" : "bg-slate-50"}>
                         <tr className="text-slate-600">
                             {columns.map((col, i) => (
-                                <th key={`${col.key ?? "col"}-${i}`}
+                                <th
+                                    key={`${col.key ?? "col"}-${i}`}
                                     className={`px-3 py-3 text-left font-semibold ${col.thClassName || ""}`}
                                     style={col.width ? { width: col.width } : undefined}
                                 >
@@ -53,7 +45,10 @@ export default function DataTable({
                     <tbody>
                         {data.length === 0 ? (
                             <tr>
-                                <td className="px-3 py-6 text-center text-sm text-slate-500" colSpan={columns.length || 1}>
+                                <td
+                                    className="px-3 py-6 text-center text-sm text-slate-500"
+                                    colSpan={columns.length || 1}
+                                >
                                     No data found
                                 </td>
                             </tr>
@@ -81,7 +76,6 @@ export default function DataTable({
                                     </tr>
                                 );
                             })
-
                         )}
                     </tbody>
                 </table>
@@ -91,3 +85,35 @@ export default function DataTable({
         </div>
     );
 }
+
+DataTable.propTypes = {
+    title: PropTypes.string,
+    columns: PropTypes.arrayOf(
+        PropTypes.shape({
+            key: PropTypes.any, // string/number
+            header: PropTypes.node,
+            width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+            thClassName: PropTypes.string,
+            tdClassName: PropTypes.string,
+            render: PropTypes.func,
+        })
+    ),
+    data: PropTypes.array,
+    rowKey: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+    onRowClick: PropTypes.func,
+    selectedRowKey: PropTypes.any,
+    tableClassName: PropTypes.string,
+    headerRight: PropTypes.node,
+    stickyHeader: PropTypes.bool,
+    headerVariant: PropTypes.oneOf(["blue", "navy"]),
+    height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    footer: PropTypes.node,
+};
+
+DataTable.defaultProps = {
+    columns: [],
+    data: [],
+    rowKey: "id",
+    tableClassName: "",
+    stickyHeader: true,
+};
