@@ -1,22 +1,35 @@
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || "";
+// src/services/api.js
+import axios from "axios";
 
-export async function apiFetch(path, options = {}) {
-    const token = localStorage.getItem("token");
+const api = axios.create({
+    baseURL: "https://api.kolkatajamaat.com/api",
+    headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+    },
+});
 
-    const res = await fetch(`${BASE_URL}${path}`, {
-        ...options,
-        headers: {
-            "Content-Type": "application/json",
-            ...(token ? { Authorization: `Bearer ${token}` } : {}),
-            ...(options.headers || {}),
-        },
-    });
+// ✅ Attach token to every request
+api.interceptors.request.use(
+    (config) => {
+        const token = localStorage.getItem("token");
+        if (token) config.headers.Authorization = `Bearer ${token}`;
+        return config;
+    },
+    (error) => Promise.reject(error)
+);
 
-    const data = await res.json().catch(() => ({}));
-
-    if (!res.ok) {
-        throw new Error(data?.message || "Request failed");
+// ✅ Normalize errors (so UI can show message easily)
+api.interceptors.response.use(
+    (response) => response.data,
+    (error) => {
+        const msg =
+            error?.response?.data?.message ||
+            error?.response?.data?.error ||
+            error?.message ||
+            "Request failed";
+        return Promise.reject(new Error(msg));
     }
+);
 
-    return data;
-}
+export default api;

@@ -1,8 +1,12 @@
-import { apiFetch } from "./api";
+// src/services/authService.js
+import api from "./api";
 
-export function loginApi(payload) {
-    return apiFetch("/login", {
-        method: "POST",
-        body: JSON.stringify(payload),
-    });
+export async function loginApi({ username, password }) {
+    // returns: {code,status,message,data:{...}}
+    return api.post("/login", { username, password });
+}
+
+export async function logoutApi() {
+    // returns: {code,status,message,data:[]}
+    return api.post("/logout");
 }

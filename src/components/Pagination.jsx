@@ -27,8 +27,8 @@ export default function Pagination({ page = 1, totalPages = 1, onChange = () => 
                     onClick={() => go(P - 1)}
                     disabled={!canPrev}
                     className={`rounded-full border px-3 py-1.5 text-xs ${canPrev
-                            ? "border-slate-200 hover:bg-slate-50"
-                            : "border-slate-100 text-slate-400 cursor-not-allowed"
+                        ? "border-slate-200 hover:bg-slate-50"
+                        : "border-slate-100 text-slate-400 cursor-not-allowed"
                         }`}
                 >
                     Previous
@@ -36,12 +36,12 @@ export default function Pagination({ page = 1, totalPages = 1, onChange = () => 
 
                 {pages.map((x, idx) =>
                     x === "dots" ? (
-                        <span key={idx} className="px-1 text-slate-500">
+                        <span key={`dots-${idx}`} className="px-1 text-slate-500">
                             …
                         </span>
                     ) : (
                         <button
-                            key={x}
+                            key={`page-${x}`}
                             type="button"
                             onClick={() => go(x)}
                             className={`inline-flex items-center justify-center w-7 h-7 rounded-full text-xs ${x === P
@@ -59,8 +59,8 @@ export default function Pagination({ page = 1, totalPages = 1, onChange = () => 
                     onClick={() => go(P + 1)}
                     disabled={!canNext}
                     className={`rounded-full px-4 py-1.5 text-xs ${canNext
-                            ? "bg-sky-800 text-white hover:bg-sky-900"
-                            : "bg-slate-100 text-slate-400 cursor-not-allowed"
+                        ? "bg-sky-800 text-white hover:bg-sky-900"
+                        : "bg-slate-100 text-slate-400 cursor-not-allowed"
                         }`}
                 >
                     Next

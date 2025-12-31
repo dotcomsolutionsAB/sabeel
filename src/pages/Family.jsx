@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import DashboardLayout from "../layout/DashboardLayout";
 
 import DataTable from "../components/DataTable";
@@ -6,92 +6,124 @@ import FilterBar from "../components/FilterBar";
 import Pagination from "../components/Pagination";
 import { UsersIcon, EyeIcon, PrintIcon } from "../components/icons";
 
+import { retrieveFamilyApi } from "../services/familyService";
+
 export default function Family() {
-    const data = useMemo(
-        () => [
-            {
-                id: 1,
-                name: "Juzar Fakhruddin Anjarwala",
-                its: "23058631",
-                hof_its: "23058631",
-                sector: "MOHAMMEDI",
-                mobile: "+91 78457889564",
-                sabeel: 4236,
-                sabeel_due: 1256,
-                sabeel_overdue: 1000,
-                establishments: [
-                    { id: 1, name: "ALFA ENTERPRISES", due: 600 },
-                    { id: 2, name: "ARBEN TOOLS CO.", due: 1000 },
-                ],
-                avatarUrl: "https://i.pravatar.cc/160?img=12",
-                sabeelYearWise: [
-                    { year: "2025-26", sabeel: 4236, due: 1256 },
-                    { year: "2024-25", sabeel: 4236, due: 1256 },
-                    { year: "2023-24", sabeel: 4236, due: 1256 },
-                ],
-            },
-            {
-                id: 2,
-                name: "Juzar Fakhruddin Anjarwala",
-                its: "23058632",
-                hof_its: "23058631",
-                sector: "MOHAMMEDI",
-                mobile: "+91 78457889564",
-                sabeel: 4236,
-                sabeel_due: 1212,
-                sabeel_overdue: 1000,
-                establishments: [{ id: 3, name: "ZED INDUSTRIES", due: 800 }],
-                avatarUrl: "https://i.pravatar.cc/160?img=14",
-                sabeelYearWise: [
-                    { year: "2025-26", sabeel: 4236, due: 1212 },
-                    { year: "2024-25", sabeel: 4236, due: 1212 },
-                ],
-            },
-            {
-                id: 3,
-                name: "Juzar Fakhruddin Anjarwala",
-                its: "23058633",
-                hof_its: "23058631",
-                sector: "SAIFI",
-                mobile: "+91 78457889564",
-                sabeel: 4236,
-                sabeel_due: 1220,
-                sabeel_overdue: 1000,
-                establishments: [],
-                avatarUrl: "https://i.pravatar.cc/160?img=18",
-                sabeelYearWise: [{ year: "2025-26", sabeel: 4236, due: 1220 }],
-            },
-            {
-                id: 4,
-                name: "Juzar Fakhruddin Anjarwala",
-                its: "23058633",
-                hof_its: "23058631",
-                sector: "SAIFI",
-                mobile: "+91 78457889564",
-                sabeel: 4236,
-                sabeel_due: 1220,
-                sabeel_overdue: 1000,
-                establishments: [],
-                avatarUrl: "https://i.pravatar.cc/160?img=18",
-                sabeelYearWise: [{ year: "2025-26", sabeel: 4236, due: 1220 }],
-            },
-            {
-                id: 5,
-                name: "Juzar Fakhruddin Anjarwala",
-                its: "23058633",
-                hof_its: "23058631",
-                sector: "SAIFI",
-                mobile: "+91 78457889564",
-                sabeel: 4236,
-                sabeel_due: 1220,
-                sabeel_overdue: 1000,
-                establishments: [],
-                avatarUrl: "https://i.pravatar.cc/160?img=18",
-                sabeelYearWise: [{ year: "2025-26", sabeel: 4236, due: 1220 }],
-            },
-        ],
-        []
-    );
+    // =========================
+    // API state
+    // =========================
+    const [rows, setRows] = useState([]);
+    const [pagination, setPagination] = useState({
+        limit: 10,
+        offset: 0,
+        count: 0,
+        total: 0,
+    });
+
+    const [loading, setLoading] = useState(false);
+    const [apiError, setApiError] = useState("");
+
+    // =========================
+    // Filters + paging
+    // =========================
+    const [search, setSearch] = useState("");
+    const [sector, setSector] = useState("All");
+    const [filter, setFilter] = useState(""); // due/prev_due/new_takhmeen_pending/not_tagged/service
+    const [sort, setSort] = useState("az"); // UI sort (client-side)
+
+    const [page, setPage] = useState(1);
+    const pageSize = 10;
+
+    const offset = (page - 1) * pageSize;
+
+    // =========================
+    // Selected (right-side details)
+    // =========================
+    const [selectedId, setSelectedId] = useState(null);
+
+    // =========================
+    // Fetch API
+    // =========================
+    const fetchFamilies = async () => {
+        try {
+            setLoading(true);
+            setApiError("");
+
+            const res = await retrieveFamilyApi({
+                search: search.trim(),
+                sector: sector === "All" ? "" : sector,
+                filter: filter || "",
+                limit: pageSize,
+                offset,
+            });
+
+            // res example:
+            // { code, status, message, data:[...], pagination:{limit,offset,count,total} }
+
+            const apiRows = Array.isArray(res?.data) ? res.data : [];
+            setRows(apiRows);
+
+            setPagination({
+                limit: res?.pagination?.limit ?? pageSize,
+                offset: res?.pagination?.offset ?? offset,
+                count: res?.pagination?.count ?? apiRows.length,
+                total: res?.pagination?.total ?? apiRows.length,
+            });
+
+            // select first row by default if none selected
+            if (apiRows.length && !selectedId) {
+                setSelectedId(apiRows[0]?.id ?? null);
+            }
+        } catch (e) {
+            setApiError(e?.message || "Failed to fetch family list");
+            setRows([]);
+            setPagination({ limit: pageSize, offset, count: 0, total: 0 });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Fetch when filters/page changes
+    useEffect(() => {
+        fetchFamilies();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [search, sector, filter, page]);
+
+    // =========================
+    // Sector options (from current page rows)
+    // If you want full sector list, API should provide it separately
+    // =========================
+    const sectorOptions = useMemo(() => {
+        const set = new Set((rows || []).map((d) => d.sector).filter(Boolean));
+        return ["All", ...Array.from(set)];
+    }, [rows]);
+
+    const selected = useMemo(() => {
+        const found = (rows || []).find((x) => String(x.id) === String(selectedId));
+        return found || rows[0] || null;
+    }, [rows, selectedId]);
+
+    // =========================
+    // Client-side sort (optional)
+    // API doesn’t support sort in payload, so keep this here
+    // =========================
+    const viewRows = useMemo(() => {
+        const list = [...(rows || [])];
+
+        list.sort((a, b) => {
+            const an = (a?.name || "").toLowerCase();
+            const bn = (b?.name || "").toLowerCase();
+            if (sort === "az") return an.localeCompare(bn);
+            if (sort === "za") return bn.localeCompare(an);
+            return 0;
+        });
+
+        return list;
+    }, [rows, sort]);
+
+    // =========================
+    // Columns
+    // =========================
     const sabeelColumns = useMemo(
         () => [
             { key: "year", header: "Year", width: 90 },
@@ -114,7 +146,7 @@ export default function Family() {
             {
                 key: "name",
                 header: "Establishment",
-                render: (r) => <span className="font-semibold text-sky-800">{r.name}</span>,
+                render: (r) => <span className="font-semibold text-sky-800">{r.name || "-"}</span>,
             },
             {
                 key: "due",
@@ -136,77 +168,13 @@ export default function Family() {
         []
     );
 
-
-    const sectorOptions = useMemo(() => {
-        const set = new Set(data.map((d) => d.sector));
-        return ["All", ...Array.from(set)];
-    }, [data]);
-
-    const [search, setSearch] = useState("");
-    const [sector, setSector] = useState("All");
-    const [sort, setSort] = useState("az");
-    const handleSearchChange = (val) => {
-        setSearch(val);
-        setPage(1);
-    };
-
-    const handleSectorChange = (val) => {
-        setSector(val);
-        setPage(1);
-    };
-
-    const handleSortChange = (val) => {
-        setSort(val);
-        setPage(1);
-    };
-
-    const [page, setPage] = useState(1);
-    const pageSize = 10;
-
-    const [selectedId, setSelectedId] = useState(data?.[0]?.id ?? null);
-
-    const filtered = useMemo(() => {
-        const q = search.trim().toLowerCase();
-
-        let rows = data.filter((r) => {
-            const matchSearch =
-                !q ||
-                r.name.toLowerCase().includes(q) ||
-                r.its.toLowerCase().includes(q) ||
-                r.mobile.toLowerCase().includes(q);
-
-            const matchSector = sector === "All" ? true : r.sector === sector;
-
-            return matchSearch && matchSector;
-        });
-
-        rows.sort((a, b) => {
-            if (sort === "az") return a.name.localeCompare(b.name);
-            if (sort === "za") return b.name.localeCompare(a.name);
-            return 0;
-        });
-
-        return rows;
-    }, [data, search, sector, sort]);
-
-    const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
-    const safePage = Math.min(page, totalPages);
-    const pagedData = filtered.slice((safePage - 1) * pageSize, safePage * pageSize);
-
-    const selected = useMemo(() => {
-        const found = filtered.find((x) => x.id === selectedId);
-        return found || filtered[0] || null;
-    }, [filtered, selectedId]);
-
     const columns = useMemo(
         () => [
             {
                 key: "check",
                 header: <input type="checkbox" />,
                 width: 40,
-                render: () => (
-                    <input type="checkbox" onClick={(e) => e.stopPropagation()} />
-                ),
+                render: () => <input type="checkbox" onClick={(e) => e.stopPropagation()} />,
             },
             {
                 key: "name",
@@ -214,7 +182,7 @@ export default function Family() {
                 render: (r) => (
                     <div className="flex items-start gap-3">
                         <img
-                            src={r.avatarUrl}
+                            src={r.url || "https://i.pravatar.cc/160?img=12"}
                             alt=""
                             className="w-10 h-10 rounded-lg object-cover border border-slate-200"
                         />
@@ -223,11 +191,10 @@ export default function Family() {
                             <div className="text-xs text-slate-600">
                                 ITS: {r.its}
                                 <br />
-                                HOF: {r.hof_its}
-                                <br />
+                                {/* API doesn’t send hof_its separately - if you need HOF, add it in API */}
                                 Sector: {r.sector}
                                 <br />
-                                Mobile: {r.mobile}
+                                Mobile: {r.mobile || "-"}
                             </div>
                         </div>
                     </div>
@@ -240,19 +207,15 @@ export default function Family() {
                     <div className="text-xs text-slate-700">
                         <div>
                             <span className="font-semibold">Sabeel:</span>{" "}
-                            <span className="text-sky-700 font-semibold">{r.sabeel}</span>
+                            <span className="text-sky-700 font-semibold">{r?.sabeel?.sabeel ?? 0}</span>
                         </div>
                         <div>
                             Due:{" "}
-                            <span className="text-slate-900 font-semibold">
-                                ₹ {r.sabeel_due}
-                            </span>
+                            <span className="text-slate-900 font-semibold">₹ {r?.sabeel?.due ?? 0}</span>
                         </div>
                         <div>
-                            Overdue:{" "}
-                            <span className="text-rose-600 font-semibold">
-                                ₹ {r.sabeel_overdue}
-                            </span>
+                            Prev Due:{" "}
+                            <span className="text-rose-600 font-semibold">₹ {r?.sabeel?.prev_due ?? 0}</span>
                         </div>
                     </div>
                 ),
@@ -265,11 +228,11 @@ export default function Family() {
                         <div>
                             <span className="font-semibold">Establishment:</span>{" "}
                             <span className="text-sky-700 font-semibold">
-                                {r.establishments?.length || 0}
+                                {(r.establishment_details || []).length}
                             </span>
                         </div>
-                        <div>Due: ₹ {sumDue(r.establishments)}</div>
-                        <div>Overdue: ₹ 00</div>
+                        <div>Due: ₹ {r?.establishment?.due ?? 0}</div>
+                        <div>Prev Due: ₹ {r?.establishment?.prev_due ?? 0}</div>
                     </div>
                 ),
             },
@@ -293,6 +256,28 @@ export default function Family() {
         [setSelectedId]
     );
 
+    // =========================
+    // Pagination derived from API total
+    // =========================
+    const totalPages = Math.max(1, Math.ceil((pagination.total || 0) / pageSize));
+
+    // =========================
+    // Handlers
+    // =========================
+    const handleSearchChange = (val) => {
+        setSearch(val);
+        setPage(1);
+    };
+    const handleSectorChange = (val) => {
+        setSector(val);
+        setPage(1);
+    };
+    const handleSortChange = (val) => setSort(val);
+    const handleFilterChange = (val) => {
+        setFilter(val);
+        setPage(1);
+    };
+
     return (
         <DashboardLayout title="Family">
             <div className="px-3 pb-4">
@@ -306,6 +291,13 @@ export default function Family() {
                             Add New family
                         </button>
                     </div>
+
+                    {/* API error (simple) */}
+                    {apiError ? (
+                        <div className="px-4 py-3 bg-red-50 border-b border-red-200 text-sm text-red-700">
+                            {apiError}
+                        </div>
+                    ) : null}
 
                     {/* Reusable filters */}
                     <FilterBar
@@ -322,6 +314,19 @@ export default function Family() {
                                 })),
                             },
                             {
+                                value: filter,
+                                onChange: handleFilterChange,
+                                width: 220,
+                                options: [
+                                    { label: "All Filters", value: "" },
+                                    { label: "Due", value: "due" },
+                                    { label: "Prev Due", value: "prev_due" },
+                                    { label: "New Takhmeen Pending", value: "new_takhmeen_pending" },
+                                    { label: "Not Tagged", value: "not_tagged" },
+                                    { label: "Service", value: "service" },
+                                ],
+                            },
+                            {
                                 value: sort,
                                 onChange: handleSortChange,
                                 width: 220,
@@ -331,6 +336,11 @@ export default function Family() {
                                 ],
                             },
                         ]}
+                        rightSlot={
+                            <div className="text-xs text-slate-600">
+                                {loading ? "Loading..." : `Showing ${pagination.count || 0} of ${pagination.total || 0}`}
+                            </div>
+                        }
                     />
 
                     {/* Layout */}
@@ -339,25 +349,27 @@ export default function Family() {
                         <div className="rounded-2xl bg-white border border-slate-100 shadow-sm overflow-hidden">
                             <DataTable
                                 columns={columns}
-                                data={pagedData}
-                                rowKey="id"
+                                data={viewRows}
+                                rowKey={(r) => `${r.id}-${r.family_id || r.its}`}
                                 onRowClick={(row) => setSelectedId(row.id)}
                                 selectedRowKey={selected?.id}
                                 stickyHeader={true}
-                                height="520px"   // ✅ adjust once (try 560px if needed)
-                                footer={<Pagination page={safePage} totalPages={totalPages} onChange={setPage} />}
+                                height="520px"
+                                footer={<Pagination page={page} totalPages={totalPages} onChange={setPage} />}
                             />
                         </div>
 
                         {/* Right: Details */}
-                        <div className="rounded-2xl bg-white border border-slate-100 shadow-sm overflow-hidden flex flex-col min-h-0"
-                            style={{ height: "520px" }}>
-                            {/* ✅ Profile (fixed) */}
+                        <div
+                            className="rounded-2xl bg-white border border-slate-100 shadow-sm overflow-hidden flex flex-col min-h-0"
+                            style={{ height: "520px" }}
+                        >
+                            {/* Profile (fixed) */}
                             <div className="p-4 shrink-0">
                                 <div className="flex items-start gap-3">
                                     <div className="w-16 h-16 rounded-xl overflow-hidden border border-slate-200 bg-slate-50">
                                         <img
-                                            src={selected?.avatarUrl}
+                                            src={selected?.url || "https://i.pravatar.cc/160?img=12"}
                                             alt=""
                                             className="w-full h-full object-cover"
                                         />
@@ -371,7 +383,7 @@ export default function Family() {
                                         <div className="text-xs text-slate-600 mt-1">
                                             Email:{" "}
                                             <span className="text-sky-700 font-semibold">
-                                                {selected ? `Hof.mail.${selected.its}@Gmail.Com` : "-"}
+                                                {selected?.email || "-"}
                                             </span>
                                         </div>
 
@@ -392,7 +404,7 @@ export default function Family() {
 
                             <Divider />
 
-                            {/* ✅ ONLY THIS PART SCROLLS */}
+                            {/* ONLY THIS PART SCROLLS */}
                             <div className="flex-1 overflow-auto min-h-0 p-4 space-y-6 scroll-hover">
                                 {/* Sabeel Details */}
                                 <div>
@@ -401,7 +413,7 @@ export default function Family() {
                                     <div className="rounded-xl border border-slate-200 overflow-hidden">
                                         <DataTable
                                             columns={sabeelColumns}
-                                            data={selected?.sabeelYearWise || []}
+                                            data={selected?.sabeel_details || []}
                                             rowKey={(row) => row.year}
                                             stickyHeader={false}
                                             tableClassName="border-0 shadow-none rounded-none"
@@ -414,15 +426,13 @@ export default function Family() {
                                     <div className="font-semibold text-slate-800 mb-2">Establishment Details</div>
 
                                     <div className="rounded-xl border border-slate-200 overflow-hidden">
-                                        {(selected?.establishments || []).length === 0 ? (
-                                            <div className="px-3 py-3 text-xs text-slate-500 bg-white">
-                                                No establishments
-                                            </div>
+                                        {(selected?.establishment_details || []).length === 0 ? (
+                                            <div className="px-3 py-3 text-xs text-slate-500 bg-white">No establishments</div>
                                         ) : (
                                             <DataTable
                                                 columns={establishmentColumns}
-                                                data={selected?.establishments || []}
-                                                rowKey="id"
+                                                data={selected?.establishment_details || []}
+                                                rowKey={(r) => `${r.establishment_id}-${r.name || ""}-${r.due || 0}`}
                                                 stickyHeader={false}
                                                 tableClassName="border-0 shadow-none rounded-none"
                                             />
@@ -442,8 +452,4 @@ export default function Family() {
 /* ===== helpers ===== */
 function Divider() {
     return <div className="h-px bg-slate-100" />;
-}
-
-function sumDue(list = []) {
-    return (list || []).reduce((s, x) => s + (Number(x.due) || 0), 0);
 }

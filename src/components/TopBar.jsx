@@ -11,6 +11,8 @@ import {
     ProfileIcon,
     LogoutIcon,
 } from "./icons";
+import { useAuth } from "../context/AuthContext";
+import { ROUTES } from "../services/routes";
 
 export default function TopBar({
     title = "Dashboard",
@@ -20,15 +22,16 @@ export default function TopBar({
 }) {
     const navigate = useNavigate();
     const { pathname } = useLocation();
+    const { logout } = useAuth();
 
     // ===== NAV =====
     const navItems = useMemo(
         () => [
-            { key: "dashboard", title: "Dashboard", path: "/dashboard", icon: DashboardIcon },
-            { key: "family", title: "Family", path: "/family", icon: FamilyIcon },
-            { key: "establishments", title: "Establishments", path: "/establishments", icon: EstablishmentIcon },
-            { key: "receipts", title: "Receipts", path: "/receipts", icon: ReceiptsIcon },
-            { key: "users", title: "Users", path: "/users", icon: UsersIcon },
+            { key: "dashboard", title: "Dashboard", path: ROUTES.dashboard, icon: DashboardIcon },
+            { key: "family", title: "Family", path: ROUTES.family, icon: FamilyIcon },
+            { key: "establishments", title: "Establishments", path: ROUTES.establishments, icon: EstablishmentIcon },
+            { key: "receipts", title: "Receipts", path: ROUTES.receipts, icon: ReceiptsIcon },
+            { key: "users", title: "Users", path: ROUTES.users, icon: UsersIcon },
         ],
         []
     );
@@ -49,7 +52,7 @@ export default function TopBar({
     };
 
     useEffect(() => {
-        if (onDateRangeChange) onDateRangeChange({ from: fromDate, to: toDate });
+        onDateRangeChange?.({ from: fromDate, to: toDate });
     }, [fromDate, toDate, onDateRangeChange]);
 
     // ===== AVATAR MENU =====
@@ -65,14 +68,15 @@ export default function TopBar({
         return () => document.removeEventListener("mousedown", onDown);
     }, []);
 
-    const handleLogout = () => {
-        localStorage.clear();
-        navigate("/", { replace: true });
-    };
-
     const goMenu = (path) => {
         setMenuOpen(false);
         navigate(path);
+    };
+
+    const handleLogout = async () => {
+        setMenuOpen(false);
+        await logout(); // calls /logout and clears local storage in context
+        navigate(ROUTES.login, { replace: true });
     };
 
     return (
@@ -85,7 +89,7 @@ export default function TopBar({
                         Hi, <strong>{userName}</strong>
                     </div>
 
-                    {/* ✅ Avatar + dropdown with 3 options */}
+                    {/* Avatar menu */}
                     <div className="relative" ref={menuRef}>
                         <button
                             type="button"
@@ -103,10 +107,9 @@ export default function TopBar({
                                 className="absolute right-0 mt-2 z-50 bg-white border border-slate-200 rounded-xl shadow-lg overflow-hidden min-w-[170px]"
                                 role="menu"
                             >
-                                {/* Profile */}
                                 <button
                                     type="button"
-                                    onClick={() => goMenu("/profile")}
+                                    onClick={() => goMenu(ROUTES.profile)}
                                     className="w-full px-4 py-2 text-sm text-left hover:bg-slate-50 inline-flex items-center gap-2"
                                     role="menuitem"
                                 >
@@ -114,10 +117,9 @@ export default function TopBar({
                                     Profile
                                 </button>
 
-                                {/* Family */}
                                 <button
                                     type="button"
-                                    onClick={() => goMenu("/family")}
+                                    onClick={() => goMenu(ROUTES.family)}
                                     className="w-full px-4 py-2 text-sm text-left hover:bg-slate-50 inline-flex items-center gap-2"
                                     role="menuitem"
                                 >
@@ -127,7 +129,6 @@ export default function TopBar({
 
                                 <div className="h-px bg-slate-100" />
 
-                                {/* Logout */}
                                 <button
                                     type="button"
                                     onClick={handleLogout}
@@ -141,13 +142,13 @@ export default function TopBar({
                         )}
                     </div>
 
-                    {/* Date pill clickable */}
+                    {/* Date pill */}
                     <button type="button" className="date-pill" title="Pick Date Range" onClick={openDatePicker}>
                         <span style={{ fontWeight: 600 }}>{dateRange}</span>
                         <CalendarIcon />
                     </button>
 
-                    {/* hidden native inputs (no layout change) */}
+                    {/* hidden native inputs */}
                     <input
                         ref={fromRef}
                         type="date"
@@ -168,7 +169,7 @@ export default function TopBar({
                 </div>
             </div>
 
-            {/* Center Nav Pill */}
+            {/* Center Nav */}
             <div className="nav-pill" role="navigation" aria-label="Primary">
                 <div className="icons">
                     {navItems.map((item) => {
@@ -198,11 +199,4 @@ TopBar.propTypes = {
     userName: PropTypes.string,
     dateRange: PropTypes.string,
     onDateRangeChange: PropTypes.func,
-};
-
-TopBar.defaultProps = {
-    title: "Dashboard",
-    userName: "Nematullah",
-    dateRange: "AUG 2024 - AUG 2025",
-    onDateRangeChange: undefined,
 };
