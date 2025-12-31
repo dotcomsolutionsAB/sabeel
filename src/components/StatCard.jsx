@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 
 export default function StatCard({ variant = "big", number, label, to, onClick }) {
@@ -6,6 +7,7 @@ export default function StatCard({ variant = "big", number, label, to, onClick }
     const handleClick = () => {
         if (onClick) return onClick();
         if (to) return navigate(to);
+        return undefined;
     };
 
     const commonProps = {
@@ -24,7 +26,8 @@ export default function StatCard({ variant = "big", number, label, to, onClick }
         return (
             <div className="small-card" {...commonProps}>
                 <div className="snum">{number}</div>
-                <div className="slbl" dangerouslySetInnerHTML={{ __html: label }} />
+                {/* label may contain HTML (as your code uses dangerouslySetInnerHTML) */}
+                <div className="slbl" dangerouslySetInnerHTML={{ __html: String(label ?? "") }} />
             </div>
         );
     }
@@ -36,3 +39,17 @@ export default function StatCard({ variant = "big", number, label, to, onClick }
         </div>
     );
 }
+
+StatCard.propTypes = {
+    variant: PropTypes.oneOf(["big", "small"]),
+    number: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.node]),
+    // For "small" variant you're using dangerouslySetInnerHTML, so string is the safest.
+    // But keeping node allowed for "big" variant too.
+    label: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+    to: PropTypes.string,
+    onClick: PropTypes.func,
+};
+
+StatCard.defaultProps = {
+    variant: "big",
+};

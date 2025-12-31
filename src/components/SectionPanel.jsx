@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import StatCard from "./StatCard";
 
 export default function SectionPanel({ tone = "mint", bigCards = [], smallCards = [] }) {
@@ -31,3 +32,29 @@ export default function SectionPanel({ tone = "mint", bigCards = [], smallCards 
         </section>
     );
 }
+
+SectionPanel.propTypes = {
+    tone: PropTypes.string,
+    bigCards: PropTypes.arrayOf(
+        PropTypes.shape({
+            number: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.node]),
+            label: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+            to: PropTypes.string,
+            onClick: PropTypes.func,
+        })
+    ),
+    smallCards: PropTypes.arrayOf(
+        PropTypes.shape({
+            number: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.node]),
+            label: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+            to: PropTypes.string,
+            onClick: PropTypes.func,
+        })
+    ),
+};
+
+SectionPanel.defaultProps = {
+    tone: "mint",
+    bigCards: [],
+    smallCards: [],
+};

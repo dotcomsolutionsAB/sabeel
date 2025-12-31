@@ -1,11 +1,6 @@
-export default function PageShell({
-    bg,
-    logoSrc,
-    title,
-    children,
-    overlayClass = "bg-white/10",
-    topGap = 100, // px
-}) {
+import PropTypes from "prop-types";
+
+export default function PageShell({ bg, logoSrc, title, children, overlayClass = "bg-white/10", topGap = 100, }) {
     return (
         <div className="min-h-screen w-full relative overflow-hidden">
             {/* Background */}
@@ -26,17 +21,11 @@ export default function PageShell({
                 {(logoSrc || title) && (
                     <div className="flex flex-col items-center gap-3 mb-6">
                         {logoSrc && (
-                            <img
-                                src={logoSrc}
-                                alt="Logo"
-                                className="h-[100px] w-[100px] object-contain"
-                            />
+                            <img src={logoSrc} alt="Logo" className="h-[100px] w-[100px] object-contain" />
                         )}
                         {title && (
                             <div className="text-center">
-                                <div className="text-[var(--authBtn)] font-bold text-2xl">
-                                    {title}
-                                </div>
+                                <div className="text-[var(--authBtn)] font-bold text-2xl">{title}</div>
                             </div>
                         )}
                     </div>
@@ -48,3 +37,17 @@ export default function PageShell({
         </div>
     );
 }
+
+PageShell.propTypes = {
+    bg: PropTypes.string,
+    logoSrc: PropTypes.string,
+    title: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+    children: PropTypes.node,
+    overlayClass: PropTypes.string,
+    topGap: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+};
+
+PageShell.defaultProps = {
+    overlayClass: "bg-white/10",
+    topGap: 100,
+};

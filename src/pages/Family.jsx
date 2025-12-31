@@ -145,6 +145,20 @@ export default function Family() {
     const [search, setSearch] = useState("");
     const [sector, setSector] = useState("All");
     const [sort, setSort] = useState("az");
+    const handleSearchChange = (val) => {
+        setSearch(val);
+        setPage(1);
+    };
+
+    const handleSectorChange = (val) => {
+        setSector(val);
+        setPage(1);
+    };
+
+    const handleSortChange = (val) => {
+        setSort(val);
+        setPage(1);
+    };
 
     const [page, setPage] = useState(2);
     const pageSize = 10;
@@ -300,11 +314,11 @@ export default function Family() {
                     {/* Reusable filters */}
                     <FilterBar
                         search={search}
-                        onSearchChange={setSearch}
+                        onSearchChange={handleSearchChange}
                         selects={[
                             {
                                 value: sector,
-                                onChange: setSector,
+                                onChange: handleSectorChange,
                                 width: 180,
                                 options: sectorOptions.map((s) => ({
                                     label: s === "All" ? "Select Sector" : s,
@@ -313,7 +327,7 @@ export default function Family() {
                             },
                             {
                                 value: sort,
-                                onChange: setSort,
+                                onChange: handleSortChange,
                                 width: 220,
                                 options: [
                                     { label: "Sort by Alphabetic (A-Z)", value: "az" },
@@ -321,11 +335,6 @@ export default function Family() {
                                 ],
                             },
                         ]}
-                        rightSlot={
-                            <div className="text-xs text-slate-600">
-                                Selected: <span className="font-semibold">{selected ? 1 : 0}</span>
-                            </div>
-                        }
                     />
 
                     {/* Layout */}

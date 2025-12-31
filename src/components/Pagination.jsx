@@ -1,8 +1,6 @@
-export default function Pagination({
-    page = 1,
-    totalPages = 1,
-    onChange = () => { },
-}) {
+import PropTypes from "prop-types";
+
+export default function Pagination({ page = 1, totalPages = 1, onChange = () => { } }) {
     const TP = Math.max(1, Number(totalPages) || 1);
     const P = Math.min(Math.max(1, Number(page) || 1), TP);
 
@@ -29,8 +27,8 @@ export default function Pagination({
                     onClick={() => go(P - 1)}
                     disabled={!canPrev}
                     className={`rounded-full border px-3 py-1.5 text-xs ${canPrev
-                        ? "border-slate-200 hover:bg-slate-50"
-                        : "border-slate-100 text-slate-400 cursor-not-allowed"
+                            ? "border-slate-200 hover:bg-slate-50"
+                            : "border-slate-100 text-slate-400 cursor-not-allowed"
                         }`}
                 >
                     Previous
@@ -47,8 +45,8 @@ export default function Pagination({
                             type="button"
                             onClick={() => go(x)}
                             className={`inline-flex items-center justify-center w-7 h-7 rounded-full text-xs ${x === P
-                                ? "bg-sky-800 text-white"
-                                : "border border-slate-200 text-slate-700 hover:bg-slate-50"
+                                    ? "bg-sky-800 text-white"
+                                    : "border border-slate-200 text-slate-700 hover:bg-slate-50"
                                 }`}
                         >
                             {x}
@@ -61,8 +59,8 @@ export default function Pagination({
                     onClick={() => go(P + 1)}
                     disabled={!canNext}
                     className={`rounded-full px-4 py-1.5 text-xs ${canNext
-                        ? "bg-sky-800 text-white hover:bg-sky-900"
-                        : "bg-slate-100 text-slate-400 cursor-not-allowed"
+                            ? "bg-sky-800 text-white hover:bg-sky-900"
+                            : "bg-slate-100 text-slate-400 cursor-not-allowed"
                         }`}
                 >
                     Next
@@ -71,3 +69,15 @@ export default function Pagination({
         </div>
     );
 }
+
+Pagination.propTypes = {
+    page: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    totalPages: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    onChange: PropTypes.func,
+};
+
+Pagination.defaultProps = {
+    page: 1,
+    totalPages: 1,
+    onChange: () => { },
+};

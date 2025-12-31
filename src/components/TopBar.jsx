@@ -1,13 +1,7 @@
+import PropTypes from "prop-types";
 import { useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import {
-    CalendarIcon,
-    DashboardIcon,
-    FamilyIcon,
-    EstablishmentIcon,
-    ReceiptsIcon,
-    UsersIcon,
-} from "./icons";
+import { CalendarIcon, DashboardIcon, FamilyIcon, EstablishmentIcon, ReceiptsIcon, UsersIcon, } from "./icons";
 
 export default function TopBar({
     title = "Dashboard",
@@ -76,3 +70,15 @@ export default function TopBar({
         </div>
     );
 }
+
+TopBar.propTypes = {
+    title: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+    userName: PropTypes.string,
+    dateRange: PropTypes.string,
+};
+
+TopBar.defaultProps = {
+    title: "Dashboard",
+    userName: "Nematullah",
+    dateRange: "AUG 2024 - AUG 2025",
+};
