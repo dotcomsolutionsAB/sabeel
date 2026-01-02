@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import DashboardLayout from "../layout/DashboardLayout";
+import { useNavigate } from "react-router-dom";
 
 import DataTable from "../components/DataTable";
 import FilterBar from "../components/FilterBar";
@@ -19,7 +20,7 @@ export default function Family() {
         count: 0,
         total: 0,
     });
-
+    const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [apiError, setApiError] = useState("");
 
@@ -337,8 +338,22 @@ export default function Family() {
                             },
                         ]}
                         rightSlot={
-                            <div className="text-xs text-slate-600">
-                                {loading ? "Loading..." : `Showing ${pagination.count || 0} of ${pagination.total || 0}`}
+                            <div className="flex items-center gap-2">
+                                <button
+                                    type="button"
+                                    onClick={() => alert("Download Visible (demo)")}
+                                    className="inline-flex items-center justify-center rounded-md border border-sky-300 bg-white px-3 py-1.5 text-xs font-semibold text-sky-700 hover:bg-sky-50"
+                                >
+                                    Download Visible
+                                </button>
+
+                                <button
+                                    type="button"
+                                    onClick={() => alert("Download All (demo)")}
+                                    className="inline-flex items-center justify-center rounded-md border border-sky-300 bg-white px-3 py-1.5 text-xs font-semibold text-sky-700 hover:bg-sky-50"
+                                >
+                                    Download All
+                                </button>
                             </div>
                         }
                     />
@@ -355,7 +370,15 @@ export default function Family() {
                                 selectedRowKey={selected?.id}
                                 stickyHeader={true}
                                 height="520px"
-                                footer={<Pagination page={page} totalPages={totalPages} onChange={setPage} />}
+                                footer={
+                                    <div className="flex items-center justify-between gap-3 px-3 py-2">
+                                        <Pagination page={page} totalPages={totalPages} onChange={setPage} />
+
+                                        <div className="text-xs text-slate-600 whitespace-nowrap">
+                                            {loading ? "Loading..." : `Showing ${pagination.count || 0} of ${pagination.total || 0}`}
+                                        </div>
+                                    </div>
+                                }
                             />
                         </div>
 
@@ -393,7 +416,14 @@ export default function Family() {
                                                 Print Profile
                                             </button>
 
-                                            <button className="inline-flex items-center gap-2 rounded-lg bg-sky-700 text-white px-3 py-2 text-xs font-semibold hover:bg-sky-800">
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    if (!selected?.id) return;
+                                                    navigate(`/family/${selected.id}`); // ✅ go to details page
+                                                }}
+                                                className="inline-flex items-center gap-2 rounded-lg bg-sky-700 text-white px-3 py-2 text-xs font-semibold hover:bg-sky-800"
+                                            >
                                                 <EyeIcon className="w-4 h-4" />
                                                 View full Details
                                             </button>

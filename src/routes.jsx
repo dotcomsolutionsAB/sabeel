@@ -20,6 +20,7 @@ export default function Router() {
 
         { path: "/dashboard", element: <Dashboard /> },
         { path: "/family", element: <Family /> },
+        { path: "/family/:id", element: <FamilyDetails /> },
         { path: "/family-details", element: <FamilyDetails /> },
         { path: "/establishments", element: <Establishments /> },
         { path: "/receipts", element: <Receipts /> },
