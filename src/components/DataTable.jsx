@@ -13,7 +13,7 @@ export default function DataTable({
 
     return (
         <div
-            className={`rounded-2xl bg-white border border-slate-100 shadow-sm overflow-hidden flex flex-col min-h-0 ${tableClassName}`}
+            className={`w-full rounded-2xl bg-white border border-slate-100 shadow-sm overflow-hidden flex flex-col min-h-0 ${tableClassName}`}
             style={height ? { height } : undefined}
         >
             {(title || headerRight) && (

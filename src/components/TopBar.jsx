@@ -85,6 +85,12 @@ export default function TopBar({
                 <div className="title">{title}</div>
 
                 <div className="right-info">
+                    {/* Date pill */}
+                    <button type="button" className="date-pill" title="Pick Date Range" onClick={openDatePicker}>
+                        <span style={{ fontWeight: 600 }}>{dateRange}</span>
+                        <CalendarIcon />
+                    </button>
+
                     <div>
                         Hi, <strong>{userName}</strong>
                     </div>
@@ -141,12 +147,6 @@ export default function TopBar({
                             </div>
                         )}
                     </div>
-
-                    {/* Date pill */}
-                    <button type="button" className="date-pill" title="Pick Date Range" onClick={openDatePicker}>
-                        <span style={{ fontWeight: 600 }}>{dateRange}</span>
-                        <CalendarIcon />
-                    </button>
 
                     {/* hidden native inputs */}
                     <input

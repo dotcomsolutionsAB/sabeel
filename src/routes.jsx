@@ -9,6 +9,7 @@ import Establishments from "./pages/Establishments";
 import Receipts from "./pages/Receipts";
 import Users from "./pages/Users";
 import ComingSoon from "./pages/ComingSoon";
+import FamilyDetails from "./pages/FamilyDetails";
 
 export default function Router() {
     return useRoutes([
@@ -19,6 +20,7 @@ export default function Router() {
 
         { path: "/dashboard", element: <Dashboard /> },
         { path: "/family", element: <Family /> },
+        { path: "/family-details", element: <FamilyDetails /> },
         { path: "/establishments", element: <Establishments /> },
         { path: "/receipts", element: <Receipts /> },
         { path: "/users", element: <Users /> },

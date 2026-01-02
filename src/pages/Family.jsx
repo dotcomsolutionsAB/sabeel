@@ -369,7 +369,7 @@ export default function Family() {
                                 <div className="flex items-start gap-3">
                                     <div className="w-16 h-16 rounded-xl overflow-hidden border border-slate-200 bg-slate-50">
                                         <img
-                                            src={selected?.url || "https://i.pravatar.cc/160?img=12"}
+                                            src={selected?.url || "../src/assets/placeholder.png"}
                                             alt=""
                                             className="w-full h-full object-cover"
                                         />

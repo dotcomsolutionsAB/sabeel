@@ -9,6 +9,10 @@
   --blue-3: #73bfe6;
   --blue-4: #2c86c8;
 
+  --inputBottomColor: #004D84;
+  --statGradFrom: #8CBFE4;
+  --statGradTo: #004D84;
+
   --mint-0: #dff7ef;
   --mint-1: #a6e6d2;
   --mint-2: #63c3ab;
@@ -469,4 +473,38 @@ tbody tr:hover {
 .scroll-hover:hover::-webkit-scrollbar-track {
   background: rgba(15, 23, 42, 0.06);
   border-radius: 999px;
+}
+
+
+.input-underline {
+  border: 0;
+  border-bottom: 2px solid var(--inputBottomColor);
+  outline: none;
+  background: transparent;
+  width: 100%;
+  padding: 10px 12px;
+}
+
+.input-underline::placeholder {
+  color: #94a3b8;
+}
+
+/* ✅ your "show scrollbar only on hover" helper stays same */
+.scroll-hover {
+  scrollbar-width: none;
+  /* firefox */
+}
+
+.scroll-hover::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.scroll-hover:hover {
+  scrollbar-width: thin;
+}
+
+.scroll-hover:hover::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
 }
