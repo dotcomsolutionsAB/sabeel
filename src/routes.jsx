@@ -10,6 +10,7 @@ import Receipts from "./pages/Receipts";
 import Users from "./pages/Users";
 import ComingSoon from "./pages/ComingSoon";
 import FamilyDetails from "./pages/FamilyDetails";
+import EstablishmentDetails from "./pages/EstablishmentDetails";
 
 export default function Router() {
     return useRoutes([
@@ -23,6 +24,7 @@ export default function Router() {
         { path: "/family/:id", element: <FamilyDetails /> },
         { path: "/family-details", element: <FamilyDetails /> },
         { path: "/establishments", element: <Establishments /> },
+        { path: "/establishments/:id", element: <EstablishmentDetails /> },
         { path: "/receipts", element: <Receipts /> },
         { path: "/users", element: <Users /> },
 

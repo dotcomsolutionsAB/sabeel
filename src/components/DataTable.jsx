@@ -27,7 +27,7 @@ export default function DataTable({
 
             {/* body */}
             <div className="flex-1 overflow-auto min-h-0 scroll-hover">
-                <table className="w-full text-sm">
+                <table className="w-full text-sm table-fixed">
                     <thead className={stickyHeader ? "sticky top-0 z-10 bg-slate-50" : "bg-slate-50"}>
                         <tr className="text-slate-600">
                             {columns.map((col, i) => (
