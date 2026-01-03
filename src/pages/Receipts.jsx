@@ -343,6 +343,46 @@ export default function Receipts() {
                         ]}
                         rightSlot={
                             <div className="flex items-center gap-3">
+                                {/* date range row */}
+                                <div className="px-4 pb-3">
+                                    <div className="flex flex-wrap items-center gap-3">
+                                        <div className="text-xs font-semibold text-slate-700">Date From</div>
+                                        <input
+                                            type="date"
+                                            value={dateFrom}
+                                            onChange={(e) => {
+                                                setDateFrom(e.target.value);
+                                                setPage(1);
+                                                setSelectedIds(new Set());
+                                            }}
+                                        />
+
+
+                                        <div className="text-xs font-semibold text-slate-700">Date To</div>
+                                        <input
+                                            type="date"
+                                            value={dateTo}
+                                            onChange={(e) => {
+                                                setDateTo(e.target.value);
+                                                setPage(1);
+                                                setSelectedIds(new Set());
+                                            }}
+                                        />
+
+
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setDateFrom("");
+                                                setDateTo("");
+                                                setPage(1);
+                                            }}
+                                            className="ml-auto rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                                        >
+                                            Clear Dates
+                                        </button>
+                                    </div>
+                                </div>
                                 <div className="text-xs text-slate-700">
                                     Selected: <span className="font-semibold">{selectedCount}</span>
                                 </div>
@@ -371,45 +411,6 @@ export default function Receipts() {
                             </div>
                         }
                     />
-
-                    {/* date range row */}
-                    <div className="px-4 pb-3">
-                        <div className="flex flex-wrap items-center gap-3">
-                            <div className="text-xs font-semibold text-slate-700">Date From</div>
-                            <input
-                                type="date"
-                                value={dateFrom}
-                                onChange={(e) => {
-                                    setDateFrom(e.target.value);
-                                    setPage(1);
-                                }}
-                                className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs text-slate-700"
-                            />
-
-                            <div className="text-xs font-semibold text-slate-700">Date To</div>
-                            <input
-                                type="date"
-                                value={dateTo}
-                                onChange={(e) => {
-                                    setDateTo(e.target.value);
-                                    setPage(1);
-                                }}
-                                className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs text-slate-700"
-                            />
-
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    setDateFrom("");
-                                    setDateTo("");
-                                    setPage(1);
-                                }}
-                                className="ml-auto rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50"
-                            >
-                                Clear Dates
-                            </button>
-                        </div>
-                    </div>
 
                     {/* table */}
                     <div className="px-4 pb-4">
