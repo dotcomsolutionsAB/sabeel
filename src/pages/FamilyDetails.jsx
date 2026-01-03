@@ -17,7 +17,7 @@ import {
 import { LeftOverviewSection, LeftHofSection, LeftFamilySection, LeftSabeelSection } from "../sections/familyDetails";
 import AddFamilyModal from "../components/modals/AddFamilyModal";
 import AddSabeelModal from "../components/modals/AddSabeelModal";
-
+import SabeelViewEditModal from "../components/modals/SabeelViewEditModal";
 
 export default function FamilyDetails() {
     const [activeTab, setActiveTab] = useState("overview");
@@ -44,18 +44,31 @@ export default function FamilyDetails() {
         avatarUrl: "https://i.pravatar.cc/220?img=13",
     };
 
-    const sabeelRows = useMemo(
-        () => [
-            { id: 1, year: "2025-26", sabeel: "4,236", due: "3,024" },
-            { id: 2, year: "2025-26", sabeel: "4,236", due: "3,024" },
-            { id: 3, year: "2025-26", sabeel: "4,236", due: "3,024" },
-            { id: 4, year: "2025-26", sabeel: "4,236", due: "3,024" },
-        ],
-        []
-    );
+    const [sabeelRows, setSabeelRows] = useState([
+        { id: 1, year: "2025-26", sabeel: "4,236", due: "3,024" },
+        { id: 2, year: "2024-25", sabeel: "1,000", due: "200" },
+        { id: 3, year: "2023-24", sabeel: "0", due: "0" },
+    ]);
+    const [sabeelModalKey, setSabeelModalKey] = useState(0);
+    const [openSabeelView, setOpenSabeelView] = useState(false);
+    const [selectedSabeelRow, setSelectedSabeelRow] = useState(null);
+
+
     const addSabeel = () => setOpenAddSabeel(true);
-    const viewSabeel = (row) => console.log("View", row);
+    const viewSabeel = (row) => {
+        setSelectedSabeelRow(row);
+        setSabeelModalKey((k) => k + 1);   // ✅ force remount every time
+        setOpenSabeelView(true);
+    };
     const deleteSabeel = (row) => console.log("Delete", row);
+
+    const handleUpdateSabeel = (updatedRow) => {
+        setSabeelRows((prev) =>
+            prev.map((r) => (String(r.id) === String(updatedRow.id) ? updatedRow : r))
+        );
+        console.log("UPDATED SABEEL:", updatedRow);
+        // later: call backend update API here
+    };
 
     const [hofForm, setHofForm] = useState({
         name: "",
@@ -338,6 +351,7 @@ export default function FamilyDetails() {
             <AddReceiptModal open={openAdd} onClose={() => setOpenAdd(false)} hofName="juzar fakhruddin anjarwala" />
             <AddFamilyModal open={openAddFamily} onClose={() => setOpenAddFamily(false)} onSave={handleSaveFamily} />
             <AddSabeelModal open={openAddSabeel} onClose={() => setOpenAddSabeel(false)} onSave={handleSaveSabeel} />
+            <SabeelViewEditModal key={`${selectedSabeelRow?.id ?? "na"}-${sabeelModalKey}`} open={openSabeelView} onClose={() => setOpenSabeelView(false)} row={selectedSabeelRow} onUpdate={handleUpdateSabeel} />
 
         </DashboardLayout>
     );
