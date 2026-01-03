@@ -229,7 +229,7 @@ export default function Family() {
                         <div>
                             <span className="font-semibold">Establishment:</span>{" "}
                             <span className="text-sky-700 font-semibold">
-                                {(r.establishment_details || []).length}
+                                {/* {(r.establishment_details || []).length} */}
                             </span>
                         </div>
                         <div>Due: ₹ {r?.establishment?.due ?? 0}</div>
@@ -392,7 +392,7 @@ export default function Family() {
                                 <div className="flex items-start gap-3">
                                     <div className="w-16 h-16 rounded-xl overflow-hidden border border-slate-200 bg-slate-50">
                                         <img
-                                            src={selected?.url || "../src/assets/placeholder.png"}
+                                            src={selected?.url || "../src/assets/images/placeholder.png"}
                                             alt=""
                                             className="w-full h-full object-cover"
                                         />

@@ -4,7 +4,7 @@ import DashboardLayout from "../layout/DashboardLayout";
 import TabsSlash from "../components/TabsSlash";
 import LeftPanel from "../components/LeftPanel";
 import DataTable from "../components/DataTable";
-import AddReceiptModal from "../components/AddReceiptModal";
+import AddReceiptModal from "../components/modals/AddReceiptModal";
 import {
     BackIcon,
     PrintIcon,
@@ -15,11 +15,25 @@ import {
     EyeIcon,
 } from "../components/icons";
 import { LeftOverviewSection, LeftHofSection, LeftFamilySection, LeftSabeelSection } from "../sections/familyDetails";
+import AddFamilyModal from "../components/modals/AddFamilyModal";
+import AddSabeelModal from "../components/modals/AddSabeelModal";
+
 
 export default function FamilyDetails() {
     const [activeTab, setActiveTab] = useState("overview");
     const [openAdd, setOpenAdd] = useState(false);
     const navigate = useNavigate();
+
+    const [openAddFamily, setOpenAddFamily] = useState(false);
+    const [openAddSabeel, setOpenAddSabeel] = useState(false);
+
+    const handleSaveFamily = (payload) => {
+        console.log("SAVE FAMILY:", payload);
+    };
+
+    const handleSaveSabeel = (payload) => {
+        console.log("SAVE SABEEL:", payload);
+    };
 
     const profile = {
         name: "Juzar Fakhruddin Anjarwala",
@@ -39,7 +53,7 @@ export default function FamilyDetails() {
         ],
         []
     );
-    const addSabeel = () => console.log("Add Sabeel");
+    const addSabeel = () => setOpenAddSabeel(true);
     const viewSabeel = (row) => console.log("View", row);
     const deleteSabeel = (row) => console.log("Delete", row);
 
@@ -53,10 +67,7 @@ export default function FamilyDetails() {
         sector: "",
         address: "",
     });
-    const addFamily = () => {
-        console.log("Add Family clicked");
-        // later: open modal / navigate
-    };
+    const addFamily = () => setOpenAddFamily(true);
 
     const saveHof = () => {
         console.log("Save HOF:", hofForm);
@@ -325,6 +336,9 @@ export default function FamilyDetails() {
             </div>
 
             <AddReceiptModal open={openAdd} onClose={() => setOpenAdd(false)} hofName="juzar fakhruddin anjarwala" />
+            <AddFamilyModal open={openAddFamily} onClose={() => setOpenAddFamily(false)} onSave={handleSaveFamily} />
+            <AddSabeelModal open={openAddSabeel} onClose={() => setOpenAddSabeel(false)} onSave={handleSaveSabeel} />
+
         </DashboardLayout>
     );
 }

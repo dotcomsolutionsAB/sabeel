@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import bg from "../assets/Background.png";
-import logo from "../assets/logo.png";
+import bg from "../assets/images/Background.png";
+import logo from "../assets/images/logo.png";
 
 import PageShell from "../components/PageShell";
 import GlassCard from "../components/GlassCard";

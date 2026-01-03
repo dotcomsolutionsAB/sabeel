@@ -1,8 +1,8 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
-import Modal from "./Modal";
-import InputField from "./InputField";
-import headerImg from "../assets/AddRecieptHeader.png";
+import Modal from "../Modal";
+import InputField from "../InputField";
+import headerImg from "../../assets/images/AddRecieptHeader.png";
 
 
 export default function AddReceiptModal({ open, onClose, hofName = "-" }) {
