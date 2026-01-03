@@ -142,7 +142,7 @@ body {
 }
 
 .nav-item:hover {
-  background: #eef8ff;
+  border-top-color: var(--blue-1);
 }
 
 .nav-item.active {

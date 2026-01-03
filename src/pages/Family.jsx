@@ -6,13 +6,11 @@ import DataTable from "../components/DataTable";
 import FilterBar from "../components/FilterBar";
 import Pagination from "../components/Pagination";
 import { UsersIcon, EyeIcon, PrintIcon } from "../components/icons";
-
+import Loader from "../components/Loader";
 import { retrieveFamilyApi } from "../services/familyService";
 
 export default function Family() {
-    // =========================
     // API state
-    // =========================
     const [rows, setRows] = useState([]);
     const [pagination, setPagination] = useState({
         limit: 10,
@@ -362,6 +360,11 @@ export default function Family() {
                     <div className="grid grid-cols-1 lg:grid-cols-[1.7fr_1fr] gap-4 px-4 pb-4">
                         {/* Left table */}
                         <div className="rounded-2xl bg-white border border-slate-100 shadow-sm overflow-hidden">
+                            {loading ? (
+                                <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/70">
+                                    <Loader fullScreen={false} text="Loading receipts..." />
+                                </div>
+                            ) : null}
                             <DataTable
                                 columns={columns}
                                 data={viewRows}

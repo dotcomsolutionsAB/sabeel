@@ -5,8 +5,9 @@ import DashboardLayout from "../layout/DashboardLayout";
 import DataTable from "../components/DataTable";
 import FilterBar from "../components/FilterBar";
 import Pagination from "../components/Pagination";
-
+import Loader from "../components/Loader";
 import { EyeIcon, EditIcon, TrashIcon } from "../components/icons";
+import EditReceiptModal from "../components/modals/EditReceiptModal";
 import { retrieveReceiptsApi } from "../services/receiptService";
 
 function formatINR(v) {
@@ -27,6 +28,8 @@ export default function Receipts() {
     const [type, setType] = useState("family"); // default family
     const [dateFrom, setDateFrom] = useState("");
     const [dateTo, setDateTo] = useState("");
+    const [editOpen, setEditOpen] = useState(false);
+    const [editRow, setEditRow] = useState(null);
 
     const [page, setPage] = useState(1);
     const pageSize = 10;
@@ -260,7 +263,9 @@ export default function Receipts() {
                             className="inline-flex items-center justify-center w-9 h-9 rounded-full border border-sky-200 bg-white hover:bg-sky-50 text-sky-700"
                             onClick={(e) => {
                                 e.stopPropagation();
-                                console.log("EDIT", r);
+                                setEditRow(r);
+                                setEditOpen(true);
+
                             }}
                             title="Edit"
                         >
@@ -415,7 +420,11 @@ export default function Receipts() {
                     {/* table */}
                     <div className="px-4 pb-4">
                         <div className="rounded-2xl bg-white border border-slate-100 shadow-sm overflow-hidden">
-
+                            {loading ? (
+                                <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/70">
+                                    <Loader fullScreen={false} text="Loading receipts..." />
+                                </div>
+                            ) : null}
                             <DataTable
                                 columns={columns}
                                 data={viewRows}
@@ -428,6 +437,25 @@ export default function Receipts() {
                     </div>
                 </div>
             </div>
+            <EditReceiptModal
+                open={editOpen}
+                receipt={editRow}
+                onClose={() => {
+                    setEditOpen(false);
+                    setEditRow(null);
+                }}
+                onSave={async (payload) => {
+                    // ✅ for now just log (next step we connect API update)
+                    console.log("SAVE PAYLOAD", payload);
+
+                    setEditOpen(false);
+                    setEditRow(null);
+
+                    // refresh list (optional)
+                    fetchReceipts();
+                }}
+            />
+
         </DashboardLayout>
     );
 }
