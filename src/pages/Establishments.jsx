@@ -134,8 +134,8 @@ export default function Establishments() {
                                 <img src={p?.url || placeholderImg} onError={(e) => (e.currentTarget.src = placeholderImg)}
                                     alt="" className="w-10 h-15 rounded-lg object-cover border border-slate-200 bg-slate-50"
                                 />
-                                <div className="text-[11px] leading-tight">
-                                    <div className="font-semibold text-slate-800 line-clamp-1">{p?.name || "-"}</div>
+                                <div className="min-w-0 text-[11px] leading-tight">
+                                    <div className="font-semibold text-slate-800 truncate">{p?.name || "-"}</div>
                                     <div className="text-slate-600">ITS : {p?.its || "-"}</div>
                                     <div className="text-slate-600">Sector : {p?.sector || "-"}</div>
                                     <div className="text-slate-600">Mobile : {p?.mobile || "-"}</div>
@@ -249,7 +249,7 @@ export default function Establishments() {
             ),
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    ], [allCheckedOnPage, someCheckedOnPage, selectedIds, viewRows]);
+    ], [allCheckedOnPage, someCheckedOnPage, selectedIds, navigate]);
 
     const totalPages = Math.max(1, Math.ceil((pagination.total || 0) / pageSize));
 

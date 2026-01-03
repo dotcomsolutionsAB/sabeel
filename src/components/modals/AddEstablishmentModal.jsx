@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
 import Modal from "../Modal";
 import InputField from "../InputField";
+import headerImg from "../../assets/images/addNewEstablishment.png";
 
 export default function AddEstablishmentModal({ open, onClose, value, onChange, onSave }) {
     const set = (key) => (val) => onChange?.({ ...value, [key]: val });
@@ -30,28 +31,32 @@ export default function AddEstablishmentModal({ open, onClose, value, onChange, 
                 </div>
             }
         >
-            <div className="px-6 pt-6">
-                <div className="rounded-2xl bg-gradient-to-r from-sky-700 to-sky-500 px-5 py-4 text-white">
-                    <div className="text-sm font-semibold">Add Establishment</div>
-                    <div className="text-xs text-white/90 mt-0.5">Fill details and click Save.</div>
-                </div>
-            </div>
+            {/* Header (same vibe as your other modals) */}
+            <div className="rounded-2xl overflow-hidden border border-slate-200">
+                {/* ✅ Image header like screenshot */}
+                <div className="relative h-28 bg-slate-100">
+                    <img src={headerImg} alt="" className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-sky-900/30" />
 
-            <div className="p-6">
-                {/* 2 rows (like you asked) */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    <InputField
-                        label="Establishment Name *"
-                        value={value?.name || ""}
-                        onChange={set("name")}
-                        placeholder="Enter establishment name"
-                    />
-                    <InputField
-                        label="Establishment Address *"
-                        value={value?.address || ""}
-                        onChange={set("address")}
-                        placeholder="Enter address"
-                    />
+                </div>
+
+                <div className="p-6">
+                    {/* 2 rows (like you asked) */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <InputField
+                            label="Establishment Name *"
+                            value={value?.name || ""}
+                            onChange={set("name")}
+                            placeholder="Enter establishment name"
+                        />
+                        <InputField
+                            label="Establishment Address *"
+                            value={value?.address || ""}
+                            onChange={set("address")}
+                            placeholder="Enter address"
+                        />
+                    </div>
                 </div>
             </div>
         </Modal>

@@ -34,7 +34,7 @@ export default function Modal({ open, onClose, children, footer, widthClass = "m
 
                     {/* Footer */}
                     {footer ? (
-                        <div className="px-5 py-4 border-t border-slate-100 bg-white">
+                        <div className="px-5 py-4 border-t border-slate-100 bg-[#e5e7eb]">
                             {footer}
                         </div>
                     ) : null}

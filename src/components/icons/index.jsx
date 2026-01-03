@@ -11,7 +11,7 @@ import {
     EnvelopeIcon,
     PhoneIcon,
     IdentificationIcon,
-    CheckCircleIcon, FolderPlusIcon, TrashIcon as HeroTrashIcon
+    CheckCircleIcon, FolderPlusIcon, TrashIcon as HeroTrashIcon, PencilSquareIcon,
 } from "@heroicons/react/24/outline";
 
 function withDefaults(Icon, defaultClassName = "") {
@@ -31,6 +31,7 @@ function withDefaults(Icon, defaultClassName = "") {
 // ✅ Keep your existing exported names (so TopBar code stays same)
 export const CalendarIcon = withDefaults(CalendarDaysIcon, "w-4 h-4 text-[#2c86c8]");
 export const TrashIcon = withDefaults(HeroTrashIcon, "w-4 h-4");
+export const EditIcon = withDefaults(PencilSquareIcon, "w-4 h-4");
 
 export const DashboardIcon = withDefaults(Squares2X2Icon);
 export const FamilyIcon = withDefaults(UserGroupIcon);
