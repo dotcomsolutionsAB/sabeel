@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 import Modal from "../Modal";
 import InputField from "../InputField";
-import headerImg from "../../assets/images/editReciept.png"; // ✅ use same header image style
+import headerImg from "../../assets/images/editUser.png"; // ✅ use same header image style
 
 function toStr(v) {
     return v == null ? "" : String(v);
@@ -100,13 +100,6 @@ export default function EditUserModal({ open, onClose, user, onUpdate }) {
                 <div className="relative h-28 bg-slate-100">
                     <img src={headerImg} alt="" className="w-full h-full object-cover" />
                     <div className="absolute inset-0 bg-sky-900/20" />
-
-                    <div className="absolute left-5 top-6 flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-sky-300 bg-white">
-                            <span className="text-sky-700 font-bold">✎</span>
-                        </div>
-                        <div className="text-white font-extrabold drop-shadow">Edit User</div>
-                    </div>
                 </div>
 
                 {/* ✅ Form */}

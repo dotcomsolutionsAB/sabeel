@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 import Modal from "../Modal";
 import InputField from "../InputField";
-import headerImg from "../../assets/images/editReciept.png";
+import headerImg from "../../assets/images/addUser.png";
 
 export default function AddUserModal({ open, onClose, onSave }) {
     const [name, setName] = useState("");
