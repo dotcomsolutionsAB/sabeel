@@ -19,3 +19,11 @@ export const retrieveEstablishmentsApi = async ({
 export async function retrieveEstablishmentOverviewApi(establishmentId) {
     return api.get(`/establishment_details/overview/${establishmentId}/retrieve`);
 }
+
+
+// ✅ NEW: update establishment (only name + address)
+export async function updateEstablishmentApi(establishmentId, payload) {
+    // payload: { name, address }
+    const res = await api.post(`/establishment/update/${establishmentId}`, payload);
+    return res?.data ?? res;
+}
