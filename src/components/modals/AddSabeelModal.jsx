@@ -11,7 +11,7 @@ export default function AddSabeelModal({ open, onClose, onSave, yearOptions = []
     const years = useMemo(() => {
         const opts = yearOptions?.length
             ? yearOptions
-            : ["2025-26", "2024-25", "2023-24", "2022-23", "2021-22", "2020-21"];
+            : ["2026", "2025", "2024", "2023", "2022", "2021"];
         return [{ label: "Select", value: "" }, ...opts.map((y) => ({ label: y, value: y }))];
     }, [yearOptions]);
 

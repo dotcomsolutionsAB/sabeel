@@ -423,7 +423,7 @@ export default function Family() {
                                                 type="button"
                                                 onClick={() => {
                                                     if (!selected?.id) return;
-                                                    navigate(`/family/${selected.id}`); // ✅ go to details page
+                                                    navigate(`/family/${selected.family_id}`); // ✅ go to details page
                                                 }}
                                                 className="inline-flex items-center gap-2 rounded-lg bg-sky-700 text-white px-3 py-2 text-xs font-semibold hover:bg-sky-800"
                                             >

@@ -1,10 +1,16 @@
-import { useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useMemo, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+
 import DashboardLayout from "../layout/DashboardLayout";
 import TabsSlash from "../components/TabsSlash";
 import LeftPanel from "../components/LeftPanel";
 import DataTable from "../components/DataTable";
+
 import AddReceiptModal from "../components/modals/AddReceiptModal";
+import AddFamilyModal from "../components/modals/AddFamilyModal";
+import AddSabeelModal from "../components/modals/AddSabeelModal";
+import SabeelViewEditModal from "../components/modals/SabeelViewEditModal";
+
 import {
     BackIcon,
     PrintIcon,
@@ -14,131 +20,63 @@ import {
     EstablishmentIcon,
     EyeIcon,
 } from "../components/icons";
-import { LeftOverviewSection, LeftHofSection, LeftFamilySection, LeftSabeelSection } from "../sections/familyDetails";
-import AddFamilyModal from "../components/modals/AddFamilyModal";
-import AddSabeelModal from "../components/modals/AddSabeelModal";
-import SabeelViewEditModal from "../components/modals/SabeelViewEditModal";
+
+import {
+    LeftOverviewSection,
+    LeftHofSection,
+    LeftFamilySection,
+    LeftSabeelSection,
+} from "../sections/familyDetails";
+
+import { retrieveFamilyDetailsApi } from "../services/familyService";
+import { retrieveReceiptsApi } from "../services/receiptService";
+import { createFamilySabeelApi } from "../services/sabeelService";
+
+function toStr(v) {
+    return v == null ? "" : String(v);
+}
+function money(v) {
+    const n = Number(v || 0);
+    if (Number.isNaN(n)) return "0";
+    return n.toLocaleString("en-IN");
+}
 
 export default function FamilyDetails() {
-    const [activeTab, setActiveTab] = useState("overview");
-    const [openAdd, setOpenAdd] = useState(false);
+    const { id } = useParams(); // ✅ /family/:id (or your route)
     const navigate = useNavigate();
 
+    const [activeTab, setActiveTab] = useState("overview");
+
+    const [loadingFamily, setLoadingFamily] = useState(false);
+    const [familyError, setFamilyError] = useState("");
+    const [family, setFamily] = useState(null);
+
+    const [loadingReceipts, setLoadingReceipts] = useState(false);
+    const [receiptsError, setReceiptsError] = useState("");
+    const [receipts, setReceipts] = useState([]);
+    const [receiptPagination, setReceiptPagination] = useState({ limit: 10, offset: 0, count: 0, total: 0 });
+
+    const [openAddReceipt, setOpenAddReceipt] = useState(false);
     const [openAddFamily, setOpenAddFamily] = useState(false);
     const [openAddSabeel, setOpenAddSabeel] = useState(false);
 
-    const handleSaveFamily = (payload) => {
-        console.log("SAVE FAMILY:", payload);
-    };
-
-    const handleSaveSabeel = (payload) => {
-        console.log("SAVE SABEEL:", payload);
-    };
-
-    const profile = {
-        name: "Juzar Fakhruddin Anjarwala",
-        email: "Huz1858@Gmail.Com",
-        phone: "+91 8777806463",
-        its: "20365831",
-        sector: "MOHANMEDI",
-        avatarUrl: "https://i.pravatar.cc/220?img=13",
-    };
-
-    const [sabeelRows, setSabeelRows] = useState([
-        { id: 1, year: "2025-26", sabeel: "4,236", due: "3,024" },
-        { id: 2, year: "2024-25", sabeel: "1,000", due: "200" },
-        { id: 3, year: "2023-24", sabeel: "0", due: "0" },
-    ]);
+    // ✅ Your sabeel tab rows (year-wise). If you later add retrieve endpoint, you can fetch too.
+    const [sabeelRows, setSabeelRows] = useState([]);
     const [sabeelModalKey, setSabeelModalKey] = useState(0);
     const [openSabeelView, setOpenSabeelView] = useState(false);
     const [selectedSabeelRow, setSelectedSabeelRow] = useState(null);
 
-
-    const addSabeel = () => setOpenAddSabeel(true);
     const viewSabeel = (row) => {
         setSelectedSabeelRow(row);
-        setSabeelModalKey((k) => k + 1);   // ✅ force remount every time
+        setSabeelModalKey((k) => k + 1);
         setOpenSabeelView(true);
     };
-    const deleteSabeel = (row) => console.log("Delete", row);
 
     const handleUpdateSabeel = (updatedRow) => {
         setSabeelRows((prev) =>
-            prev.map((r) => (String(r.id) === String(updatedRow.id) ? updatedRow : r))
+            prev.map((r) => (String(r.year) === String(updatedRow.year) ? updatedRow : r))
         );
-        console.log("UPDATED SABEEL:", updatedRow);
-        // later: call backend update API here
     };
-
-    const [hofForm, setHofForm] = useState({
-        name: "",
-        its: "",
-        gender: "",
-        mobile: "",
-        email: "",
-        dob: "",
-        sector: "",
-        address: "",
-    });
-    const addFamily = () => setOpenAddFamily(true);
-
-    const saveHof = () => {
-        console.log("Save HOF:", hofForm);
-    };
-
-    const stats = useMemo(
-        () => [
-            { value: "4,236", label: "Personal Sabeel" },
-            { value: "₹ 1,212", label: "Personal Due" },
-            { value: "₹ 284", label: "Personal Overdue" },
-            { value: "2,700", label: "Establishment Sabeel" },
-            { value: "₹ 600", label: "Establishment Due" },
-            { value: "₹ 00", label: "Establishment Overdue" },
-        ],
-        []
-    );
-
-    const receipts = useMemo(
-        () => [
-            {
-                id: 1,
-                receiptNo: "AEM-1448/24-25",
-                date: "28-03-2025",
-                year: "2024-25",
-                mode: "Cheque",
-                bank: "Union Bank Of India",
-                chequeNo: "425344",
-                ifsc: "UBC0001234",
-                chequeDate: "13-03-2025",
-                type: "Personal",
-                amount: "3,024",
-            },
-            {
-                id: 2,
-                receiptNo: "AEM-1448/24-25",
-                date: "28-03-2025",
-                year: "2024-25",
-                mode: "UPI",
-                txnId: "502342069929",
-                type: "Personal",
-                amount: "3,024",
-            },
-            {
-                id: 3,
-                receiptNo: "AEM-1448/24-25",
-                date: "28-03-2025",
-                year: "2024-25",
-                mode: "Cheque",
-                bank: "Union Bank Of India",
-                chequeNo: "425344",
-                ifsc: "UBC0001234",
-                chequeDate: "13-03-2025",
-                type: "Personal",
-                amount: "3,024",
-            },
-        ],
-        []
-    );
 
     const tabs = useMemo(
         () => [
@@ -150,32 +88,118 @@ export default function FamilyDetails() {
         []
     );
 
-    const sabeelYearWise = useMemo(
-        () => [
-            { year: "2025-26", sabeel: 4236, due: 1256 },
-            { year: "2024-25", sabeel: 4236, due: 1256 },
-            { year: "2023-24", sabeel: 4236, due: 1256 },
-        ],
-        []
-    );
+    // ✅ Fetch family details
+    const fetchFamily = async () => {
+        if (!id) return;
+        try {
+            setLoadingFamily(true);
+            setFamilyError("");
 
-    const establishments = useMemo(
-        () => [
-            { id: 1, name: "ALKA ENTERPRISES", due: 500 },
-            { id: 2, name: "KOTHARI HARDWARE", due: 450 },
-            { id: 3, name: "ARBEN TOOLS CO.", due: 1000 },
-        ],
-        []
-    );
+            // api.js usually returns JSON already
+            const res = await retrieveFamilyDetailsApi(id);
+            const d = res?.data?.data || null; // ✅ response: { data: { data: {...} } }
+            setFamily(d);
+        } catch (e) {
+            setFamilyError(e?.message || "Failed to fetch family details");
+            setFamily(null);
+        } finally {
+            setLoadingFamily(false);
+        }
+    };
+
+    // ✅ Fetch receipts (family)
+    const fetchReceipts = async ({ limit = 10, offset = 0 } = {}) => {
+        if (!id) return;
+        try {
+            setLoadingReceipts(true);
+            setReceiptsError("");
+
+            const res = await retrieveReceiptsApi({
+                type: "family",
+                family_id: id,
+                establishment_id: null,
+                date_from: "",
+                date_to: "",
+                limit,
+                offset,
+            });
+
+            const rows = Array.isArray(res?.data) ? res.data : [];
+            setReceipts(rows);
+
+            setReceiptPagination({
+                limit: res?.pagination?.limit ?? limit,
+                offset: res?.pagination?.offset ?? offset,
+                count: res?.pagination?.count ?? rows.length,
+                total: res?.pagination?.total ?? rows.length,
+            });
+        } catch (e) {
+            setReceiptsError(e?.message || "Failed to fetch receipts");
+            setReceipts([]);
+            setReceiptPagination({ limit, offset, count: 0, total: 0 });
+        } finally {
+            setLoadingReceipts(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchFamily();
+        fetchReceipts({ limit: 10, offset: 0 });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [id]);
+
+    // ✅ Right profile card data (dynamic)
+    const profile = useMemo(() => {
+        return {
+            name: family?.name || "-",
+            email: family?.email || "-",
+            phone: family?.mobile || "-",
+            its: family?.its || "-",
+            sector: family?.sector || "-",
+            avatarUrl: family?.url || "",
+        };
+    }, [family]);
+
+    // ✅ Top stats (dynamic)
+    const stats = useMemo(() => {
+        return [
+            { value: money(family?.sabeel?.sabeel), label: "Personal Sabeel" },
+            { value: `₹ ${money(family?.sabeel?.due)}`, label: "Personal Due" },
+            { value: `₹ ${money(family?.sabeel?.prev_due)}`, label: "Personal Overdue" },
+
+            { value: money(family?.establishment?.sabeel), label: "Establishment Sabeel" },
+            { value: `₹ ${money(family?.establishment?.due)}`, label: "Establishment Due" },
+            { value: `₹ ${money(family?.establishment?.prev_due)}`, label: "Establishment Overdue" },
+        ];
+    }, [family]);
+
+    // ✅ receipts mapping if your LeftOverviewSection expects your old keys
+    const receiptsForUI = useMemo(() => {
+        return (receipts || []).map((r) => ({
+            id: r.id,
+            receiptNo: r.receipt_no,
+            date: r.date,
+            year: r.year,
+            mode: r.mode,
+            bank: r.bank,
+            chequeNo: r.cheque_no,
+            ifsc: r.ifsc,
+            chequeDate: r.cheque_date,
+            txnId: r.trans_id,
+            type: "Personal",
+            amount: r.amount,
+            _raw: r,
+        }));
+    }, [receipts]);
+
+    // Right panel mini tables (you can connect later to real endpoints)
+    const sabeelYearWise = useMemo(() => [], []);
+    const establishments = useMemo(() => [], []);
 
     const sabeelColumns = useMemo(
         () => [
             { key: "year", header: "Year", width: 120 },
-            {
-                key: "sabeel",
-                header: "Sabeel",
-                render: (r) => <span className="font-semibold text-sky-700">{r.sabeel}</span>,
-            },
+            { key: "sabeel", header: "Sabeel", render: (r) => <span className="font-semibold text-sky-700">{r.sabeel}</span> },
             { key: "due", header: "Due", render: (r) => `₹ ${r.due}` },
         ],
         []
@@ -227,49 +251,61 @@ export default function FamilyDetails() {
                             <div className="p-4">
                                 <TabsSlash tabs={tabs} value={activeTab} onChange={setActiveTab} />
 
+                                {(familyError || receiptsError) ? (
+                                    <div className="mt-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                                        {familyError || receiptsError}
+                                    </div>
+                                ) : null}
+
                                 <div className="mt-4 grid grid-cols-1 lg:grid-cols-[1.7fr_1fr] gap-4">
-                                    {/* ✅ Left panel (reusable layout) */}
+                                    {/* LEFT */}
                                     <LeftPanel>
-                                        {activeTab === "overview" ? (
+                                        {loadingFamily && !family ? (
+                                            <div className="p-6 text-sm text-slate-600">Loading...</div>
+                                        ) : activeTab === "overview" ? (
                                             <LeftOverviewSection
                                                 stats={stats}
-                                                receipts={receipts}
-                                                onAddReceipt={() => setOpenAdd(true)}
+                                                receipts={receiptsForUI}
+                                                onAddReceipt={() => setOpenAddReceipt(true)}
+                                                loadingReceipts={loadingReceipts}
+                                                receiptPagination={receiptPagination}
+                                                onReceiptPageChange={(offset) => fetchReceipts({ limit: 10, offset })}
                                             />
                                         ) : activeTab === "hof" ? (
                                             <LeftHofSection
-                                                value={hofForm}
-                                                onChange={setHofForm}
-                                                onSave={saveHof}
+                                                value={{
+                                                    name: toStr(family?.name),
+                                                    its: toStr(family?.its),
+                                                    mobile: toStr(family?.mobile),
+                                                    email: toStr(family?.email),
+                                                    sector: toStr(family?.sector),
+                                                    address: "",
+                                                    gender: "",
+                                                    dob: "",
+                                                }}
+                                                onChange={() => { }}
+                                                onSave={() => console.log("Save HOF (later)")}
                                             />
                                         ) : activeTab === "family" ? (
-                                            <LeftFamilySection onAddFamily={addFamily} />
+                                            <LeftFamilySection onAddFamily={() => setOpenAddFamily(true)} />
                                         ) : activeTab === "sabeel" ? (
                                             <LeftSabeelSection
                                                 data={sabeelRows}
-                                                onAdd={addSabeel}
+                                                onAdd={() => setOpenAddSabeel(true)}
                                                 onView={viewSabeel}
-                                                onDelete={deleteSabeel}
+                                                onDelete={(row) => console.log("Delete sabeel later", row)}
                                             />
-                                        ) : (
-                                            <div className="p-6 text-slate-700">
-                                                <div className="font-semibold text-slate-900 mb-2">
-                                                    {tabs.find((t) => t.key === activeTab)?.label}
-                                                </div>
-                                                <div className="text-sm text-slate-600">
-                                                    Placeholder text for now. Next we will design this tab properly.
-                                                </div>
-                                            </div>
-                                        )}
+                                        ) : null}
                                     </LeftPanel>
 
-
-                                    {/* Right profile card (unchanged) */}
+                                    {/* RIGHT profile card */}
                                     <div className="rounded-2xl bg-white border border-slate-100 shadow-sm overflow-hidden flex flex-col min-h-0">
                                         <div className="p-4 shrink-0">
                                             <div className="flex items-start gap-3">
                                                 <div className="w-20 h-20 rounded-xl overflow-hidden border border-slate-200 bg-slate-50">
-                                                    <img src={profile.avatarUrl} alt="" className="w-full h-full object-cover" />
+                                                    {profile.avatarUrl ? (
+                                                        <img src={profile.avatarUrl} alt="" className="w-full h-full object-cover" />
+                                                    ) : null}
                                                 </div>
 
                                                 <div className="flex-1">
@@ -348,11 +384,50 @@ export default function FamilyDetails() {
                 </div>
             </div>
 
-            <AddReceiptModal open={openAdd} onClose={() => setOpenAdd(false)} hofName="juzar fakhruddin anjarwala" />
-            <AddFamilyModal open={openAddFamily} onClose={() => setOpenAddFamily(false)} onSave={handleSaveFamily} />
-            <AddSabeelModal open={openAddSabeel} onClose={() => setOpenAddSabeel(false)} onSave={handleSaveSabeel} />
-            <SabeelViewEditModal key={`${selectedSabeelRow?.id ?? "na"}-${sabeelModalKey}`} open={openSabeelView} onClose={() => setOpenSabeelView(false)} row={selectedSabeelRow} onUpdate={handleUpdateSabeel} />
+            {/* MODALS */}
+            <AddReceiptModal
+                open={openAddReceipt}
+                onClose={() => setOpenAddReceipt(false)}
+                hofName={profile.name}
+            />
 
+            <AddFamilyModal
+                open={openAddFamily}
+                onClose={() => setOpenAddFamily(false)}
+                onSave={(payload) => console.log("SAVE FAMILY:", payload)}
+            />
+
+            {/* ✅ Add Sabeel => calls family_sabeel/create/{familyId} */}
+            <AddSabeelModal
+                open={openAddSabeel}
+                onClose={() => setOpenAddSabeel(false)}
+                onSave={async ({ year, amount }) => {
+                    const res = await createFamilySabeelApi(id, { year, amount });
+                    const newRows = res?.data?.sabeel_details || [];
+
+                    // Upsert by year
+                    setSabeelRows((prev) => {
+                        const map = new Map((prev || []).map((x) => [String(x.year), x]));
+                        (newRows || []).forEach((x) => {
+                            if (!x?.year) return;
+                            map.set(String(x.year), {
+                                year: x.year,
+                                sabeel: x.sabeel,
+                                due: x.due,
+                            });
+                        });
+                        return Array.from(map.values());
+                    });
+                }}
+            />
+
+            <SabeelViewEditModal
+                key={`${selectedSabeelRow?.id ?? "na"}-${sabeelModalKey}`}
+                open={openSabeelView}
+                onClose={() => setOpenSabeelView(false)}
+                row={selectedSabeelRow}
+                onUpdate={handleUpdateSabeel}
+            />
         </DashboardLayout>
     );
 }

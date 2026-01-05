@@ -27,3 +27,4 @@ export async function updateEstablishmentApi(establishmentId, payload) {
     const res = await api.post(`/establishment/update/${establishmentId}`, payload);
     return res?.data ?? res;
 }
+

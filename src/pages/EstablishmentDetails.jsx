@@ -9,7 +9,12 @@ import EstablishmentDetailsTab from "../sections/establishmentDetails/Establishm
 import PartnersTab from "../sections/establishmentDetails/Partners";
 import SabeelDetailsTab from "../sections/establishmentDetails/SabeelDetails";
 
+import { deletePartnerApi } from "../services/partnerService";
+import PartnerModal from "../components/modals/PartnerModal"; // we create below
+import AddSabeelModal from "../components/modals/AddSabeelModal";
+
 import { retrieveEstablishmentOverviewApi } from "../services/establishmentService";
+import { createEstablishmentSabeelApi } from "../services/sabeelService";
 
 function money(v) {
     const n = Number(v || 0);
@@ -17,12 +22,14 @@ function money(v) {
     return n.toLocaleString("en-IN");
 }
 
-// ✅ unwrap service return (axios response OR already-json)
-// function unwrap(res) {
-//     // if service returns axios response => res.data
-//     // if service returns already json => res
-//     return res?.data && res?.data?.code !== undefined ? res.data : res;
-// }
+const upsertByYear = (prevList = [], newList = []) => {
+    const map = new Map((prevList || []).map((x) => [String(x.year), x]));
+    (newList || []).forEach((x) => {
+        if (!x?.year) return;
+        map.set(String(x.year), { ...map.get(String(x.year)), ...x });
+    });
+    return Array.from(map.values());
+};
 
 export default function EstablishmentDetails() {
     const navigate = useNavigate();
@@ -32,6 +39,7 @@ export default function EstablishmentDetails() {
     const [loading, setLoading] = useState(false);
     const [apiError, setApiError] = useState("");
     const [overview, setOverview] = useState(null);
+    const [addSabeelOpen, setAddSabeelOpen] = useState(false);
 
     const tabs = useMemo(
         () => [
@@ -68,12 +76,54 @@ export default function EstablishmentDetails() {
         })();
     }, [id]);
 
+    const [partnerOpen, setPartnerOpen] = useState(false);
+    const [editingPartner, setEditingPartner] = useState(null);
+
+    // open modal on button click
+    const handleAddUpdatePartner = (row = null) => {
+        setEditingPartner(row); // null => Add, row => Update
+        setPartnerOpen(true);
+    };
+
+    const handleDeletePartner = async (row) => {
+        const partnerId = row?.its; // ✅ API needs partner id
+        if (!partnerId) {
+            alert("Partner id not found in row. Please ensure API returns partner id.");
+            return;
+        }
+
+        const ok = window.confirm("Delete this partner?");
+        if (!ok) return;
+
+        try {
+            await deletePartnerApi(partnerId);
+
+            // ✅ instant UI update (no need to refetch)
+            setOverview((prev) => {
+                if (!prev) return prev;
+                const nextPartners = (prev.partners || []).filter((p) => String(p.id) !== String(partnerId));
+                return { ...prev, partners: nextPartners };
+            });
+        } catch (e) {
+            alert(e?.message || "Failed to delete partner");
+        }
+    };
 
     const leftContent = (() => {
         if (tab === "overview") return <OverviewTab id={id} overview={overview} />;
         if (tab === "details") return <EstablishmentDetailsTab overview={overview} />;
-        if (tab === "partners") return <PartnersTab partners={overview?.partners || []} />;
-        if (tab === "sabeel") return <SabeelDetailsTab sabeelDetails={overview?.sabeel_details || []} />;
+        if (tab === "partners") return <PartnersTab
+            partners={overview?.partners || []}
+            onAddOrUpdatePartner={() => handleAddUpdatePartner(null)}
+            onAddOrUpdateOtherJamiat={() => console.log("Other jamiat partner")}
+            onDeletePartner={handleDeletePartner}
+        />;
+        if (tab === "sabeel") return <SabeelDetailsTab
+            rows={overview?.sabeel_details || []}
+            onAdd={() => setAddSabeelOpen(true)}
+            onView={(row) => console.log("VIEW SABEEL", row)}
+            onDelete={(row) => console.log("DELETE SABEEL", row)}
+        />;
         return null;
     })();
 
@@ -99,7 +149,7 @@ export default function EstablishmentDetails() {
                     </div>
 
                     {/* ✅ outer blue border box like screenshot */}
-                    <div className="m-4 rounded-xl border-2 bg-gradient-to-r from-[#0A4D7A] to-[#7EB4D6] overflow-hidden">
+                    <div className="m-4 rounded-xl border-2 border-sky-600 bg-gradient-to-r from-[#0A4D7A] to-[#7EB4D6] overflow-hidden">
                         <div className="px-4 py-3 text-white font-semibold">Establishment Details</div>
 
                         <div className="bg-white p-4">
@@ -249,6 +299,50 @@ export default function EstablishmentDetails() {
                     </div>
                 </div>
             </div>
+            <PartnerModal
+                open={partnerOpen}
+                partner={editingPartner}
+                onClose={() => {
+                    setPartnerOpen(false);
+                    setEditingPartner(null);
+                }}
+                onSave={async (payload) => {
+                    console.log("PARTNER SAVE PAYLOAD", payload);
+
+                    // TODO: call create/update partner API here
+                    // After success refresh overview:
+                    const res = await retrieveEstablishmentOverviewApi(id);
+                    const d = res?.data?.data || null;
+                    setOverview(d);
+
+                    setPartnerOpen(false);
+                    setEditingPartner(null);
+                }}
+            />
+            <AddSabeelModal
+                open={addSabeelOpen}
+                onClose={() => setAddSabeelOpen(false)}
+                yearOptions={[]} // keep defaults OR pass custom list
+                onSave={async ({ year, amount }) => {
+                    // ✅ IMPORTANT: use param id OR overview.establishment_id depending on your backend
+                    const establishmentIdToUse = overview?.establishment_id || id;
+
+                    const res = await createEstablishmentSabeelApi(establishmentIdToUse, { year, amount });
+
+                    // api.js returns json already
+                    const newRows = res?.data?.sabeel_details || [];
+
+                    setOverview((prev) => {
+                        if (!prev) return prev;
+                        return {
+                            ...prev,
+                            sabeel_details: upsertByYear(prev?.sabeel_details, newRows),
+                        };
+                    });
+                }}
+            />
+
+
         </DashboardLayout>
     );
 }
