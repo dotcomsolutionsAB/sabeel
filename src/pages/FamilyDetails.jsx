@@ -10,29 +10,16 @@ import AddReceiptModal from "../components/modals/AddReceiptModal";
 import AddFamilyModal from "../components/modals/AddFamilyModal";
 import AddSabeelModal from "../components/modals/AddSabeelModal";
 import SabeelViewEditModal from "../components/modals/SabeelViewEditModal";
-import ErrorToast from "../components/ErrorToast";
-import SuccessToast from "../components/SuccessToast";
 
-import {
-    BackIcon,
-    PrintIcon,
-    MailIcon,
-    CallIcon,
-    IdCardIcon,
-    EstablishmentIcon,
-    EyeIcon,
-} from "../components/icons";
-
-import {
-    LeftOverviewSection,
-    LeftHofSection,
-    LeftFamilySection,
-    LeftSabeelSection,
-} from "../sections/familyDetails";
+import { BackIcon, MailIcon, CallIcon, IdCardIcon, EstablishmentIcon, EyeIcon } from "../components/icons";
+import { LeftOverviewSection, LeftHofSection, LeftFamilySection, LeftSabeelSection } from "../sections/familyDetails";
 
 import { retrieveFamilyDetailsApi } from "../services/familyService";
 import { retrieveReceiptsApi, createReceiptApi } from "../services/receiptService";
 import { createFamilySabeelApi } from "../services/sabeelService";
+import { createFamilyApi } from "../services/familyService";
+import ErrorToast from "../components/ErrorToast";
+import SuccessToast from "../components/SuccessToast";
 
 function toStr(v) {
     return v == null ? "" : String(v);
@@ -102,6 +89,33 @@ export default function FamilyDetails() {
             }
         } catch (e) {
             setToastErr({ show: true, message: e?.message || "Failed to create receipt" });
+        }
+    };
+
+    const handleSaveFamily = async (payload) => {
+        if (payload?.__error) {
+            setToastErr({ show: true, message: payload.__error });
+            return;
+        }
+
+        try {
+            const res = await createFamilyApi(payload);
+
+            if (res?.code === 200) {
+                setToastOk({ show: true, message: res?.message || "Family created successfully" });
+
+                // ✅ Refresh family list (pick ONE):
+                // 1) If you have a "fetchFamilyMembers()" function for family tab, call it:
+                // await fetchFamilyMembers();
+
+                // 2) If you don’t have API yet for family tab list, you can at least close modal
+                // and later you'll plug the fetch here.
+
+            } else {
+                setToastErr({ show: true, message: res?.message || "Failed to create family" });
+            }
+        } catch (e) {
+            setToastErr({ show: true, message: e?.message || "Failed to create family" });
         }
     };
 
@@ -359,10 +373,10 @@ export default function FamilyDetails() {
                                                     </div>
 
                                                     <div className="flex gap-2 mt-3">
-                                                        <button className="inline-flex items-center justify-center gap-2 flex-1 rounded-lg border border-sky-700 text-sky-800 font-semibold px-3 py-2 text-xs hover:bg-sky-50">
+                                                        {/* <button className="inline-flex items-center justify-center gap-2 flex-1 rounded-lg border border-sky-700 text-sky-800 font-semibold px-3 py-2 text-xs hover:bg-sky-50">
                                                             <PrintIcon className="w-4 h-4" />
                                                             Print Profile
-                                                        </button>
+                                                        </button> */}
                                                         <button className="inline-flex items-center justify-center flex-1 rounded-lg bg-rose-700 text-white font-semibold px-3 py-2 text-xs hover:bg-rose-800">
                                                             Close Sabeel
                                                         </button>
@@ -425,8 +439,9 @@ export default function FamilyDetails() {
             <AddFamilyModal
                 open={openAddFamily}
                 onClose={() => setOpenAddFamily(false)}
-                onSave={(payload) => console.log("SAVE FAMILY:", payload)}
+                onSave={handleSaveFamily}
             />
+
 
             {/* ✅ Add Sabeel => calls family_sabeel/create/{familyId} */}
             <AddSabeelModal

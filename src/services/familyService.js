@@ -1,19 +1,17 @@
 // src/services/familyService.js
 import api from "./api";
 
-export async function retrieveFamilyApi({
-    search = "",
-    sector = "",
-    filter = "",
-    limit = 10,
-    offset = 0,
-}) {
-    // POST /family/retrieve
-    // api.js returns response.data directly
+// POST: family fetch
+export async function retrieveFamilyApi({ search = "", sector = "", filter = "", limit = 10, offset = 0 }) {
     return api.post("/family/retrieve", { search, sector, filter, limit, offset });
 }
 
-
+// GET: family Details fetch
 export async function retrieveFamilyDetailsApi(familyId) {
     return api.get(`/family_details/${familyId}/retrieve`);
+}
+
+// POST: family create
+export async function createFamilyApi(payload) {
+    return api.post("/family/create", payload);
 }
