@@ -10,7 +10,7 @@ function toStr(v) {
     return v == null ? "" : String(v);
 }
 
-export default function PartnerModal({ open, onClose, onSave, partner }) {
+export default function AddOrEditPartnerModal({ open, onClose, onSave, partner }) {
     // partner = null => add, partner object => update
     const isEdit = !!partner;
 
@@ -130,7 +130,7 @@ export default function PartnerModal({ open, onClose, onSave, partner }) {
     );
 }
 
-PartnerModal.propTypes = {
+AddOrEditPartnerModal.propTypes = {
     open: PropTypes.bool,
     onClose: PropTypes.func,
     onSave: PropTypes.func, // async(payload)

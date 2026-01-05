@@ -10,7 +10,7 @@ import PartnersTab from "../sections/establishmentDetails/Partners";
 import SabeelDetailsTab from "../sections/establishmentDetails/SabeelDetails";
 
 import { deletePartnerApi } from "../services/partnerService";
-import PartnerModal from "../components/modals/PartnerModal"; // we create below
+import PartnerModal from "../components/modals/AddOrEditPartnerModal"; // we create below
 import AddSabeelModal from "../components/modals/AddSabeelModal";
 
 import { retrieveEstablishmentOverviewApi } from "../services/establishmentService";

@@ -10,6 +10,8 @@ import AddReceiptModal from "../components/modals/AddReceiptModal";
 import AddFamilyModal from "../components/modals/AddFamilyModal";
 import AddSabeelModal from "../components/modals/AddSabeelModal";
 import SabeelViewEditModal from "../components/modals/SabeelViewEditModal";
+import ErrorToast from "../components/ErrorToast";
+import SuccessToast from "../components/SuccessToast";
 
 import {
     BackIcon,
@@ -29,7 +31,7 @@ import {
 } from "../sections/familyDetails";
 
 import { retrieveFamilyDetailsApi } from "../services/familyService";
-import { retrieveReceiptsApi } from "../services/receiptService";
+import { retrieveReceiptsApi, createReceiptApi } from "../services/receiptService";
 import { createFamilySabeelApi } from "../services/sabeelService";
 
 function toStr(v) {
@@ -59,6 +61,8 @@ export default function FamilyDetails() {
     const [openAddReceipt, setOpenAddReceipt] = useState(false);
     const [openAddFamily, setOpenAddFamily] = useState(false);
     const [openAddSabeel, setOpenAddSabeel] = useState(false);
+    const [toastOk, setToastOk] = useState({ show: false, message: "" });
+    const [toastErr, setToastErr] = useState({ show: false, message: "" });
 
     // ✅ Your sabeel tab rows (year-wise). If you later add retrieve endpoint, you can fetch too.
     const [sabeelRows, setSabeelRows] = useState([]);
@@ -77,6 +81,30 @@ export default function FamilyDetails() {
             prev.map((r) => (String(r.year) === String(updatedRow.year) ? updatedRow : r))
         );
     };
+
+    const handleCreateReceipt = async (payload) => {
+        // modal might send {__error}
+        if (payload?.__error) {
+            setToastErr({ show: true, message: payload.__error });
+            return;
+        }
+
+        try {
+            const res = await createReceiptApi(payload);
+
+            if (res?.code === 200) {
+                setToastOk({ show: true, message: res?.message || "Receipt created successfully" });
+
+                // ✅ refresh receipts list
+                await fetchReceipts({ limit: receiptPagination.limit || 10, offset: 0 });
+            } else {
+                setToastErr({ show: true, message: res?.message || "Failed to create receipt" });
+            }
+        } catch (e) {
+            setToastErr({ show: true, message: e?.message || "Failed to create receipt" });
+        }
+    };
+
 
     const tabs = useMemo(
         () => [
@@ -389,6 +417,9 @@ export default function FamilyDetails() {
                 open={openAddReceipt}
                 onClose={() => setOpenAddReceipt(false)}
                 hofName={profile.name}
+                type="family"
+                familyId={id}
+                onSave={handleCreateReceipt}
             />
 
             <AddFamilyModal
@@ -428,6 +459,19 @@ export default function FamilyDetails() {
                 row={selectedSabeelRow}
                 onUpdate={handleUpdateSabeel}
             />
+
+            <SuccessToast
+                show={toastOk.show}
+                message={toastOk.message}
+                onClose={() => setToastOk({ show: false, message: "" })}
+            />
+
+            <ErrorToast
+                show={toastErr.show}
+                message={toastErr.message}
+                onClose={() => setToastErr({ show: false, message: "" })}
+            />
+
         </DashboardLayout>
     );
 }
