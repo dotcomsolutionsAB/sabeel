@@ -9,6 +9,11 @@ import { UsersIcon, EyeIcon, PrintIcon } from "../components/icons";
 import Loader from "../components/Loader";
 import { retrieveFamilyApi } from "../services/familyService";
 
+import AddFamilyModal from "../components/modals/AddFamilyModal";
+import SuccessToast from "../components/SuccessToast";  // Success Toast
+import ErrorToast from "../components/ErrorToast";    // Error Toast
+import { createFamilyApi } from "../services/familyService"; // Service to create family
+
 export default function Family() {
     // API state
     const [rows, setRows] = useState([]);
@@ -22,9 +27,7 @@ export default function Family() {
     const [loading, setLoading] = useState(false);
     const [apiError, setApiError] = useState("");
 
-    // =========================
     // Filters + paging
-    // =========================
     const [search, setSearch] = useState("");
     const [sector, setSector] = useState("All");
     const [filter, setFilter] = useState(""); // due/prev_due/new_takhmeen_pending/not_tagged/service
@@ -35,14 +38,35 @@ export default function Family() {
 
     const offset = (page - 1) * pageSize;
 
-    // =========================
     // Selected (right-side details)
-    // =========================
     const [selectedId, setSelectedId] = useState(null);
 
-    // =========================
+    const [openAddFamily, setOpenAddFamily] = useState(false); // to open/close modal
+    const [toastOk, setToastOk] = useState({ show: false, message: "" });
+    const [toastErr, setToastErr] = useState({ show: false, message: "" });
+
+    const handleSaveFamily = async (payload) => {
+        try {
+            // Call the create family API service
+            const res = await createFamilyApi(payload);
+
+            if (res?.code === 200) {
+                setToastOk({ show: true, message: "Family created successfully!" });
+
+                // Optionally, re-fetch the family list or update the local state with the new data
+
+                // Close the modal
+                setOpenAddFamily(false);
+            } else {
+                setToastErr({ show: true, message: res?.message || "Failed to create family" });
+            }
+        } catch (e) {
+            setToastErr({ show: true, message: e?.message || "Failed to create family" });
+        }
+    };
+
+
     // Fetch API
-    // =========================
     const fetchFamilies = async () => {
         try {
             setLoading(true);
@@ -88,10 +112,7 @@ export default function Family() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [search, sector, filter, page]);
 
-    // =========================
     // Sector options (from current page rows)
-    // If you want full sector list, API should provide it separately
-    // =========================
     const sectorOptions = useMemo(() => {
         const set = new Set((rows || []).map((d) => d.sector).filter(Boolean));
         return ["All", ...Array.from(set)];
@@ -102,10 +123,7 @@ export default function Family() {
         return found || rows[0] || null;
     }, [rows, selectedId]);
 
-    // =========================
     // Client-side sort (optional)
-    // API doesn’t support sort in payload, so keep this here
-    // =========================
     const viewRows = useMemo(() => {
         const list = [...(rows || [])];
 
@@ -120,9 +138,7 @@ export default function Family() {
         return list;
     }, [rows, sort]);
 
-    // =========================
     // Columns
-    // =========================
     const sabeelColumns = useMemo(
         () => [
             { key: "year", header: "Year", width: 90 },
@@ -255,14 +271,10 @@ export default function Family() {
         [setSelectedId]
     );
 
-    // =========================
     // Pagination derived from API total
-    // =========================
     const totalPages = Math.max(1, Math.ceil((pagination.total || 0) / pageSize));
 
-    // =========================
     // Handlers
-    // =========================
     const handleSearchChange = (val) => {
         setSearch(val);
         setPage(1);
@@ -285,7 +297,9 @@ export default function Family() {
                     <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-sky-700 to-sky-500">
                         <div className="text-white font-semibold">Mumeneen</div>
 
-                        <button className="inline-flex items-center gap-2 rounded-lg bg-sky-900/60 hover:bg-sky-900/70 text-white px-3 py-2 text-xs font-semibold">
+                        <button className="inline-flex items-center gap-2 rounded-lg bg-sky-900/60 hover:bg-sky-900/70 text-white px-3 py-2 text-xs font-semibold"
+                            onClick={() => setOpenAddFamily(true)}
+                        >
                             <UsersIcon className="w-4 h-4" />
                             Add New family
                         </button>
@@ -478,6 +492,24 @@ export default function Family() {
                     {/* end grid */}
                 </div>
             </div>
+            <AddFamilyModal
+                open={openAddFamily}
+                onClose={() => setOpenAddFamily(false)}
+                onSave={handleSaveFamily} // This will trigger the save logic
+                sectorOptions={sectorOptions} // This is passed as sectorOptions (you can pass them from the API response)
+            />
+            <SuccessToast
+                show={toastOk.show}
+                message={toastOk.message}
+                onClose={() => setToastOk({ show: false, message: "" })}
+            />
+
+            <ErrorToast
+                show={toastErr.show}
+                message={toastErr.message}
+                onClose={() => setToastErr({ show: false, message: "" })}
+            />
+
         </DashboardLayout>
     );
 }

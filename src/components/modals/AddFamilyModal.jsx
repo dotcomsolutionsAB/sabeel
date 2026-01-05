@@ -37,7 +37,7 @@ export default function AddFamilyModal({ open, onClose, onSave, sectorOptions = 
     }, [open]);
 
     const sectorList = useMemo(() => {
-        const opts = sectorOptions?.length ? sectorOptions : ["MOHANMEDI", "BURHANI", "SAIFI"];
+        const opts = sectorOptions?.length ? sectorOptions : ["A-2", "B-12", "BURHANI", "DAWOODI", "EZZY", "MOHAMMEDI", "SHUJAI", "ZAINY"];
         return [{ label: "Select", value: "" }, ...opts.map((s) => ({ label: s, value: s }))];
     }, [sectorOptions]);
 
