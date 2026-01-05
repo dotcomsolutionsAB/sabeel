@@ -241,7 +241,9 @@ export default function Establishments() {
                     className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-sky-700 hover:bg-sky-800 text-white"
                     onClick={(e) => {
                         e.stopPropagation();
-                        navigate(`/establishments/${r.id}`);
+                        const id = r?.establishment_id; // ✅ use establishment_id
+                        if (!id) return;                // ✅ safety
+                        navigate(`/establishments/${id}`);
                     }}
                 >
                     <EyeIcon className="w-5 h-5" />
