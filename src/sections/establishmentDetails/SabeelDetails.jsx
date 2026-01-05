@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { EyeIcon, TrashIcon } from "../../components/icons";
+import { AddIcon, EyeIcon, TrashIcon } from "../../components/icons";
 
 function money(v) {
     const n = Number(v || 0);
@@ -22,7 +22,8 @@ export default function SabeelDetailsTab({
                     onClick={onAdd}
                     className="inline-flex items-center gap-2 rounded-lg bg-sky-900 px-4 py-2 text-xs font-semibold text-white hover:bg-sky-950"
                 >
-                    ➕ Add Sabeel
+                    <AddIcon className="w-4 h-4" />
+                    Add Sabeel
                 </button>
             </div>
 

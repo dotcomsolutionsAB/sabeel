@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 
 import DataTable from "../../components/DataTable";
 import { TrashIcon } from "../../components/icons";
+import { UserPlusIcon } from "lucide-react";
 
 function toStr(v) {
     return v == null ? "" : String(v);
@@ -12,7 +13,7 @@ function toStr(v) {
 export default function PartnersTab({
     partners = [],
     selectedCount = 0,
-    onAddOrUpdateOtherJamiat = () => { },
+    // onAddOrUpdateOtherJamiat = () => { },
     onAddOrUpdatePartner = () => { },
     onDeletePartner = () => { },
 }) {
@@ -75,18 +76,11 @@ export default function PartnersTab({
             <div className="px-5 py-4 flex items-center justify-end gap-3">
                 <button
                     type="button"
-                    className="inline-flex items-center gap-2 rounded-lg border border-sky-300 bg-white px-4 py-2 text-xs font-semibold text-sky-800 hover:bg-sky-50"
-                    onClick={onAddOrUpdateOtherJamiat}
-                >
-                    👥 Add / Update Other Jamiat Partner
-                </button>
-
-                <button
-                    type="button"
                     className="inline-flex items-center gap-2 rounded-lg bg-sky-800 px-4 py-2 text-xs font-semibold text-white hover:bg-sky-900"
                     onClick={onAddOrUpdatePartner}
                 >
-                    👥 Add / Update Partner
+                    <UserPlusIcon className="w-4 h-4" />
+                    Add / Update Partner
                 </button>
             </div>
 
@@ -116,7 +110,7 @@ export default function PartnersTab({
 PartnersTab.propTypes = {
     partners: PropTypes.array,
     selectedCount: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    onAddOrUpdateOtherJamiat: PropTypes.func,
+    // onAddOrUpdateOtherJamiat: PropTypes.func,
     onAddOrUpdatePartner: PropTypes.func,
     onDeletePartner: PropTypes.func,
 };
