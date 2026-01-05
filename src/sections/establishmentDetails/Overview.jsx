@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import DataTable from "../../components/DataTable";
 import Pagination from "../../components/Pagination";
 import { retrieveReceiptsApi } from "../../services/receiptService";
+import { AddIcon } from "../../components/icons";
 
 function formatINR(v) {
     const n = Number(v || 0);
@@ -278,7 +279,8 @@ export default function OverviewTab({ id, overview }) {
                             className="inline-flex items-center gap-2 rounded-lg bg-sky-800 hover:bg-sky-900 text-white px-4 py-2 text-xs font-semibold"
                             onClick={() => console.log("ADD RECEIPT")}
                         >
-                            + Add Receipt
+                            <AddIcon className="w-4 h-4" />
+                            Add Receipt
                         </button>
                     </div>
                 </div>
