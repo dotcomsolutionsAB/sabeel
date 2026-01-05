@@ -5,6 +5,7 @@ import DataTable from "../../components/DataTable";
 import Pagination from "../../components/Pagination";
 import { retrieveReceiptsApi } from "../../services/receiptService";
 import { AddIcon } from "../../components/icons";
+import AddReceiptModal from "../../components/modals/AddReceiptModal"; // Import your AddReceiptModal component
 
 function formatINR(v) {
     const n = Number(v || 0);
@@ -35,6 +36,22 @@ export default function OverviewTab({ id, overview }) {
     const [page, setPage] = useState(1);
     const pageSize = 10;
     const offset = (page - 1) * pageSize;
+
+    const [openAddReceipt, setOpenAddReceipt] = useState(false);
+
+    // Function to open the modal when "Add Receipt" is clicked
+    const handleAddReceipt = () => {
+        setOpenAddReceipt(true); // Set the modal state to true to open it
+    };
+    const handleCloseAddReceipt = () => {
+        setOpenAddReceipt(false); // Set the modal state to false to close it
+    };
+    const handleSaveReceipt = async (payload) => {
+        console.log("Saving receipt with payload:", payload);
+        // You can make an API call here to save the receipt data
+        // Example:
+        // await api.saveReceipt(payload);
+    };
 
     const [pagination, setPagination] = useState({ limit: pageSize, offset: 0, count: 0, total: 0 });
 
@@ -274,14 +291,25 @@ export default function OverviewTab({ id, overview }) {
                             Selected: <span className="font-semibold">{selected.size}</span>
                         </div>
 
+                        {/* Add Receipt Button - Opens the Modal */}
                         <button
                             type="button"
-                            className="inline-flex items-center gap-2 rounded-lg bg-sky-800 hover:bg-sky-900 text-white px-4 py-2 text-xs font-semibold"
-                            onClick={() => console.log("ADD RECEIPT")}
+                            className="inline-flex items-center gap-2 rounded-lg bg-sky-800 text-white px-4 py-2 text-xs font-semibold"
+                            onClick={handleAddReceipt} // Calls handleAddReceipt to open the modal
                         >
                             <AddIcon className="w-4 h-4" />
                             Add Receipt
                         </button>
+
+                        {/* AddReceiptModal component - This is where you pass props to the modal */}
+                        <AddReceiptModal
+                            open={openAddReceipt}             // Controls whether the modal is open
+                            onClose={handleCloseAddReceipt}   // Controls closing the modal
+                            hofName={overview?.establishment?.name || "-"} // Pass HOF name
+                            type="establishment"              // Set type to "establishment" (could be "family" if needed)
+                            establishmentId={id}             // Pass the establishment ID to the modal
+                            onSave={handleSaveReceipt}        // Function to handle saving the receipt data
+                        />
                     </div>
                 </div>
 
@@ -312,6 +340,7 @@ export default function OverviewTab({ id, overview }) {
             </div>
         </div>
     );
+    // onAddReceipt: PropTypes.func,
 }
 
 OverviewTab.propTypes = {

@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import DataTable from "../components/DataTable";
 import FilterBar from "../components/FilterBar";
 import Pagination from "../components/Pagination";
-import { UsersIcon, EyeIcon, PrintIcon } from "../components/icons";
+import { UsersIcon, EyeIcon } from "../components/icons";
 import Loader from "../components/Loader";
 import { retrieveFamilyApi } from "../services/familyService";
 
@@ -59,6 +59,7 @@ export default function Family() {
                 setOpenAddFamily(false);
             } else {
                 setToastErr({ show: true, message: res?.message || "Failed to create family" });
+                setOpenAddFamily(true);
             }
         } catch (e) {
             setToastErr({ show: true, message: e?.message || "Failed to create family" });
@@ -428,10 +429,10 @@ export default function Family() {
                                         </div>
 
                                         <div className="flex gap-2 mt-3">
-                                            <button className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold hover:bg-slate-50">
+                                            {/* <button className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold hover:bg-slate-50">
                                                 <PrintIcon className="w-4 h-4" />
                                                 Print Profile
-                                            </button>
+                                            </button> */}
 
                                             <button
                                                 type="button"

@@ -207,11 +207,11 @@ export default function FamilyDetails() {
         return [
             { value: money(family?.sabeel?.sabeel), label: "Personal Sabeel" },
             { value: `₹ ${money(family?.sabeel?.due)}`, label: "Personal Due" },
-            { value: `₹ ${money(family?.sabeel?.prev_due)}`, label: "Personal Overdue" },
+            { value: `₹ ${money(family?.sabeel?.prev_due)}`, label: "Personal Prev Due" },
 
             { value: money(family?.establishment?.sabeel), label: "Establishment Sabeel" },
             { value: `₹ ${money(family?.establishment?.due)}`, label: "Establishment Due" },
-            { value: `₹ ${money(family?.establishment?.prev_due)}`, label: "Establishment Overdue" },
+            { value: `₹ ${money(family?.establishment?.prev_due)}`, label: "Establishment Prev Due" },
         ];
     }, [family]);
 
@@ -355,16 +355,16 @@ export default function FamilyDetails() {
 
                                                     <div className="mt-2 space-y-1 text-xs text-slate-700">
                                                         <div className="flex items-center gap-2">
-                                                            <MailIcon className="w-4 h-4 text-sky-700" />
-                                                            Email: <span className="font-semibold">{profile.email}</span>
+                                                            <IdCardIcon className="w-4 h-4 text-sky-700" />
+                                                            ITS: <span className="font-semibold">{profile.its}</span>
                                                         </div>
                                                         <div className="flex items-center gap-2">
                                                             <CallIcon className="w-4 h-4 text-sky-700" />
                                                             Phone: <span className="font-semibold">{profile.phone}</span>
                                                         </div>
                                                         <div className="flex items-center gap-2">
-                                                            <IdCardIcon className="w-4 h-4 text-sky-700" />
-                                                            ITS: <span className="font-semibold">{profile.its}</span>
+                                                            <MailIcon className="w-4 h-4 text-sky-700" />
+                                                            Email: <span className="font-semibold">{profile.email}</span>
                                                         </div>
                                                         <div className="flex items-center gap-2">
                                                             <EstablishmentIcon className="w-4 h-4 text-sky-700" />

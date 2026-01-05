@@ -4,6 +4,7 @@ import Modal from "../Modal";
 import InputField from "../InputField";
 import headerImg from "../../assets/images/addFamily.png";
 
+// Utility function to convert to string
 function toStr(v) {
     return v == null ? "" : String(v);
 }
@@ -22,7 +23,7 @@ export default function AddFamilyModal({ open, onClose, onSave, sectorOptions = 
 
     const set = (key) => (val) => setForm((p) => ({ ...p, [key]: val }));
 
-    // ✅ reset when modal opens
+    // ✅ Reset when modal opens
     useEffect(() => {
         if (!open) return;
         setSaving(false);
@@ -36,11 +37,13 @@ export default function AddFamilyModal({ open, onClose, onSave, sectorOptions = 
         });
     }, [open]);
 
+    // Sector options (static or dynamic based on props)
     const sectorList = useMemo(() => {
         const opts = sectorOptions?.length ? sectorOptions : ["A-2", "B-12", "BURHANI", "DAWOODI", "EZZY", "MOHAMMEDI", "SHUJAI", "ZAINY"];
         return [{ label: "Select", value: "" }, ...opts.map((s) => ({ label: s, value: s }))];
     }, [sectorOptions]);
 
+    // Gender options (static)
     const genderOptions = useMemo(
         () => [
             { label: "Male", value: "male" },
@@ -49,17 +52,26 @@ export default function AddFamilyModal({ open, onClose, onSave, sectorOptions = 
         []
     );
 
+    // Form validation
     const validate = () => {
         if (!toStr(form.name).trim()) return "Name is required";
-        if (!toStr(form.its).trim()) return "ITS is required";
         if (!toStr(form.gender).trim()) return "Gender is required";
-        // sector/mobile/email are nullable in API, but you want them required in UI:
-        if (!toStr(form.sector).trim()) return "Sector is required";
-        if (!toStr(form.mobile).trim()) return "Mobile is required";
-        if (!toStr(form.email).trim()) return "Email is required";
+        if (!toStr(form.its).trim()) return "ITS is required";
+
+        // Validate mobile (10 digits only, optional)
+        if (form.mobile && !/^\d{10}$/.test(form.mobile)) {
+            return "Mobile must be exactly 10 digits";
+        }
+
+        // Validate email (optional, but if present, must be valid)
+        if (form.email && !/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(form.email)) {
+            return "Please enter a valid email address";
+        }
+
         return "";
     };
 
+    // Save function
     const save = async () => {
         const err = validate();
         if (err) return onSave?.({ __error: err });
@@ -129,15 +141,26 @@ export default function AddFamilyModal({ open, onClose, onSave, sectorOptions = 
                         />
 
                         <InputField
-                            label="Sector *"
+                            label="Sector"
                             type="select"
                             value={form.sector}
                             onChange={set("sector")}
                             options={sectorList}
                         />
 
-                        <InputField label="Mobile *" value={form.mobile} onChange={set("mobile")} placeholder="Enter mobile" />
-                        <InputField label="Email *" value={form.email} onChange={set("email")} placeholder="Enter email" />
+                        <InputField
+                            label="Mobile"
+                            value={form.mobile}
+                            onChange={set("mobile")}
+                            placeholder="Enter mobile"
+                            maxLength={10} // Restrict to 10 digits
+                        />
+                        <InputField
+                            label="Email"
+                            value={form.email}
+                            onChange={set("email")}
+                            placeholder="Enter email"
+                        />
                     </div>
                 </div>
             </div>
