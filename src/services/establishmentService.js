@@ -17,7 +17,5 @@ export const retrieveEstablishmentsApi = async ({
 };
 
 export async function retrieveEstablishmentOverviewApi(establishmentId) {
-    // GET: /establishment_details/overview/{id}/retrieve
-    const res = await api.get(`/establishment_details/overview/${establishmentId}/retrieve`);
-    return res?.data ?? res;
+    return api.get(`/establishment_details/overview/${establishmentId}/retrieve`);
 }
