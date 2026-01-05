@@ -28,3 +28,13 @@ export async function updateEstablishmentApi(establishmentId, payload) {
     return res?.data ?? res;
 }
 
+// Example for `createEstablishmentApi` function
+export async function createEstablishmentApi(payload) {
+    try {
+        const response = await api.post("/establishment/create", payload);
+        return response?.data; // Ensure that we return response.data
+    } catch (error) {
+        console.error("API Error:", error); // Log the error if the API call fails
+        throw error; // Rethrow the error to be caught in the calling function
+    }
+}
