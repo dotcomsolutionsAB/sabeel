@@ -145,12 +145,12 @@ export default function Family() {
             {
                 key: "sabeel",
                 header: "Sabeel",
-                render: (r) => <span className="font-semibold text-sky-700">{r.sabeel}</span>,
+                render: (r) => <span className="font-semibold text-sky-700"> ₹{r.sabeel}</span>,
             },
             {
                 key: "due",
                 header: "Due",
-                render: (r) => `₹ ${r.due}`,
+                render: (r) => `₹${r.due}`,
             },
         ],
         []
@@ -167,7 +167,7 @@ export default function Family() {
                 key: "due",
                 header: "Due",
                 width: 90,
-                render: (r) => `₹ ${r.due}`,
+                render: (r) => `₹${r.due}`,
             },
             {
                 key: "action",
@@ -222,15 +222,15 @@ export default function Family() {
                     <div className="text-xs text-slate-700">
                         <div>
                             <span className="font-semibold">Sabeel:</span>{" "}
-                            <span className="text-sky-700 font-semibold">{r?.sabeel?.sabeel ?? 0}</span>
+                            <span className="text-sky-700 font-semibold"> ₹{r?.sabeel?.sabeel ?? 0}</span>
                         </div>
                         <div>
                             Due:{" "}
-                            <span className="text-slate-900 font-semibold">₹ {r?.sabeel?.due ?? 0}</span>
+                            <span className="text-slate-900 font-semibold">₹{r?.sabeel?.due ?? 0}</span>
                         </div>
                         <div>
                             Prev Due:{" "}
-                            <span className="text-rose-600 font-semibold">₹ {r?.sabeel?.prev_due ?? 0}</span>
+                            <span className="text-rose-600 font-semibold">₹{r?.sabeel?.prev_due ?? 0}</span>
                         </div>
                     </div>
                 ),
@@ -243,11 +243,11 @@ export default function Family() {
                         <div>
                             <span className="font-semibold">Establishment:</span>{" "}
                             <span className="text-sky-700 font-semibold">
-                                {/* {(r.establishment_details || []).length} */}
+                                ₹{(r.establishment?.sabeel ?? 0)}
                             </span>
                         </div>
-                        <div>Due: ₹ {r?.establishment?.due ?? 0}</div>
-                        <div>Prev Due: ₹ {r?.establishment?.prev_due ?? 0}</div>
+                        <div>Due: ₹{r?.establishment?.due ?? 0}</div>
+                        <div>Prev Due: ₹{r?.establishment?.prev_due ?? 0}</div>
                     </div>
                 ),
             },

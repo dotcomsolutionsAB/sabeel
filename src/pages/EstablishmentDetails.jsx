@@ -244,8 +244,8 @@ export default function EstablishmentDetails() {
                                                             {(overview?.sabeel_details || []).slice(0, 3).map((r, i) => (
                                                                 <tr key={i} className="border-t">
                                                                     <td className="px-3 py-2">{r?.year || "-"}</td>
-                                                                    <td className="px-3 py-2 text-sky-700 font-semibold">{money(r?.sabeel)}</td>
-                                                                    <td className="px-3 py-2">{money(r?.due)}</td>
+                                                                    <td className="px-3 py-2 text-sky-700 font-semibold">₹{money(r?.sabeel)}</td>
+                                                                    <td className="px-3 py-2">₹{money(r?.due)}</td>
                                                                 </tr>
                                                             ))}
                                                             {(!overview?.sabeel_details || overview.sabeel_details.length === 0) ? (
