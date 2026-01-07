@@ -16,8 +16,8 @@ import { ROUTES } from "../services/routes";
 
 export default function TopBar({
     title = "Dashboard",
-    userName = "Nematullah",
-    dateRange = "AUG 2024 - AUG 2025",
+    userName = "",
+    dateRange = "", // Default initial range
     onDateRangeChange,
 }) {
     const navigate = useNavigate();
@@ -42,16 +42,29 @@ export default function TopBar({
     }, [pathname, navItems]);
 
     // ===== DATE PICKER (native) =====
-    const [fromDate, setFromDate] = useState("");
-    const [toDate, setToDate] = useState("");
-    const fromRef = useRef(null);
+    const [fromDate, setFromDate] = useState(() => {
+        // Initialize fromDate to current month and year
+        const currentDate = new Date();
+        return currentDate.toISOString().split("T")[0]; // YYYY-MM-DD format
+    });
 
-    const openDatePicker = () => {
-        if (fromRef.current?.showPicker) fromRef.current.showPicker();
-        else fromRef.current?.click();
+    const [toDate, setToDate] = useState(() => {
+        // Initialize toDate to one year in the future
+        const currentDate = new Date();
+        currentDate.setFullYear(currentDate.getFullYear() + 1);
+        return currentDate.toISOString().split("T")[0]; // YYYY-MM-DD format
+    });
+
+    const fromRef = useRef(null);
+    const toRef = useRef(null);
+
+    const openDatePicker = (picker) => {
+        if (picker === "from" && fromRef.current?.showPicker) fromRef.current.showPicker();
+        if (picker === "to" && toRef.current?.showPicker) toRef.current.showPicker();
     };
 
     useEffect(() => {
+        // Notify parent component whenever the dates change
         onDateRangeChange?.({ from: fromDate, to: toDate });
     }, [fromDate, toDate, onDateRangeChange]);
 
@@ -85,11 +98,53 @@ export default function TopBar({
                 <div className="title">{title}</div>
 
                 <div className="right-info">
-                    {/* Date pill */}
-                    <button type="button" className="date-pill" title="Pick Date Range" onClick={openDatePicker}>
-                        <span style={{ fontWeight: 600 }}>{dateRange}</span>
-                        <CalendarIcon />
-                    </button>
+                    {/* From Date */}
+                    <div className="date-picker">
+                        <button
+                            type="button"
+                            className="date-pill"
+                            title="Pick From Date"
+                            onClick={() => openDatePicker("from")}
+                        >
+                            <span style={{ fontWeight: 600 }}>
+                                {fromDate ? new Date(fromDate).toLocaleDateString("en-US", { year: 'numeric', month: 'short' }) : dateRange || "Select From Date"}
+                            </span>
+                            <CalendarIcon />
+                        </button>
+                        <input
+                            ref={fromRef}
+                            type="date"
+                            value={fromDate}
+                            onChange={(e) => setFromDate(e.target.value)}
+                            style={{ position: "absolute", opacity: 0, pointerEvents: "none", width: 1, height: 1 }}
+                            aria-hidden="true"
+                            tabIndex={-1}
+                        />
+                    </div>
+
+                    {/* To Date */}
+                    <div className="date-picker">
+                        <button
+                            type="button"
+                            className="date-pill"
+                            title="Pick To Date"
+                            onClick={() => openDatePicker("to")}
+                        >
+                            <span style={{ fontWeight: 600 }}>
+                                {toDate ? new Date(toDate).toLocaleDateString("en-US", { year: 'numeric', month: 'short' }) : dateRange || "Select To Date"}
+                            </span>
+                            <CalendarIcon />
+                        </button>
+                        <input
+                            ref={toRef}
+                            type="date"
+                            value={toDate}
+                            onChange={(e) => setToDate(e.target.value)}
+                            style={{ position: "absolute", opacity: 0, pointerEvents: "none", width: 1, height: 1 }}
+                            aria-hidden="true"
+                            tabIndex={-1}
+                        />
+                    </div>
 
                     <div>
                         Hi, <strong>{userName}</strong>
@@ -147,25 +202,6 @@ export default function TopBar({
                             </div>
                         )}
                     </div>
-
-                    {/* hidden native inputs */}
-                    <input
-                        ref={fromRef}
-                        type="date"
-                        value={fromDate}
-                        onChange={(e) => setFromDate(e.target.value)}
-                        style={{ position: "absolute", opacity: 0, pointerEvents: "none", width: 1, height: 1 }}
-                        aria-hidden="true"
-                        tabIndex={-1}
-                    />
-                    <input
-                        type="date"
-                        value={toDate}
-                        onChange={(e) => setToDate(e.target.value)}
-                        style={{ position: "absolute", opacity: 0, pointerEvents: "none", width: 1, height: 1 }}
-                        aria-hidden="true"
-                        tabIndex={-1}
-                    />
                 </div>
             </div>
 
