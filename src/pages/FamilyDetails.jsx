@@ -91,7 +91,6 @@ export default function FamilyDetails() {
             setToastErr({ show: true, message: e?.message || "Failed to create receipt" });
         }
     };
-
     const handleSaveFamily = async (payload) => {
         if (payload?.__error) {
             setToastErr({ show: true, message: payload.__error });
@@ -118,7 +117,6 @@ export default function FamilyDetails() {
             setToastErr({ show: true, message: e?.message || "Failed to create family" });
         }
     };
-
 
     const tabs = useMemo(
         () => [
@@ -246,7 +244,6 @@ export default function FamilyDetails() {
         ],
         []
     );
-
     const estColumns = useMemo(
         () => [
             {

@@ -90,7 +90,7 @@ export default function AddReceiptModal({
         const payload = {
             type,  // "family" or "establishment"
             family_id: type === "family" ? toStr(familyId) : null,
-            establishment_id: type === "establishment" ? toStr(establishmentId) : null,
+            establishment_no: type === "establishment" ? toStr(establishmentId) : null, // Ensure establishment_id is passed if type is "establishment"
             year: toStr(form.year).trim(),
             mode: mode,
             amount: toStr(form.amount).trim(),
@@ -111,6 +111,7 @@ export default function AddReceiptModal({
             setSaving(false);
         }
     };
+
 
     return (
         <Modal open={open} onClose={onClose} title="Add Receipt" widthClass="max-w-2xl" footer={
