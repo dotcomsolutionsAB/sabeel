@@ -352,23 +352,41 @@ export default function FamilyDetails() {
                                                     <div className="font-semibold text-slate-900 leading-tight">{profile.name}</div>
 
                                                     <div className="mt-2 space-y-1 text-xs text-slate-700">
-                                                        <div className="flex items-center gap-2">
-                                                            <IdCardIcon className="w-4 h-4 text-sky-700" />
-                                                            ITS: <span className="font-semibold">{profile.its}</span>
+
+                                                        <div className="grid grid-cols-[60px_1fr] items-center gap-2">
+                                                            <div className="flex items-center gap-2">
+                                                                <IdCardIcon className="w-4 h-4 text-sky-700" />
+                                                                <span>ITS:</span>
+                                                            </div>
+                                                            <span className="font-semibold">{profile.its}</span>
                                                         </div>
-                                                        <div className="flex items-center gap-2">
-                                                            <CallIcon className="w-4 h-4 text-sky-700" />
-                                                            Phone: <span className="font-semibold">{profile.phone}</span>
+
+                                                        <div className="grid grid-cols-[60px_1fr] items-center gap-2">
+                                                            <div className="flex items-center gap-2">
+                                                                <CallIcon className="w-4 h-4 text-sky-700" />
+                                                                <span>Phone:</span>
+                                                            </div>
+                                                            <span className="font-semibold">{profile.phone}</span>
                                                         </div>
-                                                        <div className="flex items-center gap-2">
-                                                            <MailIcon className="w-4 h-4 text-sky-700" />
-                                                            Email: <span className="font-semibold">{profile.email}</span>
+
+                                                        <div className="grid grid-cols-[60px_1fr] items-center gap-2">
+                                                            <div className="flex items-center gap-2">
+                                                                <MailIcon className="w-4 h-4 text-sky-700" />
+                                                                <span>Email:</span>
+                                                            </div>
+                                                            <span className="font-semibold">{profile.email}</span>
                                                         </div>
-                                                        <div className="flex items-center gap-2">
-                                                            <EstablishmentIcon className="w-4 h-4 text-sky-700" />
-                                                            Sector: <span className="font-semibold">{profile.sector}</span>
+
+                                                        <div className="grid grid-cols-[60px_1fr] items-center gap-2">
+                                                            <div className="flex items-center gap-2">
+                                                                <EstablishmentIcon className="w-4 h-4 text-sky-700" />
+                                                                <span>Sector:</span>
+                                                            </div>
+                                                            <span className="font-semibold">{profile.sector}</span>
                                                         </div>
+
                                                     </div>
+
 
                                                     <div className="flex gap-2 mt-3">
                                                         {/* <button className="inline-flex items-center justify-center gap-2 flex-1 rounded-lg border border-sky-700 text-sky-800 font-semibold px-3 py-2 text-xs hover:bg-sky-50">

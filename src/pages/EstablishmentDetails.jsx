@@ -193,19 +193,24 @@ export default function EstablishmentDetails() {
                                                 </div>
 
                                                 <div className="mt-3 text-xs text-slate-700 space-y-2">
-                                                    <div>
-                                                        <span className="font-semibold">Email:</span> {email}
-                                                    </div>
-                                                    <div>
-                                                        <span className="font-semibold">Phone:</span> {phone}
-                                                    </div>
-                                                    <div>
-                                                        <span className="font-semibold">Address:</span> {overview?.address || "-"}
+                                                    <div className="grid grid-cols-[120px_1fr] items-start gap-2">
+                                                        <span className="font-semibold">Email:</span>
+                                                        <span className="break-words">{email || "-"}</span>
                                                     </div>
 
-                                                    <div className="pt-2">
-                                                        <span className="font-semibold">Total Sabeel:</span>{" "}
-                                                        {money(overview?.establishment?.sabeel)}
+                                                    <div className="grid grid-cols-[120px_1fr] items-start gap-2">
+                                                        <span className="font-semibold">Phone:</span>
+                                                        <span className="break-words">{phone || "-"}</span>
+                                                    </div>
+
+                                                    <div className="grid grid-cols-[120px_1fr] items-start gap-2">
+                                                        <span className="font-semibold">Address:</span>
+                                                        <span className="break-words">{overview?.address || "-"}</span>
+                                                    </div>
+
+                                                    <div className="pt-2 grid grid-cols-[120px_1fr] items-start gap-2">
+                                                        <span className="font-semibold">Total Sabeel:</span>
+                                                        <span className="font-semibold">{money(overview?.establishment?.sabeel)}</span>
                                                     </div>
                                                 </div>
 
