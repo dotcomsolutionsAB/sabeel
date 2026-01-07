@@ -24,7 +24,7 @@ export default function Establishments() {
 
     const [search, setSearch] = useState("");
     const [filter, setFilter] = useState("");
-    const [sort, setSort] = useState("az");
+    // const [sort, setSort] = useState("az");
 
     const [page, setPage] = useState(1);
     const pageSize = 10;
@@ -83,17 +83,7 @@ export default function Establishments() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [search, filter, page]);
 
-    const viewRows = useMemo(() => {
-        const list = [...(rows || [])];
-        list.sort((a, b) => {
-            const an = (a?.name || "").toLowerCase();
-            const bn = (b?.name || "").toLowerCase();
-            if (sort === "az") return an.localeCompare(bn);
-            if (sort === "za") return bn.localeCompare(an);
-            return 0;
-        });
-        return list;
-    }, [rows, sort]);
+    const viewRows = useMemo(() => rows || [], [rows]);
 
     const pageIds = useMemo(() => (viewRows || []).map((r) => r.id), [viewRows]);
     const allCheckedOnPage = pageIds.length > 0 && pageIds.every((id) => selectedIds.has(id));
@@ -302,15 +292,6 @@ export default function Establishments() {
                                     { label: "New Takhmeen Pending", value: "new_takhmeen_pending" },
                                     { label: "Not Tagged", value: "not_tagged" },
                                     { label: "Manufacturer", value: "manufacturer" },
-                                ],
-                            },
-                            {
-                                value: sort,
-                                onChange: setSort,
-                                width: 220,
-                                options: [
-                                    { label: "Sort by Alphabetic (A-Z)", value: "az" },
-                                    { label: "Sort by Alphabetic (Z-A)", value: "za" },
                                 ],
                             },
                         ]}
