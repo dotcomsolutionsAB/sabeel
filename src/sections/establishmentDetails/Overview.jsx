@@ -3,9 +3,11 @@ import PropTypes from "prop-types";
 
 import DataTable from "../../components/DataTable";
 import Pagination from "../../components/Pagination";
-import { retrieveReceiptsApi } from "../../services/receiptService";
+import { createReceiptApi, retrieveReceiptsApi } from "../../services/receiptService";
 import { AddIcon } from "../../components/icons";
 import AddReceiptModal from "../../components/modals/AddReceiptModal"; // Import your AddReceiptModal component
+import SuccessToast from "../../components/SuccessToast";
+import ErrorToast from "../../components/ErrorToast";
 
 function formatINR(v) {
     const n = Number(v || 0);
@@ -38,6 +40,8 @@ export default function OverviewTab({ id, overview }) {
     const offset = (page - 1) * pageSize;
 
     const [openAddReceipt, setOpenAddReceipt] = useState(false);
+    const [toastOk, setToastOk] = useState({ show: false, message: "" });
+    const [toastErr, setToastErr] = useState({ show: false, message: "" });
 
     // Function to open the modal when "Add Receipt" is clicked
     const handleAddReceipt = () => {
@@ -48,9 +52,25 @@ export default function OverviewTab({ id, overview }) {
     };
     const handleSaveReceipt = async (payload) => {
         console.log("Saving receipt with payload:", payload);
-        // You can make an API call here to save the receipt data
-        // Example:
-        // await api.saveReceipt(payload);
+        if (payload?.__error) {
+            setToastErr({ show: true, message: payload.__error });
+            return;
+        }
+
+        try {
+            const res = await createReceiptApi(payload);
+
+            if (res?.code === 200) {
+                setToastOk({ show: true, message: res?.message || "Receipt created successfully" });
+
+                // ✅ refresh receipts list
+                await fetchReceipts({ limit: setPagination.limit || 10, offset: 0 });
+            } else {
+                setToastErr({ show: true, message: res?.message || "Failed to create receipt" });
+            }
+        } catch (e) {
+            setToastErr({ show: true, message: e?.message || "Failed to create receipt" });
+        }
     };
 
     const [pagination, setPagination] = useState({ limit: pageSize, offset: 0, count: 0, total: 0 });
@@ -338,7 +358,20 @@ export default function OverviewTab({ id, overview }) {
                     />
                 </div>
             </div>
+
+            <SuccessToast
+                show={toastOk.show}
+                message={toastOk.message}
+                onClose={() => setToastOk({ show: false, message: "" })}
+            />
+
+            <ErrorToast
+                show={toastErr.show}
+                message={toastErr.message}
+                onClose={() => setToastErr({ show: false, message: "" })}
+            />
         </div>
+
     );
     // onAddReceipt: PropTypes.func,
 }
