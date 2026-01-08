@@ -8,20 +8,26 @@ export default function TabsSlash({ tabs = [], value, onChange }) {
             {/* full width bar (like screenshot background) */}
             <div className="w-full rounded-md border border-slate-200 bg-gradient-to-b from-white to-slate-50 shadow-sm overflow-hidden">
                 <div className="flex justify-start">
-                    <div className="inline-flex items-stretch">
+                    <div className="inline-flex items-stretch gap-5">
                         {tabs.map((t, idx) => {
                             const active = t.key === value;
 
                             // clip-paths to match screenshot:
-                            // first: right slant only
-                            // middle: right slant (left handled via overlap)
-                            // last: left slant only, right straight edge
+                            // first: right slant only                          polygon(26px 0px, calc(90% - 26px) 0px, 86% 100%, 50px 150%)
+                            // middle: right slant (left handled via overlap) polygon(0px 0px, calc(100% - 26px) 0px, 100% 100%, 0px 100%)
+                            // last: left slant only, right straight edge     polygon(0px 0px, calc(100% - 25%) -10px, 100% 100%, 25px 100%)
                             const clipPath =
                                 idx === 0
-                                    ? `polygon(0 0, calc(100% - ${slant}px) 0, 100% 100%, 0 100%)`
+                                    // ? `polygon(0 0, calc(100% - ${slant}px) 0, 100% 100%, 0 100%)`
+                                    // ? `polygon(100%)`
+                                    // : idx === tabs.length - 1
+                                    // ? `polygon(${slant}px 0, 100% 0, 100% 100%, 0 100%)`
+                                    // : `polygon(${slant}px 0, calc(100% - ${slant}px) 0, 100% 100%, 0 100%)`;
+
+                                    ? `polygon(100%)`
                                     : idx === tabs.length - 1
-                                        ? `polygon(${slant}px 0, 100% 0, 100% 100%, 0 100%)`
-                                        : `polygon(${slant}px 0, calc(100% - ${slant}px) 0, 100% 100%, 0 100%)`;
+                                        ? `polygon(100%)`
+                                        : `polygon(100%)`;
 
                             return (
                                 <button
