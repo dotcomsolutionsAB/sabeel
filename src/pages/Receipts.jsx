@@ -8,7 +8,10 @@ import Pagination from "../components/Pagination";
 import Loader from "../components/Loader";
 import { EyeIcon, EditIcon, TrashIcon } from "../components/icons";
 import EditReceiptModal from "../components/modals/EditReceiptModal";
-import { retrieveReceiptsApi } from "../services/receiptService";
+import { retrieveReceiptsApi, createDepositApi } from "../services/receiptService";
+import CreateDepositModal from "../components/modals/CreateDepositModal";
+import SuccessToast from "../components/SuccessToast";
+import ErrorToast from "../components/ErrorToast";
 
 function formatINR(v) {
     const n = Number(v || 0);
@@ -40,6 +43,23 @@ export default function Receipts() {
     // ✅ selection
     const [selectedIds, setSelectedIds] = useState(() => new Set());
     const selectedCount = selectedIds.size;
+
+    const [depositOpen, setDepositOpen] = useState(false);
+    const [depositLoading, setDepositLoading] = useState(false);
+
+    const [successToast, setSuccessToast] = useState({ show: false, message: "" });
+    const [errorToast, setErrorToast] = useState({ show: false, message: "" });
+
+    // total amount of SELECTED rows (from rows in current page data)
+    const selectedTotalAmount = useMemo(() => {
+        if (!rows?.length || selectedIds.size === 0) return 0;
+        let sum = 0;
+        for (const r of rows) {
+            if (selectedIds.has(String(r.id))) sum += Number(r?.amount || 0);
+        }
+        return sum;
+    }, [rows, selectedIds]);
+
 
     const fetchReceipts = async () => {
 
@@ -397,7 +417,7 @@ export default function Receipts() {
                                         <button
                                             type="button"
                                             className="rounded-md border border-sky-300 bg-white px-3 py-1.5 text-xs font-semibold text-sky-700 hover:bg-sky-50"
-                                            onClick={() => console.log("Create Deposite")}
+                                            onClick={() => setDepositOpen(true)}
                                         >
                                             Create Deposite
                                         </button>
@@ -463,6 +483,62 @@ export default function Receipts() {
                     fetchReceipts();
                 }}
             />
+
+            <CreateDepositModal
+                open={depositOpen}
+                onClose={() => setDepositOpen(false)}
+                receiptIds={Array.from(selectedIds)}
+                totalAmount={selectedTotalAmount}
+                loading={depositLoading}
+                onConfirm={async ({ remarks }) => {
+                    try {
+                        if (selectedIds.size === 0) return;
+
+                        setDepositLoading(true);
+                        setErrorToast({ show: false, message: "" });
+
+                        const payload = {
+                            date: new Date().toISOString().slice(0, 10), // YYYY-MM-DD
+                            receipt_ids: Array.from(selectedIds).join(","),
+                            amount: Number(selectedTotalAmount || 0),
+                            remarks: remarks || "",
+                        };
+
+                        const res = await createDepositApi(payload);
+
+                        // success toast
+                        setSuccessToast({
+                            show: true,
+                            message: res?.message || "Deposit created successfully.",
+                        });
+
+                        setDepositOpen(false);
+                        setSelectedIds(new Set());
+
+                        // refresh
+                        fetchReceipts();
+                    } catch (e) {
+                        setErrorToast({
+                            show: true,
+                            message: e?.response?.data?.message || e?.message || "Failed to create deposit",
+                        });
+                    } finally {
+                        setDepositLoading(false);
+                    }
+                }}
+            />
+
+            <SuccessToast
+                show={successToast.show}
+                message={successToast.message}
+                onClose={() => setSuccessToast({ show: false, message: "" })}
+            />
+            <ErrorToast
+                show={errorToast.show}
+                message={errorToast.message}
+                onClose={() => setErrorToast({ show: false, message: "" })}
+            />
+
 
         </DashboardLayout>
     );
