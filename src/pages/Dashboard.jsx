@@ -4,12 +4,21 @@ import SectionPanel from "../components/SectionPanel";
 import DataTable from "../components/DataTable";
 import DashboardLayout from "../layout/DashboardLayout";
 import Loader from "../components/Loader";
-
-import { retrieveDashboard, retrieveSabeelDue } from "../services/dashboardService";
+import SuccessToast from "../components/SuccessToast";
+import ErrorToast from "../components/ErrorToast";
+import ConfirmToast from "../components/ConfirmToast";
+import { retrieveDashboard, retrieveSabeelDue, exportDashboard } from "../services/dashboardService";
 
 export default function Dashboard() {
     const [loading, setLoading] = useState(true);
     const [errMsg, setErrMsg] = useState("");
+    const [toast, setToast] = useState({ ok: false, err: false, msg: "" });
+
+    const [confirm, setConfirm] = useState({
+        show: false,
+        filter: null,
+        label: "",
+    });
 
     const [personal, setPersonal] = useState({ bigCards: [], smallCards: [] });
     const [establishment, setEstablishment] = useState({ bigCards: [], smallCards: [] });
@@ -35,9 +44,9 @@ export default function Dashboard() {
                 setPersonal({
                     bigCards: [
                         { number: safe0(m.total_houses), label: "Total Houses", to: "/personal/houses" },
-                        { number: `₹ ${formatINR(safe0(m.total_sabeel))}`, label: "Total Takhmeen", to: "/personal/takhmeen" },
+                        { number: `₹ ${formatINR(safe0(m.total_sabeel))}`, label: "Total Takhmeen", onClick: () => askExport("family", "Family Total Takhmeen"), },
                         { number: safe0(m.due_houses), label: "No. Of Houses Due", to: "/personal/due-houses" },
-                        { number: `₹ ${formatINR(safe0(m.due_sabeel))}`, label: "Total Due Amount", to: "/personal/due-amount" },
+                        { number: `₹ ${formatINR(safe0(m.due_sabeel))}`, label: "Total Due Amount", onClick: () => askExport("due_family", "Family Due Amount"), },
                     ],
                     smallCards: [
                         { number: safe0(m.having_prev_due), label: "Sabeel Having<br/>Previous Dues", to: "/personal/previous-dues" },
@@ -50,9 +59,9 @@ export default function Dashboard() {
                 setEstablishment({
                     bigCards: [
                         { number: safe0(e.total_establishment), label: "Total Establishment", to: "/establishment/total" },
-                        { number: `₹ ${formatINR(safe0(e.total_sabeel))}`, label: "Total Takhmeen", to: "/establishment/takhmeen" },
+                        { number: `₹ ${formatINR(safe0(e.total_sabeel))}`, label: "Total Takhmeen", onClick: () => askExport("establishment", "Establishment Total Takhmeen"), },
                         { number: safe0(e.due_establishment), label: "No. Of Establishment Due", to: "/establishment/due-count" },
-                        { number: `₹ ${formatINR(safe0(e.due_sabeel))}`, label: "Total Due Amount", to: "/establishment/due-amount" },
+                        { number: `₹ ${formatINR(safe0(e.due_sabeel))}`, label: "Total Due Amount", onClick: () => askExport("due_establishment", "Establishment Due Amount"), },
                     ],
                     smallCards: [
                         { number: safe0(e.having_prev_due), label: "Establishment<br/>Having Previous<br/>Dues", to: "/establishment/previous-dues" },
@@ -123,6 +132,39 @@ export default function Dashboard() {
         []
     );
 
+    const downloadFile = (url, filename = "dashboard_export.xlsx") => {
+        const a = document.createElement("a");
+        a.href = url;
+        a.setAttribute("download", filename);
+        a.target = "_blank";
+        a.rel = "noreferrer";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+    };
+
+    const askExport = (filter, label) => {
+        setConfirm({ show: true, filter, label });
+    };
+
+    const doExport = async (filter, label) => {
+        try {
+            setToast({ ok: false, err: false, msg: "" });
+
+            const fileUrl = await exportDashboard(filter);
+
+            setToast({ ok: true, err: false, msg: `Export started: ${label}` });
+
+            const fallbackName = `dashboard_${filter}_${new Date().toISOString().slice(0, 10)}.xlsx`;
+            const nameFromUrl = fileUrl.split("/").pop() || fallbackName;
+
+            downloadFile(fileUrl, nameFromUrl);
+        } catch (e) {
+            setToast({ ok: false, err: true, msg: e?.message || `Export failed: ${label}` });
+        }
+    };
+
+
     return (
         <DashboardLayout title="Dashboard">
             {loading ? <Loader fullScreen text="Loading dashboard..." /> : null}
@@ -158,6 +200,33 @@ export default function Dashboard() {
                 />
 
             </div>
+
+            <ConfirmToast
+                show={confirm.show}
+                title="Export Excel"
+                message={`Are you sure you want to export: ${confirm.label}?`}
+                onCancel={() => setConfirm({ show: false, filter: null, label: "" })}
+                onConfirm={() => {
+                    const { filter, label } = confirm;
+                    setConfirm({ show: false, filter: null, label: "" });
+                    doExport(filter, label);
+                }}
+            />
+
+            <SuccessToast
+                show={toast.ok}
+                message={toast.msg}
+                onClose={() => setToast((p) => ({ ...p, ok: false }))}
+                duration={2500}
+            />
+
+            <ErrorToast
+                show={toast.err}
+                message={toast.msg}
+                onClose={() => setToast((p) => ({ ...p, err: false }))}
+                duration={3000}
+            />
+
         </DashboardLayout>
     );
 }

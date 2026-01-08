@@ -188,7 +188,7 @@ body {
 }
 
 .panel.mint .big-card {
-  background: linear-gradient(180deg, #FFFFFF, #A1FFE0);
+  background: linear-gradient(180deg, #d1fff0, #a6f3da);
   border: 1px solid rgba(255, 255, 255, 0.55);
   border-radius: 12px;
   padding: 16px 14px;
@@ -196,13 +196,21 @@ body {
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
 }
 
+.panel.mint .small-card {
+  background: linear-gradient(180deg, #d1fff0, #a6f3da);
+}
+
 .panel.tan .big-card {
-  background: linear-gradient(180deg, #FFFFFF, #FFE2C5);
+  background: linear-gradient(180deg, #f8e5d2, #e7c099);
   border: 1px solid rgba(255, 255, 255, 0.55);
   border-radius: 12px;
   padding: 16px 14px;
   text-align: center;
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+}
+
+.panel.tan .small-card {
+  background: linear-gradient(180deg, #f8e5d2, #e7c099);
 }
 
 .big-card .num {
@@ -420,11 +428,22 @@ tbody tr:hover {
   transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
 }
 
-.big-card:hover,
-.small-card:hover {
+.mint .big-card:hover,
+.mint .small-card:hover {
   transform: translateY(-2px);
   filter: brightness(1.02);
-  box-shadow: 0 12px 22px rgba(0, 0, 0, 0.14);
+  /* box-shadow: 0 12px 22px rgba(0, 0, 0, 0.14); */
+  background: linear-gradient(360deg, #7debc7, #6ecbad);
+
+}
+
+.tan .big-card:hover,
+.tan .small-card:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.02);
+  /* box-shadow: 0 12px 22px rgba(0, 0, 0, 0.14); */
+  background: linear-gradient(360deg, #efb881, #c5884b);
+
 }
 
 .big-card:active,
