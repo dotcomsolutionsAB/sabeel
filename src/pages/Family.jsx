@@ -187,7 +187,7 @@ export default function Family() {
                         <img
                             src={r.url || "https://i.pravatar.cc/160?img=12"}
                             alt=""
-                            className="w-10 h-10 rounded-lg object-cover border border-slate-200"
+                            className="w-12 h-16 rounded-lg object-cover border border-slate-200"
                         />
                         <div>
                             <div className="font-semibold text-slate-800">{r.name}</div>
@@ -385,7 +385,7 @@ export default function Family() {
                             {/* Profile (fixed) */}
                             <div className="p-4 shrink-0">
                                 <div className="flex items-start gap-3">
-                                    <div className="w-16 h-16 rounded-xl overflow-hidden border border-slate-200 bg-slate-50">
+                                    <div className="w-16 h-20 rounded-xl overflow-hidden border border-slate-200 bg-slate-50">
                                         <img
                                             src={selected?.url || "../src/assets/images/placeholder.png"}
                                             alt=""
