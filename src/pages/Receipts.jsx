@@ -257,7 +257,7 @@ export default function Receipts() {
                 header: "Actions",
                 width: 130,
                 render: (r) => (
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1">
                         <button
                             type="button"
                             className="inline-flex items-center justify-center w-9 h-9 rounded-full border border-sky-200 bg-white hover:bg-sky-50 text-sky-700"
@@ -347,11 +347,11 @@ export default function Receipts() {
                             },
                         ]}
                         rightSlot={
-                            <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-1">
                                 {/* date range row */}
-                                <div className="px-4 pb-3">
-                                    <div className="flex flex-wrap items-center gap-3">
-                                        <div className="text-xs font-semibold text-slate-700">Date From</div>
+                                <div className="px-4 pb-0">
+                                    <div className="flex flex-wrap items-center gap-2">
+                                        <div className="text-xs font-semibold text-slate-700">From</div>
                                         <input
                                             type="date"
                                             value={dateFrom}
@@ -363,7 +363,7 @@ export default function Receipts() {
                                         />
 
 
-                                        <div className="text-xs font-semibold text-slate-700">Date To</div>
+                                        <div className="text-xs font-semibold text-slate-700">To</div>
                                         <input
                                             type="date"
                                             value={dateTo}
@@ -394,6 +394,14 @@ export default function Receipts() {
 
                                 {selectedCount > 0 ? (
                                     <>
+                                        <button
+                                            type="button"
+                                            className="rounded-md border border-sky-300 bg-white px-3 py-1.5 text-xs font-semibold text-sky-700 hover:bg-sky-50"
+                                            onClick={() => console.log("Create Deposite")}
+                                        >
+                                            Create Deposite
+                                        </button>
+
                                         <button
                                             type="button"
                                             className="rounded-md border border-sky-300 bg-white px-3 py-1.5 text-xs font-semibold text-sky-700 hover:bg-sky-50"

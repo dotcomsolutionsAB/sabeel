@@ -4,7 +4,7 @@ import { SearchIcon, ChevronDownIcon } from "./icons";
 export default function FilterBar({ search, onSearchChange, selects = [], rightSlot, }) {
     return (
         <div className="px-4 py-3 bg-white">
-            <div className="flex flex-col lg:flex-row lg:items-center gap-3">
+            <div className="flex flex-col lg:flex-row lg:items-center gap-2">
                 {/* Search */}
                 <div className="relative w-full lg:w-[260px]">
                     <input
