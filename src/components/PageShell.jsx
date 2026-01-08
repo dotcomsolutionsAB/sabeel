@@ -1,6 +1,8 @@
 import PropTypes from "prop-types";
 
-export default function PageShell({ bg, logoSrc, title, children, overlayClass = "bg-white/10", topGap = 100, }) {
+export default function PageShell({ bg, logoSrc, title, children, overlayClass = "bg-white/10",
+    // topGap = 100, 
+}) {
     return (
         <div className="min-h-screen w-full relative overflow-hidden">
             {/* Background */}
@@ -15,13 +17,13 @@ export default function PageShell({ bg, logoSrc, title, children, overlayClass =
             {/* Content */}
             <div className="relative z-10 min-h-screen flex flex-col items-center px-4 pb-10">
                 {/* Top gap */}
-                <div style={{ height: `${topGap}px` }} />
+                {/* <div style={{ height: `${topGap}px` }} /> */}
 
                 {/* Header (logo + title) */}
                 {(logoSrc || title) && (
                     <div className="flex flex-col items-center gap-3 mb-6">
                         {logoSrc && (
-                            <img src={logoSrc} alt="Logo" className="h-[100px] w-[100px] object-contain" />
+                            <img src={logoSrc} alt="Logo" className="h-[180px] w-[150px] object-contain" />
                         )}
                         {title && (
                             <div className="text-center">
