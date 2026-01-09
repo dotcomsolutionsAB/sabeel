@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import DashboardLayout from "../layout/DashboardLayout";
+// import DashboardLayout from "../layout/DashboardLayout";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import DataTable from "../components/DataTable";
@@ -313,7 +313,7 @@ export default function Family() {
     };
 
     return (
-        <DashboardLayout title="Family">
+        <>
             <div className="px-3 pb-4">
                 <div className="rounded-2xl bg-white/70 border border-sky-100 shadow-sm overflow-hidden">
                     {/* Header bar */}
@@ -522,7 +522,7 @@ export default function Family() {
                 message={toastErr.message}
                 onClose={() => setToastErr({ show: false, message: "" })}
             />
-        </DashboardLayout>
+        </>
     );
 }
 

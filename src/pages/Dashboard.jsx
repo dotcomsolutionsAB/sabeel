@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import SectionPanel from "../components/SectionPanel";
 import DataTable from "../components/DataTable";
-import DashboardLayout from "../layout/DashboardLayout";
+// import DashboardLayout from "../layout/DashboardLayout";
 import Loader from "../components/Loader";
 import SuccessToast from "../components/SuccessToast";
 import ErrorToast from "../components/ErrorToast";
@@ -189,7 +189,7 @@ export default function Dashboard() {
 
 
     return (
-        <DashboardLayout title="Dashboard">
+        <>
             {loading ? <Loader fullScreen text="Loading dashboard..." /> : null}
 
             {errMsg ? (
@@ -210,7 +210,7 @@ export default function Dashboard() {
                     columns={dueColumns}
                     data={rowsPersonal}
                     stickyHeader={true}
-                    height="260px"
+                    height="100%"
                 />
 
                 <DataTable
@@ -219,7 +219,7 @@ export default function Dashboard() {
                     columns={dueColumns}
                     data={rowsEst}
                     stickyHeader={true}
-                    height="260px"
+                    height="100%"
                 />
 
             </div>
@@ -250,7 +250,7 @@ export default function Dashboard() {
                 duration={3000}
             />
 
-        </DashboardLayout>
+        </>
     );
 }
 

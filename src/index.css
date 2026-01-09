@@ -290,6 +290,7 @@ body {
   grid-template-columns: 1fr 1fr;
   gap: 12px;
   padding: 15px;
+  height: calc(100vh - 450px);
 }
 
 .table-card {

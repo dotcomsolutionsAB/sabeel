@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import DashboardLayout from "../layout/DashboardLayout";
+// import DashboardLayout from "../layout/DashboardLayout";
 import DataTable from "../components/DataTable";
 import FilterBar from "../components/FilterBar";
 import Pagination from "../components/Pagination";
@@ -268,7 +268,7 @@ export default function Establishments() {
     const totalPages = Math.max(1, Math.ceil((pagination.total || 0) / pageSize));
 
     return (
-        <DashboardLayout title="Establishments">
+        <>
             <div className="px-3 pb-4">
                 {/* ✅ full available height + flex column */}
                 <div className="rounded-2xl bg-white/70 border border-sky-100 shadow-sm overflow-hidden h-[calc(100vh-110px)] flex flex-col">
@@ -400,6 +400,6 @@ export default function Establishments() {
                     setOpenAddEst(false);
                 }}
             />
-        </DashboardLayout>
+        </>
     );
 }
