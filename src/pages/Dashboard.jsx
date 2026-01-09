@@ -64,11 +64,34 @@ export default function Dashboard() {
                         { number: `₹ ${formatINR(safe0(e.due_sabeel))}`, label: "Total Due Amount", onClick: () => askExport("due_establishment", "Establishment Due Amount"), },
                     ],
                     smallCards: [
-                        { number: safe0(e.having_prev_due), label: "Establishment<br/>Having Previous<br/>Dues", to: "/establishment/previous-dues" },
-                        { number: safe0(e.new_takhmeen_pending), label: "Establishment<br/>New Takhmeen<br/>Pending", to: "/establishment/new-takhmeen-pending" },
-                        { number: safe0(e.partner_not_tagged), label: "Establishment<br/>Not Tagged To<br/>Any House", to: "/establishment/not-tagged" },
-                        { number: safe0(e.manufacturer), label: "Establishment In<br/>Manufacturer", to: "/establishment/manufacturer" },
+                        {
+                            number: safe0(e.having_prev_due),
+                            label: "Establishment<br/>Having Previous<br/>Dues",
+                            to: "/establishments?filter=prev_due",
+                        },
+                        {
+                            number: safe0(e.new_takhmeen_pending),
+                            label: "Establishment<br/>New Takhmeen<br/>Pending",
+                            to: "/establishments?filter=new_takhmeen_pending",
+                        },
+                        {
+                            number: safe0(e.partner_not_tagged),
+                            label: "Establishment<br/>Not Tagged To<br/>Any House",
+                            to: "/establishments?filter=not_tagged",
+                        },
+                        {
+                            number: safe0(e.manufacturer),
+                            label: "Establishment In<br/>Manufacturer",
+                            to: "/establishments?filter=manufacturer",
+                        },
                     ],
+
+                    // smallCards: [
+                    //     { number: safe0(e.having_prev_due), label: "Establishment<br/>Having Previous<br/>Dues", to: "/establishment/previous-dues" },
+                    //     { number: safe0(e.new_takhmeen_pending), label: "Establishment<br/>New Takhmeen<br/>Pending", to: "/establishment/new-takhmeen-pending" },
+                    //     { number: safe0(e.partner_not_tagged), label: "Establishment<br/>Not Tagged To<br/>Any House", to: "/establishment/not-tagged" },
+                    //     { number: safe0(e.manufacturer), label: "Establishment In<br/>Manufacturer", to: "/establishment/manufacturer" },
+                    // ],
                 });
 
                 // Year-wise tables not in API yet

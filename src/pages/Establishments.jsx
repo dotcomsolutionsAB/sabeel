@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
-
+import { useNavigate, useLocation } from "react-router-dom";
 import DashboardLayout from "../layout/DashboardLayout";
 import DataTable from "../components/DataTable";
 import FilterBar from "../components/FilterBar";
@@ -17,6 +16,13 @@ import PropTypes from "prop-types";
 
 export default function Establishments() {
     const navigate = useNavigate();
+
+    const { search: qs } = useLocation();
+
+    const queryFilter = useMemo(() => {
+        const p = new URLSearchParams(qs);
+        return (p.get("filter") || "").trim();
+    }, [qs]);
 
     const [rows, setRows] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -77,6 +83,21 @@ export default function Establishments() {
             setLoading(false);
         }
     };
+
+    const allowed = useMemo(
+        () => new Set(["due", "prev_due", "new_takhmeen_pending", "not_tagged", "manufacturer"]),
+        []
+    );
+
+
+    useEffect(() => {
+        if (!allowed.has(queryFilter)) return;
+
+        setFilter(queryFilter);
+        setPage(1);
+        setSearch("");          // optional but recommended
+        setSelectedIds(new Set());
+    }, [queryFilter]);
 
     useEffect(() => {
         fetchEstablishments();
