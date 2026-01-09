@@ -357,7 +357,7 @@ export default function OverviewTab({ id, overview }) {
                         data={viewRows}
                         rowKey="id"
                         stickyHeader
-                        height="520px"
+                        height="100%"
                         footer={
                             <div className="flex items-center justify-between px-4 py-3">
                                 <Pagination page={page} totalPages={totalPages} onChange={setPage} />
