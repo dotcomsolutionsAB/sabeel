@@ -175,7 +175,7 @@ export default function Users() {
 
     return (
         <>
-            <div className="px-3 pb-4">
+            <div className="px-3 pb-0">
                 <div className="rounded-2xl bg-white/70 border border-sky-100 shadow-sm overflow-hidden h-[calc(100vh-110px)] flex flex-col">
                     {/* top header bar */}
                     <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-sky-700 to-sky-500">
@@ -216,8 +216,8 @@ export default function Users() {
                     </div>
 
                     {/* table */}
-                    <div className="px-4 pb-4">
-                        <div className="rounded-2xl bg-white border border-slate-100 shadow-sm overflow-hidden">
+                    <div className="flex-1 min-h-0 px-4 pb-4">
+                        <div className="relative rounded-2xl bg-white border border-slate-100 shadow-sm overflow-hidden h-full">
                             {loading ? (
                                 <div className="absolute inset-0 z-10 bg-white/60 backdrop-blur-[1px] flex items-center justify-center">
                                     <Loader fullScreen={false} text="Loading users..." />

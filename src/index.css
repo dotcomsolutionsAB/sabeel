@@ -91,6 +91,7 @@ body {
   font-weight: 500;
   white-space: nowrap;
   overflow: visible !important;
+  flex-wrap: wrap;
 }
 
 .avatar {
@@ -123,7 +124,7 @@ body {
   left: 50%;
   transform: translateX(-50%);
   top: -10px;
-  width: min(350px, 92%);
+  width: min(380px, 92%);
   background: #ffffff;
   border-radius: 1px 1px 100px 100px;
   padding: 4px 10px 25px 14px;
@@ -389,12 +390,12 @@ tbody tr:hover {
   }
 
   .nav-pill {
-    padding: 4px 8px 22px 10px;
+    padding: 4px 8px 16px 10px;
     border-width: 8px;
   }
 
   .nav-pill {
-    width: min(300px, 96%);
+    width: min(325px, 96%);
   }
 
   .icons {

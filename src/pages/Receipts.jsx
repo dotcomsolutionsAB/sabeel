@@ -357,7 +357,7 @@ export default function Receipts() {
 
     return (
         <>
-            <div className="px-3 pb-4">
+            <div className="px-3 pb-0">
                 <div className="rounded-2xl bg-white/70 border border-sky-100 shadow-sm overflow-hidden h-[calc(100vh-110px)] flex flex-col">
                     {/* top header */}
                     <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-sky-700 to-sky-500">
