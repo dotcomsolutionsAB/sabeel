@@ -7,4 +7,5 @@ export const ROUTES = {
     receipts: "/receipts",
     users: "/users",
     profile: "/profile",
+    deposits: "/deposits",
 };

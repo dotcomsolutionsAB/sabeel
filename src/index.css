@@ -72,6 +72,11 @@ body {
   gap: 12px;
 }
 
+.topbar,
+.topbar-row {
+  overflow: visible !important;
+}
+
 .title {
   font-weight: 700;
   color: #1a4e77;
@@ -85,6 +90,7 @@ body {
   font-size: 12px;
   font-weight: 500;
   white-space: nowrap;
+  overflow: visible !important;
 }
 
 .avatar {
@@ -125,6 +131,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  z-index: 10;
 }
 
 .nav-item {

@@ -11,6 +11,7 @@ import Users from "./pages/Users";
 import ComingSoon from "./pages/ComingSoon";
 import FamilyDetails from "./pages/FamilyDetails";
 import EstablishmentDetails from "./pages/EstablishmentDetails";
+import Deposits from "./pages/Deposits";
 
 export default function Router() {
     return useRoutes([
@@ -29,7 +30,9 @@ export default function Router() {
         { path: "/users", element: <Users /> },
 
         { path: "/profile", element: <ComingSoon /> },
+        { path: "/deposits", element: <Deposits /> },
 
         { path: "*", element: <Navigate to="/login" replace /> },
+
     ]);
 }

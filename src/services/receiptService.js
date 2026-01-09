@@ -9,8 +9,3 @@ export async function createReceiptApi(payload) {
     // POST: /receipt/create
     return api.post("/receipt/create", payload);
 }
-
-export async function createDepositApi(payload) {
-    const res = await api.post("/deposits/create", payload);
-    return res?.data ?? res; // keep it simple (most APIs return {code, status, message, data})
-}

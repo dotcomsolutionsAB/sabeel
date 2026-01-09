@@ -165,8 +165,9 @@ export default function TopBar({
 
                         {menuOpen && (
                             <div
-                                className="absolute right-0 mt-2 z-50 bg-white border border-slate-200 rounded-xl shadow-lg overflow-hidden min-w-[170px]"
+                                className="absolute right-0 top-full mt-2 z-[999] bg-white border border-slate-200 rounded-xl shadow-lg overflow-hidden min-w-[170px]"
                                 role="menu"
+                                onMouseDown={(e) => e.stopPropagation()}
                             >
                                 <button
                                     type="button"
@@ -177,17 +178,16 @@ export default function TopBar({
                                     <ProfileIcon className="w-4 h-4" />
                                     Profile
                                 </button>
-
+                                <br />
                                 <button
                                     type="button"
-                                    onClick={() => goMenu(ROUTES.family)}
+                                    onClick={() => goMenu(ROUTES.deposits)}
                                     className="w-full px-4 py-2 text-sm text-left hover:bg-slate-50 inline-flex items-center gap-2"
                                     role="menuitem"
                                 >
-                                    <FamilyIcon className="w-4 h-4" />
-                                    Family
+                                    <span className="w-4 h-4 inline-flex items-center justify-center text-sky-700 font-bold">₹</span>
+                                    Deposits
                                 </button>
-
                                 <div className="h-px bg-slate-100" />
 
                                 <button
@@ -201,6 +201,7 @@ export default function TopBar({
                                 </button>
                             </div>
                         )}
+
                     </div>
                 </div>
             </div>
