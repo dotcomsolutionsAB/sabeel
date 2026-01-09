@@ -30,13 +30,13 @@ export default function PartnersTab({
             {
                 key: "sn",
                 header: "SL No.",
-                width: 110,
+                width: 60,
                 render: (r) => <div className="text-xs text-slate-700">{r?._sn}</div>,
             },
             {
                 key: "name",
                 header: "Name",
-                width: 520,
+                width: 320,
                 render: (r) => (
                     <div className="text-xs font-semibold text-sky-800">
                         {r?.name || "-"}
