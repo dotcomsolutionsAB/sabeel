@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import DashboardLayout from "../layout/DashboardLayout";
 import { useNavigate } from "react-router-dom";
-
+import { useLocation } from "react-router-dom";
 import DataTable from "../components/DataTable";
 import FilterBar from "../components/FilterBar";
 import Pagination from "../components/Pagination";
@@ -16,6 +16,12 @@ import { createFamilyApi } from "../services/familyService"; // Service to creat
 import { retrieveSectorsApi } from "../services/sectorService";
 
 export default function Family() {
+    const { search: qs } = useLocation();
+    const queryFilter = useMemo(() => {
+        const p = new URLSearchParams(qs);
+        return (p.get("filter") || "").trim();
+    }, [qs]);
+
     // API state
     const [rows, setRows] = useState([]);
     const [pagination, setPagination] = useState({
@@ -67,6 +73,15 @@ export default function Family() {
             setToastErr({ show: true, message: e?.message || "Failed to create family" });
         }
     };
+
+    const allowed = new Set(["due", "prev_due", "new_takhmeen_pending", "not_tagged", "service"]);
+    useEffect(() => {
+        if (!allowed.has(queryFilter)) return;
+        setFilter(queryFilter);
+        setPage(1);
+        setSelectedId(null);
+        setSearch("");
+    }, [queryFilter]);
 
 
     // Fetch API

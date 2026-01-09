@@ -49,10 +49,10 @@ export default function Dashboard() {
                         { number: `₹ ${formatINR(safe0(m.due_sabeel))}`, label: "Total Due Amount", onClick: () => askExport("due_family", "Family Due Amount"), },
                     ],
                     smallCards: [
-                        { number: safe0(m.having_prev_due), label: "Sabeel Having<br/>Previous Dues", to: "/personal/previous-dues" },
-                        { number: safe0(m.new_takhmeen_pending), label: "Sabeel New<br/>Takhmeen Pending", to: "/personal/new-takhmeen-pending" },
-                        { number: safe0(m.establishment_missing), label: "Houses Not<br/>Tagged To Any<br/>Establishment", to: "/personal/not-tagged" },
-                        { number: safe0(m.service), label: "Houses In<br/>Service", to: "/personal/in-service" },
+                        { number: safe0(m.having_prev_due), label: "Sabeel Having<br/>Previous Dues", to: "/family?filter=prev_due" },
+                        { number: safe0(m.new_takhmeen_pending), label: "Sabeel New<br/>Takhmeen Pending", to: "/family?filter=new_takhmeen_pending" },
+                        { number: safe0(m.establishment_missing), label: "Houses Not<br/>Tagged To Any<br/>Establishment", to: "/family?filter=not_tagged" },
+                        { number: safe0(m.service), label: "Houses In<br/>Service", to: "/family?filter=service" },
                     ],
                 });
 
