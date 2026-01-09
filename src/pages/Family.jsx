@@ -299,10 +299,12 @@ export default function Family() {
     // Handlers
     const handleSearchChange = (val) => {
         setSearch(val);
+        setFilter("");     // ✅ optional
         setPage(1);
     };
     const handleSectorChange = (val) => {
         setSector(val);
+        setFilter("");     // ✅ optional
         setPage(1);
     };
     const handleFilterChange = (val) => {

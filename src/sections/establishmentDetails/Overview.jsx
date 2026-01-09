@@ -50,6 +50,17 @@ export default function OverviewTab({ id, overview }) {
     const handleCloseAddReceipt = () => {
         setOpenAddReceipt(false); // Set the modal state to false to close it
     };
+    const formatIndianDate = (v) => {
+        if (!v) return "-";
+        const d = new Date(v); // works for "YYYY-MM-DD" or ISO strings
+        if (Number.isNaN(d.getTime())) return "-";
+        return new Intl.DateTimeFormat("en-IN", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+        }).format(d); // dd/mm/yyyy
+    };
+
     const handleSaveReceipt = async (payload) => {
         console.log("Saving receipt with payload:", payload);
         if (payload?.__error) {
@@ -179,7 +190,7 @@ export default function OverviewTab({ id, overview }) {
                             <span className="font-semibold">Receipt No:</span> {r?.receipt_no || "-"}
                         </div>
                         <div>
-                            <span className="font-semibold">Date:</span> {r?.date || "-"}
+                            <span className="font-semibold">Date:</span> {formatIndianDate(r?.date)}
                         </div>
                         <div>
                             <span className="font-semibold">Year:</span> {r?.year || "-"}

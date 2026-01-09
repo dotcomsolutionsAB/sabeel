@@ -11,7 +11,7 @@ import {
     EnvelopeIcon,
     PhoneIcon,
     IdentificationIcon,
-    CheckCircleIcon, FolderPlusIcon, TrashIcon as HeroTrashIcon, PencilSquareIcon,
+    CheckCircleIcon, FolderPlusIcon, TrashIcon as HeroTrashIcon, PencilSquareIcon, BanknotesIcon,
 } from "@heroicons/react/24/outline";
 
 function withDefaults(Icon, defaultClassName = "") {
@@ -38,6 +38,7 @@ export const FamilyIcon = withDefaults(UserGroupIcon);
 export const EstablishmentIcon = withDefaults(BuildingOffice2Icon);
 export const ReceiptsIcon = withDefaults(DocumentTextIcon);
 export const UsersIcon = withDefaults(HeroUsersIcon);
+export const DepositIcon = withDefaults(BanknotesIcon, "w-4 h-4 text-[#2c86c8]");
 
 // ✅ Other icons you showed earlier (same export names)
 export const SearchIcon = withDefaults(MagnifyingGlassIcon, "w-4 h-4");

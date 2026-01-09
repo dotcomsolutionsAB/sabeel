@@ -51,6 +51,17 @@ export default function LeftOverviewSection({ stats = [], receipts = [], onAddRe
         });
     };
 
+    const formatIndianDate = (v) => {
+        if (!v) return "-";
+        const d = new Date(v); // works for "YYYY-MM-DD" or ISO strings
+        if (Number.isNaN(d.getTime())) return "-";
+        return new Intl.DateTimeFormat("en-IN", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+        }).format(d); // dd/mm/yyyy
+    };
+
     const receiptColumns = [
         {
             key: "check",
@@ -89,7 +100,7 @@ export default function LeftOverviewSection({ stats = [], receipts = [], onAddRe
                     <div className="font-semibold text-slate-800">
                         Receipt No: <span className="font-bold">{r.receiptNo}</span>
                     </div>
-                    <div className="text-slate-600">Date: {r.date}</div>
+                    <div className="text-slate-600">Date: {formatIndianDate(r.date)}</div>
                     <div className="text-slate-600">Year: {r.year}</div>
                 </div>
             ),

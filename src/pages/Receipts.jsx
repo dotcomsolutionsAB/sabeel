@@ -61,6 +61,17 @@ export default function Receipts() {
         return sum;
     }, [rows, selectedIds]);
 
+    const formatIndianDate = (v) => {
+        if (!v) return "-";
+        const d = new Date(v); // works for "YYYY-MM-DD" or ISO strings
+        if (Number.isNaN(d.getTime())) return "-";
+        return new Intl.DateTimeFormat("en-IN", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+        }).format(d); // dd/mm/yyyy
+    };
+
     const handlePrintReceipt = async (row) => {
         try {
             const id = row?.id; // already string in your mapping
@@ -213,7 +224,7 @@ export default function Receipts() {
                             <span className="font-semibold">Receipt No:</span> {r?.receipt_no || "-"}
                         </div>
                         <div>
-                            <span className="font-semibold">Date:</span> {r?.date || "-"}
+                            <span className="font-semibold">Date:</span> {formatIndianDate(r?.date)}
                         </div>
                         <div>
                             <span className="font-semibold">Year:</span> {r?.year || "-"}
@@ -251,7 +262,7 @@ export default function Receipts() {
 
                         {r?.cheque_date ? (
                             <div>
-                                <span className="font-semibold">Cheque Date:</span> {r.cheque_date}
+                                <span className="font-semibold">Cheque Date:</span> {formatIndianDate(r.cheque_date)}
                             </div>
                         ) : null}
 
@@ -263,7 +274,7 @@ export default function Receipts() {
 
                         {r?.trans_date ? (
                             <div>
-                                <span className="font-semibold">Transaction Date:</span> {r.trans_date}
+                                <span className="font-semibold">Transaction Date:</span> {formatIndianDate(r.trans_date)}
                             </div>
                         ) : null}
                     </div>

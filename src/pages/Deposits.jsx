@@ -172,6 +172,17 @@ export default function Deposits() {
     //     w.document.close();
     // };
 
+    const formatIndianDate = (v) => {
+        if (!v) return "-";
+        const d = new Date(v); // works for "YYYY-MM-DD" or ISO strings
+        if (Number.isNaN(d.getTime())) return "-";
+        return new Intl.DateTimeFormat("en-IN", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+        }).format(d); // dd/mm/yyyy
+    };
+
     // columns
     const columns = useMemo(
         () => [
@@ -207,16 +218,16 @@ export default function Deposits() {
             },
 
             // ✅ SL No (based on pagination)
-            {
-                key: "sl",
-                header: "SL",
-                width: 60,
-                render: (_r, idx) => (
-                    <div className="text-xs text-slate-700 font-semibold">
-                        {offset + idx + 1}
-                    </div>
-                ),
-            },
+            // {
+            //     key: "sl",
+            //     header: "SL",
+            //     width: 60,
+            //     render: (_r, idx) => (
+            //         <div className="text-xs text-slate-700 font-semibold">
+            //             {offset + idx + 1}
+            //         </div>
+            //     ),
+            // },
 
             {
                 key: "deposit_id",
@@ -225,7 +236,7 @@ export default function Deposits() {
                 render: (r) => (
                     <div className="text-xs">
                         <div className="font-semibold text-slate-900">#{r?.deposit_id || "-"}</div>
-                        <div className="text-slate-600">{r?.date || "-"}</div>
+                        <div className="text-slate-600">{formatIndianDate(r?.date)}</div>
                     </div>
                 ),
             },
@@ -324,12 +335,12 @@ export default function Deposits() {
 
 
     return (
-        <DashboardLayout title="Deposites">
+        <DashboardLayout title="Deposits">
             <div className="px-3 pb-4">
                 <div className="rounded-2xl bg-white/70 border border-sky-100 shadow-sm overflow-hidden">
                     {/* top header */}
                     <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-sky-700 to-sky-500">
-                        <div className="text-white font-semibold">Deposites</div>
+                        <div className="text-white font-semibold">Deposits</div>
                     </div>
 
                     {apiError ? (

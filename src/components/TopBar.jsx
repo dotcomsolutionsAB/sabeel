@@ -6,6 +6,7 @@ import {
     DashboardIcon,
     FamilyIcon,
     EstablishmentIcon,
+    DepositIcon,
     ReceiptsIcon,
     UsersIcon,
     ProfileIcon,
@@ -31,6 +32,7 @@ export default function TopBar({
             { key: "family", title: "Family", path: ROUTES.family, icon: FamilyIcon },
             { key: "establishments", title: "Establishments", path: ROUTES.establishments, icon: EstablishmentIcon },
             { key: "receipts", title: "Receipts", path: ROUTES.receipts, icon: ReceiptsIcon },
+            { key: "deposits", title: "Deposits", path: ROUTES.deposits, icon: DepositIcon },
             { key: "users", title: "Users", path: ROUTES.users, icon: UsersIcon },
         ],
         []
@@ -179,7 +181,7 @@ export default function TopBar({
                                     Profile
                                 </button>
                                 <br />
-                                <button
+                                {/* <button
                                     type="button"
                                     onClick={() => goMenu(ROUTES.deposits)}
                                     className="w-full px-4 py-2 text-sm text-left hover:bg-slate-50 inline-flex items-center gap-2"
@@ -188,7 +190,7 @@ export default function TopBar({
                                     <span className="w-4 h-4 inline-flex items-center justify-center text-sky-700 font-bold">₹</span>
                                     Deposits
                                 </button>
-                                <div className="h-px bg-slate-100" />
+                                <div className="h-px bg-slate-100" /> */}
 
                                 <button
                                     type="button"
