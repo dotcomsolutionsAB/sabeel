@@ -1,7 +1,5 @@
 import { useMemo, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-
-import DashboardLayout from "../layout/DashboardLayout";
 import TabsSlash from "../components/TabsSlash";
 import LeftPanel from "../components/LeftPanel";
 import DataTable from "../components/DataTable";
@@ -268,173 +266,181 @@ export default function FamilyDetails() {
     );
 
     return (
-        <DashboardLayout title="Family Details">
+        <>
             <div className="px-3 pb-4">
-                <div className="rounded-2xl bg-white/70 border border-sky-100 shadow-sm overflow-hidden">
-                    {/* Top bar */}
-                    <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-sky-900 to-sky-500">
-                        <div className="flex items-center gap-2 text-white font-semibold">
-                            <button
-                                type="button"
-                                onClick={() => navigate("/family")}
-                                className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-white/15 hover:bg-white/20"
-                            >
-                                <BackIcon className="w-5 h-5" />
-                            </button>
-                            Family Details
+                <div
+                    className="rounded-2xl bg-white/70 border border-sky-100 shadow-sm overflow-hidden"
+                    style={{ height: "calc(100vh - 100px)" }}
+                >
+                    <div className="flex flex-col h-full">
+                        {/* Top bar */}
+                        <div className="shrink-0 flex items-center justify-between px-4 py-3 bg-gradient-to-r from-sky-900 to-sky-500">
+                            <div className="flex items-center gap-2 text-white font-semibold">
+                                <button
+                                    type="button"
+                                    onClick={() => navigate("/family")}
+                                    className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-white/15 hover:bg-white/20"
+                                >
+                                    <BackIcon className="w-5 h-5" />
+                                </button>
+                                Family Details
+                            </div>
                         </div>
-                    </div>
 
-                    {/* Inner card */}
-                    <div className="px-4 pt-4">
-                        <div className="rounded-xl overflow-hidden border border-sky-200 bg-white">
-                            <div className="p-4">
-                                <TabsSlash tabs={tabs} value={activeTab} onChange={setActiveTab} />
+                        {/* Inner card */}
+                        <div className="flex-1 min-h-0 px-4 pt-4 pb-4">
+                            <div className="rounded-xl overflow-hidden border border-sky-200 bg-white flex flex-col h-full min-h-0">
+                                <div className="p-4 shrink-0">
+                                    <TabsSlash tabs={tabs} value={activeTab} onChange={setActiveTab} />
 
-                                {(familyError || receiptsError) ? (
-                                    <div className="mt-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-                                        {familyError || receiptsError}
-                                    </div>
-                                ) : null}
-
-                                <div className="mt-4 grid grid-cols-1 lg:grid-cols-[1.7fr_1fr] gap-4">
-                                    {/* LEFT */}
-                                    <LeftPanel>
-                                        {loadingFamily && !family ? (
-                                            <div className="p-6 text-sm text-slate-600">Loading...</div>
-                                        ) : activeTab === "overview" ? (
-                                            <LeftOverviewSection
-                                                stats={stats}
-                                                receipts={receiptsForUI}
-                                                onAddReceipt={() => setOpenAddReceipt(true)}
-                                                loadingReceipts={loadingReceipts}
-                                                receiptPagination={receiptPagination}
-                                                onReceiptPageChange={(offset) => fetchReceipts({ limit: 10, offset })}
-                                            />
-                                        ) : activeTab === "hof" ? (
-                                            <LeftHofSection
-                                                value={{
-                                                    name: toStr(family?.name),
-                                                    its: toStr(family?.its),
-                                                    mobile: toStr(family?.mobile),
-                                                    email: toStr(family?.email),
-                                                    sector: toStr(family?.sector),
-                                                    address: "",
-                                                    gender: "",
-                                                    dob: "",
-                                                }}
-                                                onChange={() => { }}
-                                                onSave={() => console.log("Save HOF (later)")}
-                                            />
-                                        ) : activeTab === "family" ? (
-                                            <LeftFamilySection onAddFamily={() => setOpenAddFamily(true)} />
-                                        ) : activeTab === "sabeel" ? (
-                                            <LeftSabeelSection
-                                                data={sabeelRows}
-                                                onAdd={() => setOpenAddSabeel(true)}
-                                                onView={viewSabeel}
-                                                onDelete={(row) => console.log("Delete sabeel later", row)}
-                                            />
-                                        ) : null}
-                                    </LeftPanel>
-
-                                    {/* RIGHT profile card */}
-                                    <div className="rounded-2xl bg-white border border-slate-100 shadow-sm overflow-hidden flex flex-col min-h-0">
-                                        <div className="p-4 shrink-0">
-                                            <div className="flex items-start gap-3">
-                                                <div className="w-20 h-20 rounded-xl overflow-hidden border border-slate-200 bg-slate-50">
-                                                    {profile.avatarUrl ? (
-                                                        <img src={profile.avatarUrl} alt="" className="w-full h-full object-cover" />
-                                                    ) : null}
-                                                </div>
-
-                                                <div className="flex-1">
-                                                    <div className="font-semibold text-slate-900 leading-tight">{profile.name}</div>
-
-                                                    <div className="mt-2 space-y-1 text-xs text-slate-700">
-
-                                                        <div className="grid grid-cols-[60px_1fr] items-center gap-2">
-                                                            <div className="flex items-center gap-2">
-                                                                <IdCardIcon className="w-4 h-4 text-sky-700" />
-                                                                <span>ITS:</span>
-                                                            </div>
-                                                            <span className="font-semibold">{profile.its}</span>
-                                                        </div>
-
-                                                        <div className="grid grid-cols-[60px_1fr] items-center gap-2">
-                                                            <div className="flex items-center gap-2">
-                                                                <CallIcon className="w-4 h-4 text-sky-700" />
-                                                                <span>Phone:</span>
-                                                            </div>
-                                                            <span className="font-semibold">{profile.phone}</span>
-                                                        </div>
-
-                                                        <div className="grid grid-cols-[60px_1fr] items-center gap-2">
-                                                            <div className="flex items-center gap-2">
-                                                                <MailIcon className="w-4 h-4 text-sky-700" />
-                                                                <span>Email:</span>
-                                                            </div>
-                                                            <span className="font-semibold">{profile.email}</span>
-                                                        </div>
-
-                                                        <div className="grid grid-cols-[60px_1fr] items-center gap-2">
-                                                            <div className="flex items-center gap-2">
-                                                                <EstablishmentIcon className="w-4 h-4 text-sky-700" />
-                                                                <span>Sector:</span>
-                                                            </div>
-                                                            <span className="font-semibold">{profile.sector}</span>
-                                                        </div>
-
+                                    {(familyError || receiptsError) ? (
+                                        <div className="mt-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                                            {familyError || receiptsError}
+                                        </div>
+                                    ) : null}
+                                </div>
+                                {/* Grid should fill rest */}
+                                <div className="flex-1 min-h-0 px-4 pb-4">
+                                    <div className="mt-4 grid grid-cols-1 lg:grid-cols-[1.7fr_1fr] gap-4 flex-1 h-full">
+                                        {/* LEFT */}
+                                        <div className="min-h-0 h-full overflow-auto">
+                                            <LeftPanel>
+                                                {loadingFamily && !family ? (
+                                                    <div className="p-6 text-sm text-slate-600">Loading...</div>
+                                                ) : activeTab === "overview" ? (
+                                                    <LeftOverviewSection
+                                                        stats={stats}
+                                                        receipts={receiptsForUI}
+                                                        onAddReceipt={() => setOpenAddReceipt(true)}
+                                                        loadingReceipts={loadingReceipts}
+                                                        receiptPagination={receiptPagination}
+                                                        onReceiptPageChange={(offset) => fetchReceipts({ limit: 10, offset })}
+                                                    />
+                                                ) : activeTab === "hof" ? (
+                                                    <LeftHofSection
+                                                        value={{
+                                                            name: toStr(family?.name),
+                                                            its: toStr(family?.its),
+                                                            mobile: toStr(family?.mobile),
+                                                            email: toStr(family?.email),
+                                                            sector: toStr(family?.sector),
+                                                            address: "",
+                                                            gender: "",
+                                                            dob: "",
+                                                        }}
+                                                        onChange={() => { }}
+                                                        onSave={() => console.log("Save HOF (later)")}
+                                                    />
+                                                ) : activeTab === "family" ? (
+                                                    <LeftFamilySection onAddFamily={() => setOpenAddFamily(true)} />
+                                                ) : activeTab === "sabeel" ? (
+                                                    <LeftSabeelSection
+                                                        data={sabeelRows}
+                                                        onAdd={() => setOpenAddSabeel(true)}
+                                                        onView={viewSabeel}
+                                                        onDelete={(row) => console.log("Delete sabeel later", row)}
+                                                    />
+                                                ) : null}
+                                            </LeftPanel>
+                                        </div>
+                                        {/* RIGHT profile card */}
+                                        <div className="rounded-2xl bg-white border border-slate-100 shadow-sm overflow-hidden flex flex-col h-full min-h-0">
+                                            <div className="p-4 shrink-0">
+                                                <div className="flex items-start gap-3">
+                                                    <div className="w-20 h-20 rounded-xl overflow-hidden border border-slate-200 bg-slate-50">
+                                                        {profile.avatarUrl ? (
+                                                            <img src={profile.avatarUrl} alt="" className="w-full h-full object-cover" />
+                                                        ) : null}
                                                     </div>
 
+                                                    <div className="flex-1">
+                                                        <div className="font-semibold text-slate-900 leading-tight">{profile.name}</div>
 
-                                                    <div className="flex gap-2 mt-3">
-                                                        {/* <button className="inline-flex items-center justify-center gap-2 flex-1 rounded-lg border border-sky-700 text-sky-800 font-semibold px-3 py-2 text-xs hover:bg-sky-50">
+                                                        <div className="mt-2 space-y-1 text-xs text-slate-700">
+
+                                                            <div className="grid grid-cols-[60px_1fr] items-center gap-2">
+                                                                <div className="flex items-center gap-2">
+                                                                    <IdCardIcon className="w-4 h-4 text-sky-700" />
+                                                                    <span>ITS:</span>
+                                                                </div>
+                                                                <span className="font-semibold">{profile.its}</span>
+                                                            </div>
+
+                                                            <div className="grid grid-cols-[60px_1fr] items-center gap-2">
+                                                                <div className="flex items-center gap-2">
+                                                                    <CallIcon className="w-4 h-4 text-sky-700" />
+                                                                    <span>Phone:</span>
+                                                                </div>
+                                                                <span className="font-semibold">{profile.phone}</span>
+                                                            </div>
+
+                                                            <div className="grid grid-cols-[60px_1fr] items-center gap-2">
+                                                                <div className="flex items-center gap-2">
+                                                                    <MailIcon className="w-4 h-4 text-sky-700" />
+                                                                    <span>Email:</span>
+                                                                </div>
+                                                                <span className="font-semibold">{profile.email}</span>
+                                                            </div>
+
+                                                            <div className="grid grid-cols-[60px_1fr] items-center gap-2">
+                                                                <div className="flex items-center gap-2">
+                                                                    <EstablishmentIcon className="w-4 h-4 text-sky-700" />
+                                                                    <span>Sector:</span>
+                                                                </div>
+                                                                <span className="font-semibold">{profile.sector}</span>
+                                                            </div>
+
+                                                        </div>
+
+
+                                                        <div className="flex gap-2 mt-3">
+                                                            {/* <button className="inline-flex items-center justify-center gap-2 flex-1 rounded-lg border border-sky-700 text-sky-800 font-semibold px-3 py-2 text-xs hover:bg-sky-50">
                                                             <PrintIcon className="w-4 h-4" />
                                                             Print Profile
                                                         </button> */}
-                                                        <button className="inline-flex items-center justify-center flex-1 rounded-lg bg-rose-700 text-white font-semibold px-3 py-2 text-xs hover:bg-rose-800">
-                                                            Close Sabeel
-                                                        </button>
+                                                            <button className="inline-flex items-center justify-center flex-1 rounded-lg bg-rose-700 text-white font-semibold px-3 py-2 text-xs hover:bg-rose-800">
+                                                                Close Sabeel
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="h-px bg-slate-100" />
+
+                                            <div className="flex-1 overflow-auto min-h-0 p-4 space-y-5 scroll-hover">
+                                                <div>
+                                                    <div className="flex items-center justify-between mb-2">
+                                                        <div className="font-semibold text-slate-900">Sabeel Details</div>
+                                                        <button className="text-xs font-semibold text-sky-700 hover:underline">View All</button>
+                                                    </div>
+                                                    <div className="rounded-xl border border-slate-200 overflow-hidden">
+                                                        <DataTable
+                                                            columns={sabeelColumns}
+                                                            data={sabeelYearWise}
+                                                            rowKey={(r) => r.year}
+                                                            stickyHeader={false}
+                                                            tableClassName="border-0 shadow-none rounded-none"
+                                                        />
+                                                    </div>
+                                                </div>
+
+                                                <div>
+                                                    <div className="font-semibold text-slate-900 mb-2">Establishment Details</div>
+                                                    <div className="rounded-xl border border-slate-200 overflow-hidden">
+                                                        <DataTable
+                                                            columns={estColumns}
+                                                            data={establishments}
+                                                            rowKey="id"
+                                                            stickyHeader={false}
+                                                            tableClassName="border-0 shadow-none rounded-none"
+                                                        />
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-
-                                        <div className="h-px bg-slate-100" />
-
-                                        <div className="flex-1 overflow-auto min-h-0 p-4 space-y-5 scroll-hover">
-                                            <div>
-                                                <div className="flex items-center justify-between mb-2">
-                                                    <div className="font-semibold text-slate-900">Sabeel Details</div>
-                                                    <button className="text-xs font-semibold text-sky-700 hover:underline">View All</button>
-                                                </div>
-                                                <div className="rounded-xl border border-slate-200 overflow-hidden">
-                                                    <DataTable
-                                                        columns={sabeelColumns}
-                                                        data={sabeelYearWise}
-                                                        rowKey={(r) => r.year}
-                                                        stickyHeader={false}
-                                                        tableClassName="border-0 shadow-none rounded-none"
-                                                    />
-                                                </div>
-                                            </div>
-
-                                            <div>
-                                                <div className="font-semibold text-slate-900 mb-2">Establishment Details</div>
-                                                <div className="rounded-xl border border-slate-200 overflow-hidden">
-                                                    <DataTable
-                                                        columns={estColumns}
-                                                        data={establishments}
-                                                        rowKey="id"
-                                                        stickyHeader={false}
-                                                        tableClassName="border-0 shadow-none rounded-none"
-                                                    />
-                                                </div>
-                                            </div>
-                                        </div>
+                                        {/* end right */}
                                     </div>
-                                    {/* end right */}
                                 </div>
                             </div>
                         </div>
@@ -503,6 +509,6 @@ export default function FamilyDetails() {
                 onClose={() => setToastErr({ show: false, message: "" })}
             />
 
-        </DashboardLayout>
+        </>
     );
 }

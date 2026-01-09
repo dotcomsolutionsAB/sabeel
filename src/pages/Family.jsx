@@ -315,7 +315,10 @@ export default function Family() {
     return (
         <>
             <div className="px-3 pb-4">
-                <div className="rounded-2xl bg-white/70 border border-sky-100 shadow-sm overflow-hidden">
+                <div
+                    className="rounded-2xl bg-white/70 border border-sky-100 shadow-sm overflow-hidden"
+                    style={{ height: "calc(100vh - 100px)" }}
+                >
                     {/* Header bar */}
                     <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-sky-700 to-sky-500">
                         <div className="text-white font-semibold">Mumeneen</div>
@@ -385,9 +388,9 @@ export default function Family() {
                     />
 
                     {/* Layout */}
-                    <div className="grid grid-cols-1 lg:grid-cols-[1.7fr_1fr] gap-4 px-4 pb-4">
+                    <div className="grid grid-cols-1 lg:grid-cols-[1.7fr_1fr] gap-4 px-4 pb-4 h-[calc(100%-112px)]">
                         {/* Left table */}
-                        <div className="rounded-2xl bg-white border border-slate-100 shadow-sm overflow-hidden">
+                        <div className="relative rounded-2xl bg-white border border-slate-100 shadow-sm overflow-hidden min-h-0">
                             {loading ? (
                                 <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/70">
                                     <Loader fullScreen={false} text="Loading receipts..." />
@@ -400,7 +403,7 @@ export default function Family() {
                                 onRowClick={(row) => setSelectedId(row.id)}
                                 selectedRowKey={selected?.id}
                                 stickyHeader={true}
-                                height="520px"
+                                height="100%"
                                 footer={
                                     <div className="flex items-center justify-between gap-3 px-3 py-2">
                                         <Pagination page={page} totalPages={totalPages} onChange={setPage} />
@@ -414,10 +417,8 @@ export default function Family() {
                         </div>
 
                         {/* Right: Details */}
-                        <div
-                            className="rounded-2xl bg-white border border-slate-100 shadow-sm overflow-hidden flex flex-col min-h-full"
-                        // style={{ height: "520px" }}
-                        >
+                        <div className="rounded-2xl bg-white border border-slate-100 shadow-sm overflow-hidden flex flex-col h-full min-h-0">
+
                             {/* Profile (fixed) */}
                             <div className="p-4 shrink-0">
                                 <div className="flex items-start gap-3">
