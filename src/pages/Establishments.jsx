@@ -269,7 +269,7 @@ export default function Establishments() {
 
     return (
         <>
-            <div className="px-3 pb-4">
+            <div className="px-3 pb-0">
                 {/* ✅ full available height + flex column */}
                 <div className="rounded-2xl bg-white/70 border border-sky-100 shadow-sm overflow-hidden h-[calc(100vh-110px)] flex flex-col">
                     {/* ✅ Header (fixed height) */}
@@ -363,16 +363,14 @@ export default function Establishments() {
                             ) : null}
 
                             {/* ✅ scroll container */}
-                            <div className="h-full overflow-auto scroll-hover">
-                                <DataTable
-                                    columns={columns}
-                                    data={viewRows}
-                                    rowKey={(r) => r.id}
-                                    stickyHeader={true}
-                                    height="100%"
-                                    footer={<Pagination page={page} totalPages={totalPages} onChange={setPage} />}
-                                />
-                            </div>
+                            <DataTable
+                                columns={columns}
+                                data={viewRows}
+                                rowKey={(r) => String(r.id ?? r.establishment_id ?? "")}
+                                stickyHeader={true}
+                                height="100%"
+                                footer={<Pagination page={page} totalPages={totalPages} onChange={setPage} />}
+                            />
                         </div>
                     </div>
                 </div>
