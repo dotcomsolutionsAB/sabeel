@@ -1,6 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-
-import DashboardLayout from "../layout/DashboardLayout";
 import DataTable from "../components/DataTable";
 import FilterBar from "../components/FilterBar";
 import Pagination from "../components/Pagination";
@@ -232,7 +230,7 @@ export default function Deposits() {
             {
                 key: "deposit_id",
                 header: "Deposit",
-                width: 170,
+                width: 140,
                 render: (r) => (
                     <div className="text-xs">
                         <div className="font-semibold text-slate-900">#{r?.deposit_id || "-"}</div>
@@ -335,9 +333,9 @@ export default function Deposits() {
 
 
     return (
-        <DashboardLayout title="Deposits">
-            <div className="px-3 pb-4">
-                <div className="rounded-2xl bg-white/70 border border-sky-100 shadow-sm overflow-hidden">
+        <>
+            <div className="px-3 pb-0">
+                <div className="rounded-2xl bg-white/70 border border-sky-100 shadow-sm overflow-hidden h-[calc(100vh-110px)] flex flex-col">
                     {/* top header */}
                     <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-sky-700 to-sky-500">
                         <div className="text-white font-semibold">Deposits</div>
@@ -370,8 +368,8 @@ export default function Deposits() {
 
                     />
 
-                    <div className="px-4 pb-4">
-                        <div className="rounded-2xl bg-white border border-slate-100 shadow-sm overflow-hidden relative">
+                    <div className="flex-1 min-h-0 px-4 pb-4">
+                        <div className="relative rounded-2xl bg-white border border-slate-100 shadow-sm overflow-hidden h-full">
                             {loading ? (
                                 <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/70">
                                     <Loader fullScreen={false} text="Loading deposits..." />
@@ -383,13 +381,13 @@ export default function Deposits() {
                                 data={rows}
                                 rowKey="id"
                                 stickyHeader={true}
-                                height="520px"
+                                height="100%"
                                 footer={<Pagination page={page} totalPages={totalPages} onChange={setPage} />}
                             />
                         </div>
                     </div>
                 </div>
             </div>
-        </DashboardLayout>
+        </>
     );
 }

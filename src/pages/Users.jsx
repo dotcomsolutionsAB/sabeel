@@ -1,13 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
-
-import DashboardLayout from "../layout/DashboardLayout";
 import DataTable from "../components/DataTable";
 import Pagination from "../components/Pagination";
-
-// if you already use FilterBar in project, use it; else simple search input included below
-// import FilterBar from "../components/FilterBar";
 import Loader from "../components/Loader";
-
 import { EditIcon, TrashIcon } from "../components/icons";
 import { retrieveUsersApi } from "../services/userService";
 import AddUserModal from "../components/modals/AddUserModal";
@@ -92,7 +86,7 @@ export default function Users() {
             {
                 key: "sn",
                 header: "SN No.",
-                width: 90,
+                width: 60,
                 render: (r) => (
                     <div className="text-xs text-slate-700">
                         {Number(pagination.offset || 0) + (rows.findIndex((x) => x.id === r.id) + 1)}
@@ -102,7 +96,7 @@ export default function Users() {
             {
                 key: "name",
                 header: "Name",
-                width: 260,
+                width: 160,
                 render: (r) => (
                     <div className="text-xs">
                         <div className="font-semibold text-slate-900 line-clamp-1">{r?.name || "-"}</div>
@@ -113,19 +107,19 @@ export default function Users() {
             {
                 key: "username",
                 header: "Username",
-                width: 200,
+                width: 160,
                 render: (r) => <div className="text-xs text-slate-700">{r?.username || "-"}</div>,
             },
             {
                 key: "email",
                 header: "Email",
-                width: 260,
+                width: 200,
                 render: (r) => <div className="text-xs text-slate-700">{r?.email || "-"}</div>,
             },
             {
                 key: "role",
                 header: "User Type",
-                width: 150,
+                width: 120,
                 render: (r) => {
                     const role = toStr(r?.role).toLowerCase();
                     const isAdmin = role === "admin";
@@ -144,7 +138,7 @@ export default function Users() {
             {
                 key: "actions",
                 header: "Actions",
-                width: 140,
+                width: 100,
                 render: (r) => (
                     <div className="flex items-center gap-2">
                         <button
@@ -180,9 +174,9 @@ export default function Users() {
     );
 
     return (
-        <DashboardLayout title="Users">
+        <>
             <div className="px-3 pb-4">
-                <div className="rounded-2xl bg-white/70 border border-sky-100 shadow-sm overflow-hidden">
+                <div className="rounded-2xl bg-white/70 border border-sky-100 shadow-sm overflow-hidden h-[calc(100vh-110px)] flex flex-col">
                     {/* top header bar */}
                     <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-sky-700 to-sky-500">
                         <div className="text-white font-semibold">Users</div>
@@ -234,7 +228,7 @@ export default function Users() {
                                 data={rows}
                                 rowKey="id"
                                 stickyHeader={true}
-                                height="520px"
+                                height="100%"
                                 footer={
                                     <div className="flex items-center justify-between px-4 py-3">
                                         <Pagination page={page} totalPages={totalPages} onChange={setPage} />
@@ -284,7 +278,6 @@ export default function Users() {
                     await fetchUsers();
                 }}
             />
-
-        </DashboardLayout>
+        </>
     );
 }
