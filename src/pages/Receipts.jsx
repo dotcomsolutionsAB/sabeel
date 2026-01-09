@@ -1,7 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 // import { useNavigate } from "react-router-dom";
-
-import DashboardLayout from "../layout/DashboardLayout";
 import DataTable from "../components/DataTable";
 import FilterBar from "../components/FilterBar";
 import Pagination from "../components/Pagination";
@@ -206,7 +204,7 @@ export default function Receipts() {
             {
                 key: "name",
                 header: "Name",
-                width: 220,
+                width: 160,
                 render: (r) => (
                     <div className="text-xs">
                         <div className="font-semibold text-slate-900 line-clamp-1">{r?.name || "-"}</div>
@@ -217,7 +215,7 @@ export default function Receipts() {
             {
                 key: "receipt_details",
                 header: "Receipt Details",
-                width: 230,
+                width: 180,
                 render: (r) => (
                     <div className="text-xs text-slate-700 space-y-0.5">
                         <div>
@@ -235,7 +233,7 @@ export default function Receipts() {
             {
                 key: "payment_details",
                 header: "Payment Details",
-                width: 280,
+                width: 220,
                 render: (r) => (
                     <div className="text-xs text-slate-700 space-y-0.5">
                         <div>
@@ -306,7 +304,7 @@ export default function Receipts() {
             {
                 key: "actions",
                 header: "Actions",
-                width: 130,
+                width: 120,
                 render: (r) => (
                     <div className="flex items-center gap-1">
                         <button
@@ -358,9 +356,9 @@ export default function Receipts() {
     const totalPages = Math.max(1, Math.ceil((pagination.total || 0) / pageSize));
 
     return (
-        <DashboardLayout title="Receipts">
+        <>
             <div className="px-3 pb-4">
-                <div className="rounded-2xl bg-white/70 border border-sky-100 shadow-sm overflow-hidden">
+                <div className="rounded-2xl bg-white/70 border border-sky-100 shadow-sm overflow-hidden h-[calc(100vh-110px)] flex flex-col">
                     {/* top header */}
                     <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-sky-700 to-sky-500">
                         <div className="text-white font-semibold">Receipts</div>
@@ -475,8 +473,8 @@ export default function Receipts() {
                     />
 
                     {/* table */}
-                    <div className="px-4 pb-4">
-                        <div className="rounded-2xl bg-white border border-slate-100 shadow-sm overflow-hidden">
+                    <div className="flex-1 min-h-0 px-4 pb-4">
+                        <div className="relative rounded-2xl bg-white border border-slate-100 shadow-sm overflow-hidden h-full">
                             {loading ? (
                                 <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/70">
                                     <Loader fullScreen={false} text="Loading receipts..." />
@@ -487,7 +485,7 @@ export default function Receipts() {
                                 data={viewRows}
                                 rowKey="id"
                                 stickyHeader={true}
-                                height="520px"
+                                height="100%"
                                 footer={<Pagination page={page} totalPages={totalPages} onChange={setPage} />}
                             />
                         </div>
@@ -567,8 +565,6 @@ export default function Receipts() {
                 message={errorToast.message}
                 onClose={() => setErrorToast({ show: false, message: "" })}
             />
-
-
-        </DashboardLayout>
+        </>
     );
 }
