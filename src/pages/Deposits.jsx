@@ -6,9 +6,7 @@ import FilterBar from "../components/FilterBar";
 import Pagination from "../components/Pagination";
 import Loader from "../components/Loader";
 import { retrieveDepositsApi } from "../services/depositService";
-
-// If you don’t have PrintIcon, replace with any icon or plain text
-import { EyeIcon } from "../components/icons"; // <- replace this with PrintIcon if you have
+import { PrintIcon } from "../components/icons";
 
 function formatINR(v) {
     const n = Number(v || 0);
@@ -36,6 +34,32 @@ export default function Deposits() {
 
     const [pagination, setPagination] = useState({ limit: 10, offset: 0, count: 0, total: 0 });
 
+    // ✅ selection
+    const [selectedIds, setSelectedIds] = useState(() => new Set());
+    const selectedCount = selectedIds.size;
+
+    const pageIds = useMemo(() => (rows || []).map((r) => r.id), [rows]);
+    const allCheckedOnPage = pageIds.length > 0 && pageIds.every((id) => selectedIds.has(id));
+    const someCheckedOnPage = pageIds.some((id) => selectedIds.has(id));
+
+    const toggleAllOnPage = () => {
+        setSelectedIds((prev) => {
+            const next = new Set(prev);
+            if (allCheckedOnPage) pageIds.forEach((id) => next.delete(id));
+            else pageIds.forEach((id) => next.add(id));
+            return next;
+        });
+    };
+
+    const toggleOne = (id) => {
+        setSelectedIds((prev) => {
+            const next = new Set(prev);
+            if (next.has(id)) next.delete(id);
+            else next.add(id);
+            return next;
+        });
+    };
+
     const fetchDeposits = async () => {
         try {
             setLoading(true);
@@ -48,16 +72,23 @@ export default function Deposits() {
             };
 
             const json = await retrieveDepositsApi(payload);
+            console.log("DEPOSITS API JSON =>", json);
+            const apiRows = Array.isArray(json?.data)
+                ? json.data
+                : Array.isArray(json)
+                    ? json
+                    : [];
 
-            const apiRows = Array.isArray(json?.data) ? json.data : [];
             setRows(apiRows.map((r) => ({ ...r, id: String(r.id) })));
-
+            setSelectedIds(new Set());
+            const pag = json?.pagination || {};
             setPagination({
-                limit: json?.pagination?.limit ?? pageSize,
-                offset: json?.pagination?.offset ?? offset,
-                count: json?.pagination?.count ?? apiRows.length,
-                total: json?.pagination?.total ?? apiRows.length,
+                limit: pag?.limit ?? pageSize,
+                offset: pag?.offset ?? offset,
+                count: pag?.count ?? apiRows.length,
+                total: pag?.total ?? apiRows.length,
             });
+
         } catch (e) {
             setApiError(e?.message || "Failed to fetch deposits");
             setRows([]);
@@ -73,96 +104,139 @@ export default function Deposits() {
     }, [page, receiptNo]);
 
     const totalPages = Math.max(1, Math.ceil((pagination.total || 0) / pageSize));
-
     // ✅ Print handler (simple version)
-    const handlePrint = (deposit) => {
-        // Option A: route to print page (recommended later)
-        // navigate(`/deposits/${deposit?.id}/print`);
+    // const handlePrint = (deposit) => {
+    //     // Option A: route to print page (recommended later)
+    //     // navigate(`/deposits/${deposit?.id}/print`);
 
-        // Option B: quick print popup (simple now)
-        const receiptNos = joinReceiptNos(deposit?.receipt_details);
+    //     // Option B: quick print popup (simple now)
+    //     const receiptNos = joinReceiptNos(deposit?.receipt_details);
 
-        const html = `
-            <html>
-            <head>
-              <title>Deposit Print</title>
-              <style>
-                body { font-family: Arial, sans-serif; padding: 24px; }
-                h2 { margin: 0 0 8px; }
-                .meta { margin: 0 0 16px; color: #334155; font-size: 13px; }
-                table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-                th, td { border: 1px solid #e2e8f0; padding: 8px; font-size: 13px; text-align: left; }
-                th { background: #f1f5f9; }
-              </style>
-            </head>
-            <body>
-              <h2>Deposit</h2>
-              <div class="meta">
-                <div><b>Deposit ID:</b> ${deposit?.deposit_id || "-"}</div>
-                <div><b>Date:</b> ${deposit?.date || "-"}</div>
-                <div><b>Amount:</b> ₹ ${formatINR(deposit?.amount)}</div>
-                <div><b>Created By:</b> ${deposit?.created_by?.name || "-"}</div>
-                <div><b>Remarks:</b> ${deposit?.remarks || "-"}</div>
-              </div>
+    //     const html = `
+    //         <html>
+    //         <head>
+    //           <title>Deposit Print</title>
+    //           <style>
+    //             body { font-family: Arial, sans-serif; padding: 24px; }
+    //             h2 { margin: 0 0 8px; }
+    //             .meta { margin: 0 0 16px; color: #334155; font-size: 13px; }
+    //             table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    //             th, td { border: 1px solid #e2e8f0; padding: 8px; font-size: 13px; text-align: left; }
+    //             th { background: #f1f5f9; }
+    //           </style>
+    //         </head>
+    //         <body>
+    //           <h2>Deposit</h2>
+    //           <div class="meta">
+    //             <div><b>Deposit ID:</b> ${deposit?.deposit_id || "-"}</div>
+    //             <div><b>Date:</b> ${deposit?.date || "-"}</div>
+    //             <div><b>Amount:</b> ₹ ${formatINR(deposit?.amount)}</div>
+    //             <div><b>Created By:</b> ${deposit?.created_by?.name || "-"}</div>
+    //             <div><b>Remarks:</b> ${deposit?.remarks || "-"}</div>
+    //           </div>
 
-              <table>
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Receipt No</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  ${receiptNos
-                .map(
-                    (no, idx) => `
-                      <tr>
-                        <td>${idx + 1}</td>
-                        <td>${no}</td>
-                      </tr>
-                    `
-                )
-                .join("")}
-                </tbody>
-              </table>
+    //           <table>
+    //             <thead>
+    //               <tr>
+    //                 <th>#</th>
+    //                 <th>Receipt No</th>
+    //               </tr>
+    //             </thead>
+    //             <tbody>
+    //               ${receiptNos
+    //             .map(
+    //                 (no, idx) => `
+    //                   <tr>
+    //                     <td>${idx + 1}</td>
+    //                     <td>${no}</td>
+    //                   </tr>
+    //                 `
+    //             )
+    //             .join("")}
+    //             </tbody>
+    //           </table>
 
-              <script>
-                window.onload = function() {
-                  window.print();
-                }
-              </script>
-            </body>
-            </html>
-        `;
+    //           <script>
+    //             window.onload = function() {
+    //               window.print();
+    //             }
+    //           </script>
+    //         </body>
+    //         </html>
+    //     `;
 
-        const w = window.open("", "_blank", "width=900,height=650");
-        if (!w) return;
-        w.document.open();
-        w.document.write(html);
-        w.document.close();
-    };
+    //     const w = window.open("", "_blank", "width=900,height=650");
+    //     if (!w) return;
+    //     w.document.open();
+    //     w.document.write(html);
+    //     w.document.close();
+    // };
 
     // columns
     const columns = useMemo(
         () => [
+            // ✅ Checkbox
             {
-                key: "deposit_id",
-                header: "Deposit",
-                width: 220,
+                key: "check",
+                header: (
+                    <input
+                        type="checkbox"
+                        checked={allCheckedOnPage}
+                        ref={(el) => {
+                            if (el) el.indeterminate = !allCheckedOnPage && someCheckedOnPage;
+                        }}
+                        onChange={(e) => {
+                            e.stopPropagation();
+                            toggleAllOnPage();
+                        }}
+                        onClick={(e) => e.stopPropagation()}
+                    />
+                ),
+                width: 40,
                 render: (r) => (
-                    <div className="text-xs">
-                        <div className="font-semibold text-slate-900">#{r?.deposit_id || "-"}</div>
-                        <div className="text-slate-600">Date: {r?.date || "-"}</div>
+                    <input
+                        type="checkbox"
+                        checked={selectedIds.has(r.id)}
+                        onChange={(e) => {
+                            e.stopPropagation();
+                            toggleOne(r.id);
+                        }}
+                        onClick={(e) => e.stopPropagation()}
+                    />
+                ),
+            },
+
+            // ✅ SL No (based on pagination)
+            {
+                key: "sl",
+                header: "SL",
+                width: 60,
+                render: (_r, idx) => (
+                    <div className="text-xs text-slate-700 font-semibold">
+                        {offset + idx + 1}
                     </div>
                 ),
             },
+
+            {
+                key: "deposit_id",
+                header: "Deposit",
+                width: 170,
+                render: (r) => (
+                    <div className="text-xs">
+                        <div className="font-semibold text-slate-900">#{r?.deposit_id || "-"}</div>
+                        <div className="text-slate-600">{r?.date || "-"}</div>
+                    </div>
+                ),
+            },
+
             {
                 key: "receipts",
                 header: "Receipts",
-                width: 360,
+                width: 260,
                 render: (r) => {
                     const receiptNos = joinReceiptNos(r?.receipt_details);
-                    const first = receiptNos.slice(0, 3);
+                    const first = receiptNos.slice(0, 2);
                     const more = receiptNos.length - first.length;
 
                     return (
@@ -178,47 +252,51 @@ export default function Deposits() {
                                 ))}
                                 {more > 0 ? (
                                     <span className="text-[11px] font-semibold text-slate-500">
-                                        +{more} more
+                                        +{more}
                                     </span>
                                 ) : null}
                             </div>
 
                             <div className="text-[11px] text-slate-500 mt-1">
-                                Total receipts: <span className="font-semibold">{receiptNos.length}</span>
+                                Total: <span className="font-semibold">{receiptNos.length}</span>
                             </div>
                         </div>
                     );
                 },
             },
+
             {
                 key: "amount",
                 header: "Amount",
-                width: 130,
+                width: 120,
                 render: (r) => <div className="text-xs font-semibold">₹ {formatINR(r?.amount)}</div>,
             },
+
             {
                 key: "created_by",
-                header: "Created By",
-                width: 180,
+                header: "By",
+                width: 160,
                 render: (r) => (
                     <div className="text-xs text-slate-700">
-                        <div className="font-semibold">{r?.created_by?.name || "-"}</div>
-                        <div className="text-slate-500">ID: {r?.created_by?.id ?? "-"}</div>
+                        <div className="font-semibold line-clamp-1">{r?.created_by?.name || "-"}</div>
+                        <div className="text-slate-500 text-[11px]">ID: {r?.created_by?.id ?? "-"}</div>
                     </div>
                 ),
             },
+
             {
                 key: "remarks",
                 header: "Remarks",
-                width: 260,
+                width: 220,
                 render: (r) => (
                     <div className="text-xs text-slate-700 line-clamp-2">{r?.remarks || "-"}</div>
                 ),
             },
+
             {
                 key: "actions",
-                header: "Actions",
-                width: 120,
+                header: "Print",
+                width: 90,
                 render: (r) => (
                     <div className="flex items-center gap-1">
                         <button
@@ -226,20 +304,24 @@ export default function Deposits() {
                             className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-sky-700 hover:bg-sky-800 text-white"
                             onClick={(e) => {
                                 e.stopPropagation();
-                                handlePrint(r);
+                                console.log("PRINT CLICK", r);
                             }}
                             title="Print"
                         >
-                            {/* Replace EyeIcon with PrintIcon if you have */}
-                            <EyeIcon className="w-5 h-5" />
+                            {/* ✅ Use PrintIcon if you have */}
+                            {/* <PrintIcon className="w-5 h-5" /> */}
+
+                            {/* ✅ Fallback if no PrintIcon */}
+                            <PrintIcon className="w-5 h-5" />
                         </button>
                     </div>
                 ),
             },
         ],
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        [pagination]
+        [rows, selectedIds, allCheckedOnPage, someCheckedOnPage, offset]
     );
+
 
     return (
         <DashboardLayout title="Deposites">
@@ -265,10 +347,16 @@ export default function Deposits() {
                         // no selects needed now
                         selects={[]}
                         rightSlot={
-                            <div className="text-xs text-slate-700">
-                                Total: <span className="font-semibold">{pagination.total || 0}</span>
+                            <div className="text-xs text-slate-700 flex items-center gap-3">
+                                <div>
+                                    Total: <span className="font-semibold">{pagination.total || 0}</span>
+                                </div>
+                                <div>
+                                    Selected: <span className="font-semibold">{selectedCount}</span>
+                                </div>
                             </div>
                         }
+
                     />
 
                     <div className="px-4 pb-4">

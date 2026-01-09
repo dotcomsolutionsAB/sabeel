@@ -1,8 +1,9 @@
 import api from "./api";
 
 export async function retrieveDepositsApi(payload) {
-    const res = await api.post("/deposits/retrieve", payload);
-    return res?.data ?? res;
+    // ✅ api.post already returns the JSON object:
+    // { code, status, message, data, pagination }
+    return api.post("/deposits/retrieve", payload);
 }
 
 export async function createDepositApi(payload) {
