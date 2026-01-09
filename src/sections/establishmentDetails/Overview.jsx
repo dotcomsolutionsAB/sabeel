@@ -183,7 +183,7 @@ export default function OverviewTab({ id, overview }) {
             {
                 key: "receipt_details",
                 header: "Receipt Details",
-                width: 260,
+                width: 160,
                 render: (r) => (
                     <div className="text-xs text-slate-700 space-y-0.5">
                         <div>
@@ -201,7 +201,7 @@ export default function OverviewTab({ id, overview }) {
             {
                 key: "payment_details",
                 header: "Payment Details",
-                width: 360,
+                width: 200,
                 render: (r) => (
                     <div className="text-xs text-slate-700 space-y-0.5">
                         <div>
@@ -237,7 +237,7 @@ export default function OverviewTab({ id, overview }) {
             {
                 key: "type",
                 header: "Type",
-                width: 160,
+                width: 140,
                 render: () => (
                     <span className="inline-flex items-center justify-center px-3 py-1 rounded-full text-[11px] font-bold bg-sky-100 text-sky-700">
                         Establishment
@@ -247,13 +247,13 @@ export default function OverviewTab({ id, overview }) {
             {
                 key: "amount",
                 header: "Amount",
-                width: 140,
+                width: 120,
                 render: (r) => <div className="text-xs font-semibold">₹ {formatINR(r?.amount)}</div>,
             },
             {
                 key: "actions",
                 header: "Actions",
-                width: 120,
+                width: 60,
                 render: (r) => (
                     <button
                         type="button"
