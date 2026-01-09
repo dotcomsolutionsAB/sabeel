@@ -1,14 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 import DashboardLayout from "../layout/DashboardLayout";
 import DataTable from "../components/DataTable";
 import FilterBar from "../components/FilterBar";
 import Pagination from "../components/Pagination";
 import Loader from "../components/Loader";
-import { EyeIcon, EditIcon, TrashIcon } from "../components/icons";
+import { EditIcon, TrashIcon, PrintIcon } from "../components/icons";
 import EditReceiptModal from "../components/modals/EditReceiptModal";
-import { retrieveReceiptsApi } from "../services/receiptService";
+import { retrieveReceiptsApi, printReceiptApi } from "../services/receiptService";
 import { createDepositApi } from "../services/depositService";
 import CreateDepositModal from "../components/modals/CreateDepositModal";
 import SuccessToast from "../components/SuccessToast";
@@ -21,7 +21,7 @@ function formatINR(v) {
 }
 
 export default function Receipts() {
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
     const [rows, setRows] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -60,6 +60,25 @@ export default function Receipts() {
         }
         return sum;
     }, [rows, selectedIds]);
+
+    const handlePrintReceipt = async (row) => {
+        try {
+            const id = row?.id; // already string in your mapping
+            if (!id) throw new Error("Invalid receipt id");
+
+            const res = await printReceiptApi(id);
+
+            const url = res?.data?.pdf_url;
+            if (!url) throw new Error("PDF URL not found in response");
+
+            window.open(url, "_blank", "noopener,noreferrer");
+        } catch (e) {
+            setErrorToast({
+                show: true,
+                message: e?.message || "Failed to print receipt",
+            });
+        }
+    };
 
 
     const fetchReceipts = async () => {
@@ -307,18 +326,16 @@ export default function Receipts() {
 
                         <button
                             type="button"
-                            className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-sky-700 hover:bg-sky-800 text-white"
+                            className="inline-flex items-center justify-center w-9 h-9 rounded-full border border-slate-200 bg-white hover:bg-slate-50 text-slate-700"
                             onClick={(e) => {
                                 e.stopPropagation();
-                                // ✅ open details page
-                                // if family receipt -> go family details; if establishment -> go establishment details
-                                if (r?.type === "family") navigate(`/family/${r?.family_id || r?.id}`);
-                                else navigate(`/establishments/${r?.establishment_id || r?.id}`);
+                                handlePrintReceipt(r);
                             }}
-                            title="View"
+                            title="Print"
                         >
-                            <EyeIcon className="w-5 h-5" />
+                            <PrintIcon className="w-5 h-5" />
                         </button>
+
                     </div>
                 ),
             },
