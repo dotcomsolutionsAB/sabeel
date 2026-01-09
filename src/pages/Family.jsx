@@ -314,7 +314,7 @@ export default function Family() {
 
     return (
         <>
-            <div className="px-3 pb-4">
+            <div className="px-3">
                 <div
                     className="rounded-2xl bg-white/70 border border-sky-100 shadow-sm overflow-hidden"
                     style={{ height: "calc(100vh - 100px)" }}

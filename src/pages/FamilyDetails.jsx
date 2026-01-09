@@ -267,7 +267,7 @@ export default function FamilyDetails() {
 
     return (
         <>
-            <div className="px-3 pb-4">
+            <div className="px-3 pb-0">
                 <div
                     className="rounded-2xl bg-white/70 border border-sky-100 shadow-sm overflow-hidden"
                     style={{ height: "calc(100vh - 100px)" }}
@@ -301,48 +301,46 @@ export default function FamilyDetails() {
                                 </div>
                                 {/* Grid should fill rest */}
                                 <div className="flex-1 min-h-0 px-4 pb-4">
-                                    <div className="mt-4 grid grid-cols-1 lg:grid-cols-[1.7fr_1fr] gap-4 flex-1 h-full">
+                                    <div className="mt-0 grid grid-cols-1 lg:grid-cols-[1.7fr_1fr] gap-4 flex-1 h-full">
                                         {/* LEFT */}
-                                        <div className="min-h-0 h-full overflow-auto">
-                                            <LeftPanel>
-                                                {loadingFamily && !family ? (
-                                                    <div className="p-6 text-sm text-slate-600">Loading...</div>
-                                                ) : activeTab === "overview" ? (
-                                                    <LeftOverviewSection
-                                                        stats={stats}
-                                                        receipts={receiptsForUI}
-                                                        onAddReceipt={() => setOpenAddReceipt(true)}
-                                                        loadingReceipts={loadingReceipts}
-                                                        receiptPagination={receiptPagination}
-                                                        onReceiptPageChange={(offset) => fetchReceipts({ limit: 10, offset })}
-                                                    />
-                                                ) : activeTab === "hof" ? (
-                                                    <LeftHofSection
-                                                        value={{
-                                                            name: toStr(family?.name),
-                                                            its: toStr(family?.its),
-                                                            mobile: toStr(family?.mobile),
-                                                            email: toStr(family?.email),
-                                                            sector: toStr(family?.sector),
-                                                            address: "",
-                                                            gender: "",
-                                                            dob: "",
-                                                        }}
-                                                        onChange={() => { }}
-                                                        onSave={() => console.log("Save HOF (later)")}
-                                                    />
-                                                ) : activeTab === "family" ? (
-                                                    <LeftFamilySection onAddFamily={() => setOpenAddFamily(true)} />
-                                                ) : activeTab === "sabeel" ? (
-                                                    <LeftSabeelSection
-                                                        data={sabeelRows}
-                                                        onAdd={() => setOpenAddSabeel(true)}
-                                                        onView={viewSabeel}
-                                                        onDelete={(row) => console.log("Delete sabeel later", row)}
-                                                    />
-                                                ) : null}
-                                            </LeftPanel>
-                                        </div>
+                                        <LeftPanel>
+                                            {loadingFamily && !family ? (
+                                                <div className="p-6 text-sm text-slate-600">Loading...</div>
+                                            ) : activeTab === "overview" ? (
+                                                <LeftOverviewSection
+                                                    stats={stats}
+                                                    receipts={receiptsForUI}
+                                                    onAddReceipt={() => setOpenAddReceipt(true)}
+                                                    loadingReceipts={loadingReceipts}
+                                                    receiptPagination={receiptPagination}
+                                                    onReceiptPageChange={(offset) => fetchReceipts({ limit: 10, offset })}
+                                                />
+                                            ) : activeTab === "hof" ? (
+                                                <LeftHofSection
+                                                    value={{
+                                                        name: toStr(family?.name),
+                                                        its: toStr(family?.its),
+                                                        mobile: toStr(family?.mobile),
+                                                        email: toStr(family?.email),
+                                                        sector: toStr(family?.sector),
+                                                        address: "",
+                                                        gender: "",
+                                                        dob: "",
+                                                    }}
+                                                    onChange={() => { }}
+                                                    onSave={() => console.log("Save HOF (later)")}
+                                                />
+                                            ) : activeTab === "family" ? (
+                                                <LeftFamilySection onAddFamily={() => setOpenAddFamily(true)} />
+                                            ) : activeTab === "sabeel" ? (
+                                                <LeftSabeelSection
+                                                    data={sabeelRows}
+                                                    onAdd={() => setOpenAddSabeel(true)}
+                                                    onView={viewSabeel}
+                                                    onDelete={(row) => console.log("Delete sabeel later", row)}
+                                                />
+                                            ) : null}
+                                        </LeftPanel>
                                         {/* RIGHT profile card */}
                                         <div className="rounded-2xl bg-white border border-slate-100 shadow-sm overflow-hidden flex flex-col h-full min-h-0">
                                             <div className="p-4 shrink-0">
