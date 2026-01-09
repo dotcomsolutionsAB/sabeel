@@ -39,9 +39,28 @@ export default function AddFamilyModal({ open, onClose, onSave, sectorOptions = 
 
     // Sector options (static or dynamic based on props)
     const sectorList = useMemo(() => {
-        const opts = sectorOptions?.length ? sectorOptions : ["A-2", "B-12", "BURHANI", "DAWOODI", "EZZY", "MOHAMMEDI", "SHUJAI", "ZAINY"];
-        return [{ label: "Select", value: "" }, ...opts.map((s) => ({ label: s, value: s }))];
+        // sectorOptions can be ["A-2", ...] OR [{name:"A-2"}] OR [{label,value}]
+        const raw = Array.isArray(sectorOptions) ? sectorOptions : [];
+
+        const names = raw
+            .map((s) => {
+                if (typeof s === "string") return s;
+                if (s?.name) return s.name;        // API style {id,name}
+                if (s?.value) return s.value;      // select style {label,value}
+                return "";
+            })
+            .map((x) => String(x || "").trim())
+            .filter(Boolean)
+            .filter((x) => x !== "All"); // ✅ remove "All" in modal
+
+        const unique = Array.from(new Set(names));
+
+        return [
+            { label: "Select", value: "" },
+            ...unique.map((s) => ({ label: s, value: s })),
+        ];
     }, [sectorOptions]);
+
 
     // Gender options (static)
     const genderOptions = useMemo(

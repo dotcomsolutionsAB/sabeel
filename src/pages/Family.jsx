@@ -13,6 +13,7 @@ import AddFamilyModal from "../components/modals/AddFamilyModal";
 import SuccessToast from "../components/SuccessToast";  // Success Toast
 import ErrorToast from "../components/ErrorToast";    // Error Toast
 import { createFamilyApi } from "../services/familyService"; // Service to create family
+import { retrieveSectorsApi } from "../services/sectorService";
 
 export default function Family() {
     // API state
@@ -29,8 +30,10 @@ export default function Family() {
 
     // Filters + paging
     const [search, setSearch] = useState("");
-    const [sector, setSector] = useState("All");
     const [filter, setFilter] = useState(""); // due/prev_due/new_takhmeen_pending/not_tagged/service
+
+    const [sector, setSector] = useState("All");
+    const [sectorOptions, setSectorOptions] = useState(["All"]);
 
     const [page, setPage] = useState(1);
     const pageSize = 10;
@@ -106,17 +109,35 @@ export default function Family() {
         }
     };
 
+    useEffect(() => {
+        const fetchSectors = async () => {
+            try {
+                const res = await retrieveSectorsApi();
+
+                // res.data = [{id, name}, ...]
+                const names = (Array.isArray(res?.data) ? res.data : [])
+                    .map((x) => String(x?.name || "").trim())
+                    .filter(Boolean);
+
+                // unique + sorted (optional)
+                const unique = Array.from(new Set(names));
+
+                setSectorOptions(["All", ...unique]);
+            } catch (e) {
+                // fallback (keep All only)
+                setSectorOptions(["All"]);
+                console.error("Sector fetch failed:", e?.message);
+            }
+        };
+
+        fetchSectors();
+    }, []);
+
     // Fetch when filters/page changes
     useEffect(() => {
         fetchFamilies();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [search, sector, filter, page]);
-
-    // Sector options (from current page rows)
-    const sectorOptions = useMemo(() => {
-        const set = new Set((rows || []).map((d) => d.sector).filter(Boolean));
-        return ["All", ...Array.from(set)];
-    }, [rows]);
 
     const selected = useMemo(() => {
         const found = (rows || []).find((x) => String(x.id) === String(selectedId));
@@ -143,7 +164,6 @@ export default function Family() {
         ],
         []
     );
-
     const establishmentColumns = useMemo(
         () => [
             {
@@ -170,7 +190,6 @@ export default function Family() {
         ],
         []
     );
-
     const columns = useMemo(
         () => [
             {
@@ -474,20 +493,18 @@ export default function Family() {
                 open={openAddFamily}
                 onClose={() => setOpenAddFamily(false)}
                 onSave={handleSaveFamily} // This will trigger the save logic
-                sectorOptions={sectorOptions} // This is passed as sectorOptions (you can pass them from the API response)
+                sectorOptions={sectorOptions.filter((s) => s !== "All")}
             />
             <SuccessToast
                 show={toastOk.show}
                 message={toastOk.message}
                 onClose={() => setToastOk({ show: false, message: "" })}
             />
-
             <ErrorToast
                 show={toastErr.show}
                 message={toastErr.message}
                 onClose={() => setToastErr({ show: false, message: "" })}
             />
-
         </DashboardLayout>
     );
 }
