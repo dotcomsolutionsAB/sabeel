@@ -163,6 +163,7 @@ body {
 
 .content {
   padding: 0px;
+  /* height: calc(100vh - 100px); */
 }
 
 /* ===== Two panels ===== */

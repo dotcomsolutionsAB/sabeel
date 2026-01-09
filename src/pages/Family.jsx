@@ -415,8 +415,8 @@ export default function Family() {
 
                         {/* Right: Details */}
                         <div
-                            className="rounded-2xl bg-white border border-slate-100 shadow-sm overflow-hidden flex flex-col min-h-0"
-                            style={{ height: "520px" }}
+                            className="rounded-2xl bg-white border border-slate-100 shadow-sm overflow-hidden flex flex-col min-h-full"
+                        // style={{ height: "520px" }}
                         >
                             {/* Profile (fixed) */}
                             <div className="p-4 shrink-0">
