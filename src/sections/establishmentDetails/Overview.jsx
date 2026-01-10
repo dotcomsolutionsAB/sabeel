@@ -3,8 +3,8 @@ import PropTypes from "prop-types";
 
 import DataTable from "../../components/DataTable";
 import Pagination from "../../components/Pagination";
-import { createReceiptApi, retrieveReceiptsApi } from "../../services/receiptService";
-import { AddIcon } from "../../components/icons";
+import { createReceiptApi, retrieveReceiptsApi, printReceiptApi } from "../../services/receiptService";
+import { AddIcon, PrintIcon } from "../../components/icons";
 import AddReceiptModal from "../../components/modals/AddReceiptModal"; // Import your AddReceiptModal component
 import SuccessToast from "../../components/SuccessToast";
 import ErrorToast from "../../components/ErrorToast";
@@ -34,6 +34,9 @@ export default function OverviewTab({ id, overview }) {
     // selection like screenshot
     const [selected, setSelected] = useState(() => new Set());
 
+    // ✅ print loading per receipt id
+    const [printingId, setPrintingId] = useState(null);
+
     // pagination
     const [page, setPage] = useState(1);
     const pageSize = 10;
@@ -59,6 +62,36 @@ export default function OverviewTab({ id, overview }) {
             month: "2-digit",
             year: "numeric",
         }).format(d); // dd/mm/yyyy
+    };
+
+    // ✅ PRINT HANDLER (API -> pdf_url -> new tab)
+    const handlePrint = async (receiptId) => {
+        if (!receiptId) return;
+        try {
+            setPrintingId(receiptId);
+
+            const res = await printReceiptApi(receiptId);
+
+            // Expected: { code, status, message, data: { pdf_url } }
+            const pdfUrl =
+                res?.data?.data?.pdf_url ||
+                res?.data?.pdf_url ||
+                null;
+
+            if (!pdfUrl) {
+                setToastErr({ show: true, message: "PDF URL not found in response." });
+                return;
+            }
+
+            window.open(pdfUrl, "_blank", "noopener,noreferrer");
+        } catch (e) {
+            setToastErr({
+                show: true,
+                message: e?.response?.data?.message || e?.message || "Failed to print receipt",
+            });
+        } finally {
+            setPrintingId(null);
+        }
     };
 
     const handleSaveReceipt = async (payload) => {
@@ -254,23 +287,30 @@ export default function OverviewTab({ id, overview }) {
                 key: "actions",
                 header: "Actions",
                 width: 60,
-                render: (r) => (
-                    <button
-                        type="button"
-                        className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-sky-800 text-white hover:bg-sky-900"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            console.log("ACTION", r);
-                        }}
-                        title="Action"
-                    >
-                        ⤓
-                    </button>
-                ),
+                render: (r) => {
+                    const isPrinting = printingId === r.id;
+                    return (
+                        <button
+                            type="button"
+                            disabled={isPrinting}
+                            className={[
+                                "inline-flex items-center justify-center w-9 h-9 rounded-full text-white",
+                                isPrinting ? "bg-slate-400 cursor-not-allowed" : "bg-sky-800 hover:bg-sky-900",
+                            ].join(" ")}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                handlePrint(r.id); // ✅ CALL PRINT
+                            }}
+                            title={isPrinting ? "Generating..." : "Print"}
+                        >
+                            <PrintIcon className="w-4 h-4" />
+                        </button>
+                    );
+                },
             },
         ],
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        [selected, viewRows, isAllOnPageSelected]
+        [selected, viewRows, isAllOnPageSelected, printingId]
     );
 
     const cardSabeel = overview?.establishment?.sabeel || 0;

@@ -3,7 +3,8 @@ import PropTypes from "prop-types";
 import StatTile from "../../components/StatTile";
 import DataTable from "../../components/DataTable";
 import Pagination from "../../components/Pagination";
-import { SearchIcon, AddIcon, EyeIcon } from "../../components/icons";
+import { SearchIcon, AddIcon, PrintIcon } from "../../components/icons";
+import { printReceiptApi } from "../../services/receiptService"; // ✅ adjust path as per your project
 
 export default function LeftOverviewSection({ stats = [], receipts = [], onAddReceipt }) {
     const [q, setQ] = useState("");
@@ -17,6 +18,38 @@ export default function LeftOverviewSection({ stats = [], receipts = [], onAddRe
             `${r.receiptNo} ${r.date} ${r.year} ${r.type} ${r.mode}`.toLowerCase().includes(s)
         );
     }, [q, receipts]);
+
+    // ✅ Print loading per receipt id
+    const [printingId, setPrintingId] = useState(null);
+
+    const handlePrint = async (receiptId) => {
+        if (!receiptId) return;
+
+        try {
+            setPrintingId(receiptId);
+
+            const res = await printReceiptApi(receiptId);
+
+            // axios returns: res.data = { code, status, message, data: {...} }
+            const pdfUrl =
+                res?.data?.data?.pdf_url ||
+                res?.data?.pdf_url || // fallback (if your backend returns directly)
+                null;
+
+            if (!pdfUrl) {
+                alert("PDF URL not found in response.");
+                return;
+            }
+
+            // ✅ open in new tab
+            window.open(pdfUrl, "_blank", "noopener,noreferrer");
+        } catch (err) {
+            console.error(err);
+            alert(err?.response?.data?.message || err?.message || "Failed to print receipt.");
+        } finally {
+            setPrintingId(null);
+        }
+    };
 
     const totalPages = Math.max(1, Math.ceil(filteredReceipts.length / pageSize));
     const paged = filteredReceipts.slice((page - 1) * pageSize, page * pageSize);
@@ -161,11 +194,26 @@ export default function LeftOverviewSection({ stats = [], receipts = [], onAddRe
             key: "actions",
             header: "Actions",
             width: 90,
-            render: () => (
-                <button className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-sky-700 hover:bg-sky-800 text-white">
-                    <EyeIcon className="w-5 h-5" />
-                </button>
-            ),
+            render: (r) => {
+                const isPrinting = printingId === r.id;
+                return (
+                    <button
+                        type="button"
+                        disabled={isPrinting}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            handlePrint(r.id);
+                        }}
+                        className={[
+                            "inline-flex items-center justify-center w-9 h-9 rounded-full text-white",
+                            isPrinting ? "bg-slate-400 cursor-not-allowed" : "bg-sky-700 hover:bg-sky-800",
+                        ].join(" ")}
+                        title={isPrinting ? "Generating..." : "Print"}
+                    >
+                        <PrintIcon className="w-5 h-5" />
+                    </button>
+                );
+            },
         },
     ];
 
