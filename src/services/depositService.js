@@ -10,3 +10,9 @@ export async function createDepositApi(payload) {
     const res = await api.post("/deposits/create", payload);
     return res?.data ?? res;
 }
+
+export const printDepositApi = (depositId) => {
+    if (!depositId) throw new Error("Deposit ID is required");
+    // ✅ GET: /deposits/print/{id}
+    return api.get(`/deposits/print/${depositId}`);
+};

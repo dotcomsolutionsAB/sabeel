@@ -3,7 +3,7 @@ import DataTable from "../components/DataTable";
 import FilterBar from "../components/FilterBar";
 import Pagination from "../components/Pagination";
 import Loader from "../components/Loader";
-import { retrieveDepositsApi } from "../services/depositService";
+import { retrieveDepositsApi, printDepositApi } from "../services/depositService";
 import { PrintIcon } from "../components/icons";
 
 function formatINR(v) {
@@ -56,6 +56,35 @@ export default function Deposits() {
             else next.add(id);
             return next;
         });
+    };
+
+    // ✅ print loading per deposit id
+    const [printingId, setPrintingId] = useState(null);
+
+    // ✅ PRINT HANDLER (API -> pdf_url -> new tab)
+    const handlePrint = async (depositId) => {
+        if (!depositId) return;
+
+        try {
+            setPrintingId(depositId);
+
+            const res = await printDepositApi(depositId);
+
+            // Expected: { code, status, message, data: { pdf_url } }
+            const pdfUrl = res?.data?.data?.pdf_url || res?.data?.pdf_url || null;
+
+            if (!pdfUrl) {
+                alert("PDF URL not found in response.");
+                return;
+            }
+
+            window.open(pdfUrl, "_blank", "noopener,noreferrer");
+        } catch (e) {
+            console.error(e);
+            alert(e?.response?.data?.message || e?.message || "Failed to print deposit.");
+        } finally {
+            setPrintingId(null);
+        }
     };
 
     const fetchDeposits = async () => {
@@ -306,29 +335,32 @@ export default function Deposits() {
                 key: "actions",
                 header: "Print",
                 width: 90,
-                render: (r) => (
-                    <div className="flex items-center gap-1">
-                        <button
-                            type="button"
-                            className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-sky-700 hover:bg-sky-800 text-white"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                console.log("PRINT CLICK", r);
-                            }}
-                            title="Print"
-                        >
-                            {/* ✅ Use PrintIcon if you have */}
-                            {/* <PrintIcon className="w-5 h-5" /> */}
-
-                            {/* ✅ Fallback if no PrintIcon */}
-                            <PrintIcon className="w-5 h-5" />
-                        </button>
-                    </div>
-                ),
+                render: (r) => {
+                    const isPrinting = printingId === r.id;
+                    return (
+                        <div className="flex items-center gap-1">
+                            <button
+                                type="button"
+                                disabled={isPrinting}
+                                className={[
+                                    "inline-flex items-center justify-center w-9 h-9 rounded-full text-white",
+                                    isPrinting ? "bg-slate-400 cursor-not-allowed" : "bg-sky-700 hover:bg-sky-800",
+                                ].join(" ")}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handlePrint(r.id); // ✅ PASS ID
+                                }}
+                                title={isPrinting ? "Generating..." : "Print"}
+                            >
+                                <PrintIcon className="w-5 h-5" />
+                            </button>
+                        </div>
+                    );
+                },
             },
         ],
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        [rows, selectedIds, allCheckedOnPage, someCheckedOnPage, offset]
+        [rows, selectedIds, allCheckedOnPage, someCheckedOnPage, offset, printingId]
     );
 
 
